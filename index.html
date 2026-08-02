@@ -1,0 +1,2970 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#075985">
+  <meta name="description" content="منصة إدارات قطاع الري وهندساتها وترعها ومنشآتها المائية">
+  <title>إدارات قطاع الري | منصة الأصول والمنشآت المائية</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --navy:#083344;
+      --blue:#075985;
+      --blue-2:#0e7490;
+      --aqua:#0f9f9a;
+      --aqua-soft:#e5f7f5;
+      --paper:#f4f8fa;
+      --white:#fff;
+      --ink:#102f3e;
+      --muted:#637d89;
+      --line:#d8e7ec;
+      --gold:#c49a42;
+      --green:#17845f;
+      --warn:#9a6a1d;
+      --red:#b54747;
+      --shadow:0 14px 38px rgba(8,51,68,.08);
+      --radius:20px;
+    }
+
+    * { box-sizing:border-box; }
+    html { scroll-behavior:auto; background:var(--paper); }
+    body {
+      margin:0;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%, rgba(15,159,154,.09), transparent 24rem),
+        linear-gradient(180deg,#fbfdfe 0,var(--paper) 48rem);
+      font-family:"Segoe UI",Tahoma,Arial,sans-serif;
+      line-height:1.65;
+      touch-action:pan-y pinch-zoom;
+    }
+    button,input,select,textarea { font:inherit; }
+    button,a { -webkit-tap-highlight-color:transparent; }
+    a { color:inherit; text-decoration:none; }
+    [hidden] { display:none !important; }
+    :focus-visible { outline:3px solid rgba(14,116,144,.28); outline-offset:2px; }
+
+    .site-header {
+      min-height:76px;
+      padding:12px clamp(16px,4vw,64px);
+      display:flex;
+      align-items:center;
+      gap:28px;
+      border-bottom:1px solid var(--line);
+      background:#fff;
+    }
+    .brand { display:flex; align-items:center; gap:11px; min-width:230px; }
+    .brand-mark {
+      width:46px; height:46px; flex:0 0 auto;
+      display:grid; place-items:center;
+      border-radius:15px 15px 15px 5px;
+      color:#fff; background:linear-gradient(145deg,var(--aqua),var(--blue));
+      font-size:28px; font-weight:900;
+      box-shadow:0 9px 20px rgba(7,89,133,.2);
+    }
+    .brand b,.brand small { display:block; }
+    .brand b { font-size:17px; }
+    .brand small { color:var(--muted); font-size:10px; }
+    .main-nav { margin-inline:auto; display:flex; gap:22px; }
+    .main-nav a { color:var(--muted); font-size:12px; font-weight:700; }
+    .main-nav a:hover { color:var(--blue); }
+    .install-button,.primary-button,.secondary-button {
+      min-height:42px; border:0; border-radius:12px; padding:0 15px;
+      cursor:pointer; font-weight:800; font-size:11px;
+    }
+    .install-button,.primary-button { color:#fff; background:linear-gradient(135deg,var(--blue),var(--navy)); }
+    .secondary-button { color:var(--blue); background:#edf7f9; border:1px solid #cce7eb; }
+    .header-actions { display:flex; align-items:center; gap:8px; }
+    .sync-button { color:var(--blue); background:#edf7f9; border:1px solid #cce7eb; }
+
+    .hero {
+      max-width:1460px;
+      margin:0 auto;
+      padding:68px clamp(18px,5vw,74px) 42px;
+      display:grid;
+      grid-template-columns:1.05fr .95fr;
+      gap:48px;
+      align-items:center;
+    }
+    .eyebrow {
+      display:inline-flex; align-items:center; gap:7px;
+      color:var(--aqua); font-size:10px; font-weight:900; letter-spacing:.8px;
+    }
+    .eyebrow::before { content:""; width:22px; height:2px; background:currentColor; }
+    .hero h1 { margin:13px 0 0; font-size:clamp(42px,6vw,78px); line-height:1.12; letter-spacing:-2px; }
+    .hero h1 span { color:var(--blue-2); }
+    .hero p { max-width:680px; margin:22px 0 0; color:var(--muted); font-size:15px; }
+    .hero-actions { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:28px; }
+    .hero-actions a {
+      min-height:52px; min-width:220px; padding:0 20px;
+      display:inline-flex; align-items:center; justify-content:space-between;
+      border-radius:14px; color:#fff; background:linear-gradient(135deg,var(--blue),var(--navy));
+      font-size:13px; font-weight:900; box-shadow:0 12px 25px rgba(8,51,68,.17);
+    }
+    .source-note { color:var(--muted); font-size:10px; }
+    .hierarchy { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:24px; }
+    .hierarchy span {
+      padding:7px 10px; border:1px solid var(--line); border-radius:10px;
+      color:var(--blue); background:#fff; font-size:10px; font-weight:800;
+    }
+    .hierarchy i { color:#9bb0ba; font-style:normal; }
+
+    .hero-visual {
+      min-height:360px; position:relative; overflow:hidden;
+      border:1px solid #d6ebef; border-radius:34px;
+      background:linear-gradient(145deg,#edf9fa,#fff);
+      box-shadow:var(--shadow);
+    }
+    .hero-visual::before {
+      content:""; width:96px; height:520px;
+      position:absolute; top:-72px; left:47%;
+      border-radius:50%;
+      background:linear-gradient(90deg,#0f9f9a,#34b7c3 48%,#0e7490);
+      transform:rotate(20deg);
+      box-shadow:0 0 0 9px #fff,0 16px 38px rgba(14,116,144,.2);
+    }
+    .hero-visual::after {
+      content:""; width:230px; height:78px;
+      position:absolute; top:45%; left:17%;
+      border-bottom:13px solid rgba(8,51,68,.82);
+      transform:rotate(-10deg);
+    }
+    .visual-seal {
+      position:absolute; right:24px; bottom:24px; z-index:2;
+      width:210px; padding:18px;
+      border:1px solid var(--line); border-radius:17px; background:#fff;
+      box-shadow:var(--shadow);
+    }
+    .visual-seal small,.visual-seal span { display:block; color:var(--muted); font-size:9px; }
+    .visual-seal strong { display:block; margin:3px 0; font-size:29px; line-height:1.2; }
+
+    .metrics {
+      max-width:1360px; margin:0 auto; padding:0 clamp(14px,4vw,54px);
+      display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+    }
+    .metric {
+      min-height:112px; padding:18px;
+      display:flex; align-items:center; gap:13px;
+      border:1px solid var(--line); border-radius:18px; background:#fff; box-shadow:var(--shadow);
+    }
+    .metric-icon {
+      width:48px; height:48px; flex:0 0 auto; display:grid; place-items:center;
+      border-radius:15px; color:var(--blue); background:var(--aqua-soft); font-size:22px;
+    }
+    .metric strong,.metric span { display:block; }
+    .metric strong { font-size:27px; line-height:1.1; }
+    .metric span { margin-top:5px; color:var(--muted); font-size:10px; }
+    .digitization-strip {
+      max-width:1360px; margin:16px auto 0; padding:0 clamp(14px,4vw,54px);
+      display:grid; grid-template-columns:1.4fr repeat(4,1fr); gap:1px;
+    }
+    .digitization-strip article {
+      min-height:86px; padding:15px 17px; display:grid; align-content:center;
+      border:1px solid var(--line); background:#fff;
+    }
+    .digitization-strip article:first-child { border-radius:18px 0 0 18px; background:linear-gradient(135deg,var(--navy),var(--blue)); color:#fff; }
+    .digitization-strip article:last-child { border-radius:0 18px 18px 0; }
+    .digitization-strip b,.digitization-strip strong,.digitization-strip span { display:block; }
+    .digitization-strip b { font-size:12px; }
+    .digitization-strip strong { color:var(--blue); font-size:22px; }
+    .digitization-strip span { margin-top:3px; color:var(--muted); font-size:9px; }
+    .digitization-strip article:first-child span { color:#cce7eb; }
+
+    .section {
+      max-width:1360px; margin:0 auto; padding:78px clamp(14px,4vw,54px) 0;
+      scroll-margin-top:12px;
+    }
+    .section-head {
+      margin-bottom:24px; display:flex; align-items:flex-end; justify-content:space-between; gap:18px;
+    }
+    .section-head h2 { margin:5px 0 0; font-size:31px; letter-spacing:-.5px; }
+    .section-head p { margin:5px 0 0; color:var(--muted); font-size:11px; }
+    .status {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:8px 11px; border:1px solid var(--line); border-radius:999px;
+      color:var(--green); background:#f4fbf8; font-size:10px; font-weight:800;
+    }
+    .status::before { content:""; width:8px; height:8px; border-radius:50%; background:currentColor; }
+    .status.loading { color:var(--warn); background:#fff9ec; }
+    .status.error { color:var(--red); background:#fff4f4; }
+    .status.pending,.status.syncing { color:var(--warn); background:#fff9ec; }
+    .status.offline { color:var(--muted); background:#f4f7f8; }
+    .status.conflict { color:var(--red); background:#fff4f4; }
+    .status-group { display:flex; align-items:center; justify-content:flex-end; gap:7px; flex-wrap:wrap; }
+
+    .overview-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .panel { padding:22px; border:1px solid var(--line); border-radius:var(--radius); background:#fff; box-shadow:var(--shadow); }
+    .panel-title { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:17px; }
+    .panel-title h3 { margin:0; font-size:17px; }
+    .panel-title small { color:var(--muted); font-size:9px; }
+    .bar-list { display:grid; gap:11px; }
+    .bar-row { display:grid; grid-template-columns:115px 1fr 48px; align-items:center; gap:10px; font-size:10px; }
+    .bar-row span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .bar-track { height:7px; overflow:hidden; border-radius:8px; background:#edf3f5; }
+    .bar-track i { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--aqua),var(--blue)); }
+    .bar-row strong { text-align:left; direction:ltr; }
+    .rank-list { display:grid; gap:7px; }
+    .rank-row {
+      min-height:42px; padding:7px 9px;
+      display:grid; grid-template-columns:30px 1fr auto; align-items:center; gap:9px;
+      border:1px solid #edf2f4; border-radius:11px; background:#fbfdfd;
+    }
+    .rank-row em { color:var(--aqua); font-size:10px; font-style:normal; font-weight:900; }
+    .rank-row span { font-size:10px; font-weight:800; }
+    .rank-row strong { color:var(--blue); font-size:11px; }
+
+    .admin-tools { display:flex; align-items:center; gap:10px; }
+    .search {
+      width:min(390px,100%); min-height:50px; padding:0 14px;
+      display:flex; align-items:center; gap:9px;
+      border:1px solid var(--line); border-radius:14px; background:#fff;
+    }
+    .search b { color:var(--blue); font-size:20px; }
+    .search input { width:100%; border:0; outline:0; background:transparent; color:var(--ink); font-size:12px; }
+    .admin-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; }
+    .admin-card {
+      min-height:230px; padding:19px; display:block;
+      border:1px solid var(--line); border-radius:18px; background:#fff; box-shadow:0 7px 24px rgba(8,51,68,.055);
+    }
+    .admin-card:hover { border-color:#9fcbd3; }
+    .admin-card-head { display:grid; grid-template-columns:44px 1fr auto; align-items:center; gap:10px; }
+    .admin-index {
+      width:44px; height:44px; display:grid; place-items:center;
+      border:1px solid #c9e5e8; border-radius:13px; color:var(--blue); background:var(--aqua-soft);
+      font-size:11px; font-weight:900;
+    }
+    .admin-card small { color:var(--muted); font-size:8px; }
+    .admin-card h3 { margin:2px 0 0; font-size:15px; }
+    .admin-arrow { color:var(--aqua); font-size:20px; }
+    .admin-stats { margin-top:17px; display:grid; grid-template-columns:repeat(3,1fr); border:1px solid #e8f0f2; border-radius:11px; overflow:hidden; }
+    .admin-stats span { padding:9px 5px; text-align:center; color:var(--muted); font-size:8px; border-left:1px solid #e8f0f2; }
+    .admin-stats span:last-child { border:0; }
+    .admin-stats b { display:block; color:var(--ink); font-size:14px; }
+    .readiness { margin-top:14px; }
+    .readiness div { height:5px; overflow:hidden; border-radius:6px; background:#edf3f5; }
+    .readiness i { display:block; height:100%; background:linear-gradient(90deg,var(--aqua),var(--blue)); }
+    .readiness span { display:block; margin-top:5px; color:var(--muted); font-size:8px; }
+    .empty { padding:35px; grid-column:1/-1; text-align:center; border:1px dashed var(--line); border-radius:16px; color:var(--muted); background:#fff; }
+
+    .workspace {
+      max-width:1360px; margin:38px auto 0; padding:0 clamp(14px,4vw,54px);
+      scroll-margin-top:12px;
+    }
+    .workspace-shell { border:1px solid var(--line); border-radius:24px; overflow:hidden; background:#fff; box-shadow:var(--shadow); }
+    .workspace-head {
+      padding:27px 29px; color:#fff;
+      display:flex; align-items:flex-end; justify-content:space-between; gap:18px;
+      background:radial-gradient(circle at 10% 10%,rgba(15,159,154,.28),transparent 28%),linear-gradient(135deg,var(--navy),var(--blue));
+    }
+    .workspace-head h2 { margin:4px 0 0; font-size:28px; }
+    .workspace-head p { margin:4px 0 0; color:#d4e8ee; font-size:10px; }
+    .workspace-actions { display:flex; gap:7px; flex-wrap:wrap; }
+    .workspace-actions button { min-height:39px; padding:0 12px; border:1px solid rgba(255,255,255,.3); border-radius:10px; color:#fff; background:rgba(255,255,255,.1); cursor:pointer; font-size:10px; font-weight:800; }
+    .workspace-metrics { display:grid; grid-template-columns:repeat(4,1fr); border-bottom:1px solid var(--line); }
+    .workspace-metrics article { min-height:86px; padding:15px 18px; border-left:1px solid var(--line); background:#fbfdfd; }
+    .workspace-metrics article:last-child { border:0; }
+    .workspace-metrics strong,.workspace-metrics span { display:block; }
+    .workspace-metrics strong { font-size:22px; }
+    .workspace-metrics span { color:var(--muted); font-size:9px; }
+    .tabs {
+      padding:11px 13px; display:flex; gap:6px; overflow-x:auto;
+      border-bottom:1px solid var(--line); background:#fff;
+      overscroll-behavior-x:contain; touch-action:pan-x pan-y; -webkit-overflow-scrolling:touch;
+    }
+    .tab {
+      flex:0 0 auto; min-height:39px; padding:0 13px;
+      border:1px solid transparent; border-radius:10px; color:var(--muted); background:#fff;
+      cursor:pointer; font-size:10px; font-weight:800;
+    }
+    .tab[aria-selected="true"] { color:var(--blue); border-color:#cce5e9; background:#ebf7f8; }
+    .tab-panel { min-height:650px; overflow-anchor:none; background:#fbfdfd; }
+
+    .structure { display:grid; grid-template-columns:220px 220px minmax(0,1fr); min-height:650px; }
+    .side-list { padding:15px; border-left:1px solid var(--line); background:#f7fbfc; }
+    .side-list h3 { margin:0 0 10px; font-size:12px; }
+    .side-list-container { display:grid; gap:5px; }
+    .side-list button {
+      width:100%; min-height:49px; padding:7px 9px;
+      display:flex; align-items:center; justify-content:space-between; gap:7px;
+      border:1px solid transparent; border-radius:10px; color:var(--ink); background:#fff;
+      cursor:pointer; text-align:right; font-size:9px;
+    }
+    .side-list button.active { color:var(--blue); border-color:#b9dce2; background:#ebf7f8; }
+    .side-list button b { display:block; max-width:145px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .side-list button small { display:block; color:var(--muted); }
+    .table-panel { min-width:0; padding:17px; }
+    .table-head { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .table-head h3 { margin:0; font-size:17px; }
+    .table-head p { margin:3px 0 0; color:var(--muted); font-size:9px; }
+    .filters { display:flex; gap:6px; flex-wrap:wrap; }
+    .filters input,.filters select { min-height:38px; padding:0 9px; border:1px solid var(--line); border-radius:9px; outline:0; background:#fff; font-size:9px; }
+    .asset-table { overflow-x:auto; border:1px solid var(--line); border-radius:12px; overscroll-behavior-x:contain; touch-action:pan-x pan-y; -webkit-overflow-scrolling:touch; }
+    table { width:100%; min-width:760px; border-collapse:collapse; font-size:9px; }
+    th { padding:9px; text-align:right; color:var(--ink); background:#eaf3f5; white-space:nowrap; }
+    td { padding:9px; border-top:1px solid #edf2f4; vertical-align:top; }
+    td b,td small { display:block; }
+    td small { margin-top:2px; color:var(--muted); }
+    .tag { display:inline-block; padding:3px 7px; border-radius:999px; color:var(--blue); background:#e7f5f7; font-size:8px; font-weight:800; }
+    .numeric { direction:ltr; text-align:left; white-space:nowrap; }
+    .row-actions { display:flex; align-items:center; gap:5px; white-space:nowrap; }
+    .row-action {
+      min-height:31px; padding:0 9px; border:1px solid #cce5e9; border-radius:8px;
+      color:var(--blue); background:#f4fbfc; cursor:pointer; font-size:8px; font-weight:900;
+    }
+    .row-action:hover { background:#e5f7f5; }
+    .table-note { padding:11px; text-align:center; color:var(--muted); background:#fff; font-size:9px; }
+
+    .module { padding:22px; }
+    .module-intro {
+      padding:20px; display:grid; grid-template-columns:52px 1fr auto; align-items:center; gap:14px;
+      border:1px solid #c5e5e7; border-radius:16px; background:linear-gradient(135deg,#edfafa,#fff);
+    }
+    .module-intro.gold { border-color:#e4d4b1; background:linear-gradient(135deg,#fff9ed,#fff); }
+    .module-icon { width:52px; height:52px; display:grid; place-items:center; border-radius:15px; color:var(--blue); background:#fff; font-size:23px; }
+    .module-intro h3 { margin:0; font-size:18px; }
+    .module-intro p { margin:4px 0 0; color:var(--muted); font-size:10px; }
+    .module-intro strong { font-size:28px; }
+    .cards-list { margin-top:14px; display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
+    .small-card { padding:14px; border:1px solid var(--line); border-radius:12px; background:#fff; }
+    .small-card b,.small-card span,.small-card small { display:block; }
+    .small-card b { font-size:10px; }
+    .small-card span { margin:4px 0; color:var(--blue); font-size:9px; }
+    .small-card small { color:var(--muted); font-size:8px; }
+    .source-gap { margin-top:14px; padding:21px; border:1px dashed #a5cfd6; border-radius:14px; color:var(--muted); background:#f4fbfc; font-size:10px; }
+    .source-gap b { display:block; margin-bottom:4px; color:var(--blue); }
+    .quality-grid { padding:22px; display:grid; grid-template-columns:repeat(4,1fr); gap:11px; }
+    .quality-card { min-height:125px; padding:17px; border:1px solid var(--line); border-radius:14px; background:#fff; }
+    .quality-card span,.quality-card strong { display:block; }
+    .quality-card span { color:var(--muted); font-size:9px; }
+    .quality-card strong { margin-top:7px; font-size:25px; }
+    .quality-card div { height:6px; margin-top:17px; overflow:hidden; border-radius:7px; background:#edf3f5; }
+    .quality-card i { display:block; height:100%; background:linear-gradient(90deg,var(--aqua),var(--blue)); }
+    .quality-note { grid-column:1/-1; padding:15px; border-right:4px solid var(--gold); border-radius:10px; color:var(--muted); background:#fff9e9; font-size:10px; }
+
+    .records-module { padding:20px; }
+    .records-toolbar {
+      margin-bottom:14px; padding:16px; display:flex; align-items:center; justify-content:space-between; gap:14px;
+      border:1px solid #c5e5e7; border-radius:16px; background:linear-gradient(135deg,#edfafa,#fff);
+    }
+    .records-heading { display:flex; align-items:center; gap:11px; min-width:0; }
+    .records-heading h3 { margin:0; font-size:18px; }
+    .records-heading p { margin:3px 0 0; color:var(--muted); font-size:9px; }
+    .records-heading strong { min-width:42px; color:var(--blue); font-size:25px; text-align:center; }
+    .records-actions { display:flex; align-items:center; justify-content:flex-end; gap:7px; flex-wrap:wrap; }
+    .search.compact { width:240px; min-height:42px; }
+    .records-table table { min-width:1000px; }
+    .records-empty { min-height:220px; display:grid; place-content:center; gap:5px; text-align:center; border:1px dashed var(--line); border-radius:15px; color:var(--muted); background:#fff; }
+    .records-empty b { color:var(--blue); font-size:14px; }
+    .records-empty span { font-size:10px; }
+    .record-link { color:var(--blue); text-decoration:underline; font-weight:800; }
+    input[readonly] { color:var(--muted); background:#f1f6f7 !important; }
+
+    .loading-card { min-height:180px; display:grid; place-items:center; color:var(--muted); }
+    .spinner { width:34px; height:34px; margin:0 auto 9px; border:3px solid #d8e8ec; border-top-color:var(--aqua); border-radius:50%; animation:spin .75s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    dialog { width:min(460px,calc(100% - 28px)); max-height:calc(100% - 28px); overflow:auto; overscroll-behavior:contain; padding:0; border:0; border-radius:20px; color:var(--ink); background:#fff; box-shadow:0 28px 70px rgba(8,51,68,.28); }
+    dialog::backdrop { background:rgba(8,51,68,.62); }
+    .dialog-body { padding:25px; }
+    .dialog-body h2 { margin:0; font-size:21px; }
+    .dialog-body p { color:var(--muted); font-size:10px; }
+    .dialog-wide { width:min(780px,calc(100% - 28px)); }
+    .form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; margin-top:16px; }
+    .field { display:grid; gap:5px; }
+    .field.full { grid-column:1/-1; }
+    .field span { color:var(--muted); font-size:9px; font-weight:800; }
+    .field input,.field select,.field textarea {
+      width:100%; min-height:43px; padding:8px 10px; border:1px solid var(--line);
+      border-radius:10px; outline:0; color:var(--ink); background:#fff; font-size:11px;
+    }
+    .field textarea { min-height:76px; resize:vertical; }
+    .field input:focus,.field select:focus,.field textarea:focus { border-color:#8fc7d0; box-shadow:0 0 0 3px rgba(14,116,144,.08); }
+    .dialog-actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-wrap:wrap; margin-top:17px; }
+    .danger-button {
+      min-height:42px; padding:0 15px; border:1px solid #efc7c7; border-radius:12px;
+      color:var(--red); background:#fff4f4; cursor:pointer; font-size:10px; font-weight:900;
+    }
+    .dialog-note { margin-top:12px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; color:var(--muted); background:#f7fbfc; font-size:9px; }
+    .dialog-note.error { color:var(--red); border-color:#efc7c7; background:#fff4f4; }
+    .install-steps { display:grid; gap:8px; }
+    .install-step { padding:11px; display:flex; gap:9px; align-items:center; border:1px solid var(--line); border-radius:11px; background:#f8fbfc; font-size:10px; }
+    .install-step b { width:29px; height:29px; flex:0 0 auto; display:grid; place-items:center; border-radius:8px; color:var(--blue); background:var(--aqua-soft); }
+
+    footer { margin-top:72px; padding:24px clamp(16px,5vw,76px); display:flex; align-items:center; gap:16px; color:#cde3e9; background:var(--navy); }
+    footer b { color:#fff; }
+    footer span { font-size:10px; }
+    footer small { margin-inline-start:auto; }
+
+    @media (max-width:1000px) {
+      .main-nav { display:none; }
+      .hero { grid-template-columns:1fr; }
+      .metrics { grid-template-columns:repeat(2,1fr); }
+      .admin-grid { grid-template-columns:repeat(2,1fr); }
+      .structure { display:block; }
+      .side-list { border:0; border-bottom:1px solid var(--line); }
+      .side-list-container { display:flex; overflow-x:auto; overscroll-behavior-x:contain; touch-action:pan-x pan-y; -webkit-overflow-scrolling:touch; }
+      .side-list button { min-width:185px; }
+    }
+
+    @media (max-width:640px) {
+      html { scroll-behavior:auto; }
+      body { overflow-anchor:none; }
+      .site-header { min-height:68px; padding:10px 13px; gap:8px; }
+      .brand { min-width:0; margin-inline-end:auto; }
+      .brand-mark { width:39px; height:39px; border-radius:12px; font-size:23px; }
+      .brand b { font-size:14px; }
+      .brand small { display:none; }
+      .install-button { min-height:38px; padding:0 10px; font-size:9px; }
+      .hero { padding:42px 15px 28px; gap:23px; }
+      .hero h1 { font-size:43px; }
+      .hero p { font-size:13px; }
+      .hero-actions a { width:100%; }
+      .hero-visual { min-height:260px; border-radius:24px; }
+      .hero-visual::before { height:390px; width:68px; top:-60px; }
+      .hero-visual::after { width:175px; left:12%; }
+      .visual-seal { right:13px; bottom:13px; width:180px; }
+      .metrics { padding:0 12px; gap:8px; }
+      .metric { min-height:91px; padding:11px; gap:8px; border-radius:14px; }
+      .metric-icon { width:37px; height:37px; border-radius:11px; font-size:17px; }
+      .metric strong { font-size:19px; }
+      .metric span { font-size:8px; }
+      .section { padding:60px 12px 0; }
+      .section-head { display:block; }
+      .section-head h2 { font-size:25px; }
+      .section-head .status,.admin-tools { margin-top:13px; }
+      .status-group { justify-content:flex-start; }
+      .overview-grid,.admin-grid { grid-template-columns:1fr; }
+      .digitization-strip { grid-template-columns:1fr 1fr; padding:0 12px; }
+      .digitization-strip article,.digitization-strip article:first-child,.digitization-strip article:last-child { border-radius:12px; }
+      .digitization-strip article:first-child { grid-column:1/-1; }
+      .panel { padding:16px; border-radius:16px; }
+      .bar-row { grid-template-columns:86px 1fr 40px; }
+      .admin-tools,.search { width:100%; }
+      .admin-card { min-height:215px; }
+      .workspace { margin-top:30px; padding:0 12px; }
+      .workspace-shell { border-radius:18px; overflow:visible; }
+      .workspace-head { padding:21px 17px; display:block; border-radius:18px 18px 0 0; }
+      .workspace-head h2 { font-size:23px; }
+      .workspace-actions { margin-top:13px; }
+      .form-grid { grid-template-columns:1fr; }
+      .field.full { grid-column:auto; }
+      .workspace-metrics { grid-template-columns:repeat(2,1fr); }
+      .workspace-metrics article { min-height:73px; padding:11px; border-bottom:1px solid var(--line); }
+      .tabs { padding:8px; }
+      .tab-panel { min-height:620px; }
+      .structure { min-height:620px; }
+      .table-panel { padding:12px; }
+      .table-head { display:block; }
+      .filters { margin-top:9px; }
+      .filters input { width:100%; }
+      .cards-list { grid-template-columns:1fr; }
+      .module { padding:13px; }
+      .records-module { padding:10px; }
+      .records-toolbar { padding:13px; display:block; }
+      .records-actions { margin-top:12px; justify-content:stretch; }
+      .records-actions .search,.records-actions button { width:100%; }
+      .module-intro { grid-template-columns:45px 1fr; padding:15px; }
+      .module-intro strong { grid-column:1/-1; }
+      .quality-grid { grid-template-columns:repeat(2,1fr); padding:13px; gap:8px; }
+      .quality-card { min-height:110px; padding:13px; }
+      footer { display:grid; gap:3px; }
+      footer small { margin:0; }
+    }
+
+    /* Sector Platform 8 — complete fleet and equipment registry */
+    :root {
+      --navy:#123f46;
+      --blue:#0b7088;
+      --blue-2:#147f94;
+      --aqua:#178b89;
+      --aqua-soft:#e7f2ef;
+      --paper:#f7f5ef;
+      --white:#fffefa;
+      --ink:#20393b;
+      --muted:#6f7a77;
+      --line:#d9d4c7;
+      --gold:#b59e70;
+      --green:#237c67;
+      --shadow:0 14px 36px rgba(39,55,52,.07);
+      --radius:26px;
+    }
+    body {
+      color:var(--ink);
+      background:
+        linear-gradient(125deg,rgba(23,139,137,.035),transparent 36%),
+        linear-gradient(180deg,#fbfaf6 0,var(--paper) 46rem);
+      font-family:"Noto Kufi Arabic","Segoe UI",Tahoma,Arial,sans-serif;
+      font-size:16px;
+      line-height:1.85;
+    }
+    .site-header {
+      max-width:1540px;
+      min-height:96px;
+      margin:0 auto;
+      padding:16px clamp(18px,4vw,66px);
+      gap:18px;
+      flex-wrap:wrap;
+      border-color:var(--line);
+      background:rgba(255,254,250,.96);
+    }
+    .brand { min-width:250px; gap:14px; }
+    .brand-mark {
+      width:58px; height:58px;
+      border-radius:18px;
+      font-size:32px;
+      background:linear-gradient(145deg,var(--aqua),var(--blue));
+      box-shadow:0 10px 24px rgba(11,112,136,.16);
+    }
+    .brand b { font-size:19px; letter-spacing:-.2px; }
+    .brand small { margin-top:1px; font-size:12px; }
+    .main-nav { gap:10px; }
+    .main-nav a {
+      min-height:46px;
+      padding:0 18px;
+      display:inline-flex;
+      align-items:center;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:#53625f;
+      background:var(--white);
+      font-size:14px;
+      font-weight:800;
+    }
+    .main-nav a:hover { color:var(--blue); border-color:#6aa8b5; background:#edf5f4; }
+    .install-button,.primary-button,.secondary-button,.danger-button {
+      min-height:50px;
+      padding:0 19px;
+      border-radius:15px;
+      font-size:14px;
+      letter-spacing:0;
+    }
+    .install-button,.primary-button { background:linear-gradient(135deg,var(--blue-2),var(--blue)); }
+    .secondary-button,.sync-button { color:var(--blue); background:#f5f8f5; border:1px solid var(--line); }
+    .header-actions { gap:10px; }
+    .hero { padding-top:74px; gap:58px; }
+    .eyebrow { font-size:14px; letter-spacing:.2px; }
+    .eyebrow::before { width:30px; }
+    .hero h1 { font-size:clamp(48px,6vw,76px); line-height:1.2; letter-spacing:-1.8px; }
+    .hero p { max-width:720px; font-size:18px; line-height:2; }
+    .hero-actions a { min-height:62px; min-width:260px; border-radius:19px; font-size:17px; }
+    .source-note { font-size:13px; }
+    .hierarchy { gap:10px; }
+    .hierarchy span { padding:10px 15px; border-color:var(--line); border-radius:14px; font-size:13px; background:var(--white); }
+    .hero-visual { min-height:410px; border-color:var(--line); background:linear-gradient(145deg,#eef6f2,var(--white)); }
+    .visual-seal { width:245px; padding:23px; border-color:var(--line); border-radius:25px; background:var(--white); }
+    .visual-seal small,.visual-seal span { font-size:12px; }
+    .visual-seal strong { font-size:34px; }
+    .metrics { gap:18px; }
+    .metric { min-height:132px; padding:23px; border-color:var(--line); border-radius:23px; background:var(--white); }
+    .metric-icon { width:58px; height:58px; border-radius:18px; font-size:25px; }
+    .metric strong { font-size:30px; }
+    .metric span { font-size:13px; }
+    .digitization-strip { gap:10px; }
+    .digitization-strip article { min-height:102px; padding:18px 20px; border-radius:18px !important; border-color:var(--line); background:var(--white); }
+    .digitization-strip b { font-size:15px; }
+    .digitization-strip strong { font-size:25px; }
+    .digitization-strip span { font-size:12px; }
+    .section { padding-top:92px; }
+    .section-head { margin-bottom:30px; }
+    .section-head h2 { font-size:38px; }
+    .section-head p { max-width:760px; font-size:15px; }
+    .status { padding:10px 15px; font-size:13px; background:var(--white); }
+    .panel,.admin-card,.workspace-shell,.small-card,.quality-card { border-color:var(--line); background:var(--white); }
+    .panel { padding:28px; }
+    .panel-title h3 { font-size:21px; }
+    .panel-title small { font-size:13px; }
+    .bar-row { grid-template-columns:150px 1fr 60px; gap:14px; font-size:14px; }
+    .bar-track { height:9px; }
+    .rank-row { min-height:56px; padding:10px 13px; border-color:#e6e1d6; border-radius:15px; background:#fcfbf7; }
+    .rank-row em,.rank-row span,.rank-row strong { font-size:14px; }
+    .search { min-height:54px; border-color:var(--line); border-radius:16px; background:var(--white); }
+    .search input { font-size:16px; }
+    .admin-grid { gap:20px; }
+    .admin-card { min-height:270px; padding:24px; border-radius:24px; }
+    .admin-index { width:52px; height:52px; border-radius:16px; font-size:14px; }
+    .admin-card small { font-size:12px; }
+    .admin-card h3 { font-size:19px; }
+    .admin-stats span { padding:13px 7px; font-size:11px; }
+    .admin-stats b { font-size:18px; }
+    .readiness span { font-size:11px; }
+    .workspace { margin-top:52px; }
+    .workspace-shell { border-radius:30px; }
+    .workspace-head { padding:34px 36px; background:linear-gradient(135deg,#124f5a,var(--blue)); }
+    .workspace-head h2 { font-size:35px; }
+    .workspace-head p { font-size:14px; }
+    .workspace-actions button { min-height:50px; padding:0 17px; border-radius:14px; font-size:14px; }
+    .workspace-metrics article { min-height:112px; padding:20px 24px; background:#fbfaf6; }
+    .workspace-metrics strong { font-size:29px; }
+    .workspace-metrics span { font-size:13px; }
+    .tabs { padding:15px; gap:10px; background:#fbfaf6; }
+    .tab { min-height:50px; padding:0 18px; border-color:var(--line); border-radius:999px; font-size:14px; background:var(--white); }
+    .tab[aria-selected="true"] { color:var(--blue); border-color:#4c9aac; background:#eaf3f1; }
+    .side-list { padding:20px; background:#f7f5ef; }
+    .side-list h3 { font-size:16px; }
+    .side-list button { min-height:62px; padding:10px 12px; border-color:#e7e1d5; border-radius:15px; font-size:13px; }
+    .table-panel { padding:24px; }
+    .table-head h3 { font-size:22px; }
+    .table-head p { font-size:13px; }
+    .filters { gap:9px; }
+    .filters input,.filters select { min-height:48px; padding:0 13px; border-color:var(--line); border-radius:13px; font-size:14px; }
+    .asset-table { border-color:var(--line); border-radius:18px; background:var(--white); }
+    table { min-width:960px; font-size:14px; }
+    th { padding:15px 13px; background:#efebe1; font-size:14px; }
+    td { padding:14px 13px; border-color:#e9e4d9; }
+    td small { font-size:12px; }
+    .tag { padding:5px 9px; font-size:11px; background:#e7f2ef; }
+    .row-action { min-height:40px; padding:0 13px; border-color:#b9d6d4; border-radius:11px; font-size:12px; }
+    .table-note { padding:14px; font-size:12px; background:#fbfaf6; }
+    .records-module,.module { padding:26px; }
+    .records-toolbar { padding:22px; border-color:var(--line); border-radius:22px; background:linear-gradient(135deg,#edf5f2,var(--white)); }
+    .records-heading h3,.module-intro h3 { font-size:22px; }
+    .records-heading p,.module-intro p { font-size:13px; }
+    .records-heading strong { font-size:30px; }
+    .records-empty span { font-size:13px; }
+    .module-intro { padding:24px; border-color:var(--line); border-radius:22px; background:linear-gradient(135deg,#edf5f2,var(--white)); }
+    .small-card { padding:18px; border-radius:17px; }
+    .small-card b { font-size:15px; }
+    .small-card span { font-size:13px; }
+    .small-card small { font-size:12px; }
+    .quality-card span { font-size:13px; }
+    .quality-note,.source-gap { font-size:13px; }
+    dialog { width:min(560px,calc(100% - 28px)); border:1px solid var(--line); border-radius:26px; background:var(--white); }
+    .dialog-wide { width:min(880px,calc(100% - 28px)); }
+    .dialog-body { padding:31px; }
+    .dialog-body h2 { font-size:27px; }
+    .dialog-body p { font-size:14px; }
+    .form-grid { gap:15px; margin-top:20px; }
+    .field { gap:7px; }
+    .field span { font-size:13px; }
+    .field input,.field select,.field textarea { min-height:54px; padding:11px 13px; border-color:var(--line); border-radius:14px; font-size:16px; background:var(--white); }
+    .field textarea { min-height:100px; }
+    .dialog-note { padding:13px 15px; border-color:var(--line); border-radius:13px; font-size:13px; background:#f7f5ef; }
+    .install-step { padding:14px; border-color:var(--line); border-radius:14px; font-size:14px; }
+    .record-code-field { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; }
+    .record-code-button {
+      min-height:42px;
+      padding:7px 11px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      border:1px solid #9fc5c3;
+      border-radius:12px;
+      color:var(--blue);
+      background:#edf5f2;
+      font:800 12px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;
+      direction:ltr;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .record-code-button span { font-family:"Segoe UI",Tahoma,Arial,sans-serif; font-size:11px; direction:rtl; }
+    footer { padding-block:31px; background:var(--navy); }
+    footer span,footer small { font-size:13px; }
+
+    @media (max-width:1000px) {
+      .main-nav { display:flex; order:3; width:100%; overflow-x:auto; padding-bottom:3px; }
+      .hero { gap:36px; }
+      .structure { display:block; }
+    }
+
+    @media (max-width:640px) {
+      body { font-size:15px; }
+      .site-header { min-height:0; padding:12px; gap:11px; }
+      .brand { min-width:0; flex:1; }
+      .brand-mark { width:48px; height:48px; font-size:27px; }
+      .brand b { font-size:16px; }
+      .header-actions { width:auto; }
+      .install-button { min-height:44px; padding:0 11px; font-size:12px; }
+      .sync-button { display:none; }
+      .main-nav { gap:7px; }
+      .main-nav a { min-height:43px; padding:0 14px; font-size:13px; }
+      .hero { padding:50px 15px 32px; gap:30px; }
+      .eyebrow { font-size:13px; }
+      .hero h1 { font-size:clamp(41px,13vw,54px); line-height:1.3; }
+      .hero p { font-size:16px; line-height:2; }
+      .hero-actions a { min-height:58px; font-size:16px; }
+      .source-note { font-size:12px; }
+      .hierarchy span { font-size:12px; }
+      .hero-visual { min-height:300px; }
+      .visual-seal { width:205px; padding:18px; }
+      .metrics { grid-template-columns:1fr 1fr; gap:10px; }
+      .metric { min-height:116px; padding:14px; display:block; }
+      .metric-icon { width:42px; height:42px; margin-bottom:9px; }
+      .metric strong { font-size:24px; }
+      .metric span { font-size:12px; }
+      .digitization-strip article { min-height:96px; padding:15px; }
+      .section { padding-top:70px; }
+      .section-head h2 { font-size:31px; line-height:1.45; }
+      .section-head p { font-size:14px; }
+      .panel { padding:19px; }
+      .panel-title h3 { font-size:18px; }
+      .bar-row { grid-template-columns:100px 1fr 46px; font-size:12px; }
+      .rank-row span,.rank-row em,.rank-row strong { font-size:12px; }
+      .admin-card { min-height:250px; padding:20px; }
+      .admin-card h3 { font-size:18px; }
+      .workspace { padding:0 10px; }
+      .workspace-head { padding:25px 19px; }
+      .workspace-head h2 { font-size:28px; }
+      .workspace-head p { font-size:13px; }
+      .workspace-actions button { min-height:48px; font-size:13px; }
+      .workspace-metrics article { min-height:96px; padding:15px; }
+      .workspace-metrics strong { font-size:25px; }
+      .workspace-metrics span { font-size:12px; }
+      .tabs { padding:11px 9px; }
+      .tab { min-height:47px; padding:0 15px; font-size:13px; }
+      .side-list { padding:15px 12px; }
+      .side-list button { min-width:205px; font-size:13px; }
+      .table-panel { padding:14px 10px; }
+      .table-head h3 { font-size:20px; }
+      .filters input,.filters select { width:100%; min-height:51px; font-size:16px; }
+      table { min-width:980px; font-size:14px; }
+      th,td { padding:13px 12px; }
+      .records-module,.module { padding:12px 9px; }
+      .records-toolbar { padding:17px; }
+      .records-heading h3,.module-intro h3 { font-size:20px; }
+      .records-heading p,.module-intro p { font-size:12px; }
+      .records-actions button { min-height:50px; font-size:14px; }
+      .module-intro { padding:18px; }
+      .quality-grid { grid-template-columns:1fr; }
+      .dialog-body { padding:23px 17px; }
+      .dialog-body h2 { font-size:23px; }
+      .dialog-body p { font-size:13px; }
+      .field span { font-size:13px; }
+      .field input,.field select,.field textarea { min-height:54px; font-size:16px; }
+      .record-code-field { grid-template-columns:1fr; }
+      .record-code-button { min-height:46px; font-size:12px; }
+      .dialog-actions > button { flex:1 1 130px; }
+      footer { padding:26px 18px; }
+    }
+
+    .find-button { color:var(--blue); background:#edf5f2; border:1px solid #9fc5c3; }
+    .hero-find {
+      min-height:56px;
+      padding:0 22px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      border:1px solid #9fc5c3;
+      border-radius:16px;
+      color:var(--blue);
+      background:var(--white);
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .find-dialog { width:min(780px,calc(100% - 18px)); }
+    .find-field {
+      margin-top:16px;
+      min-height:60px;
+      padding:0 15px;
+      display:flex;
+      align-items:center;
+      gap:11px;
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:#f7fbfc;
+    }
+    .find-field b { color:var(--blue-2); font-size:21px; }
+    .find-field input { flex:1; min-width:0; border:0; outline:0; background:transparent; font-size:16px; color:inherit; }
+    .find-results { margin-top:15px; max-height:min(60vh,520px); overflow:auto; display:grid; gap:17px; }
+    .find-group h4 { margin:0 0 8px; display:flex; justify-content:space-between; gap:10px; font-size:13px; font-weight:800; color:var(--blue); }
+    .find-group h4 em { font-style:normal; font-weight:700; color:var(--muted); }
+    .find-list { display:grid; gap:7px; }
+    .find-item {
+      width:100%;
+      min-height:58px;
+      padding:10px 14px;
+      display:grid;
+      gap:3px;
+      text-align:start;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:var(--white);
+      cursor:pointer;
+    }
+    .find-item:hover { border-color:#9fc5c3; background:#f3f9f8; }
+    .find-item b { font-size:14px; }
+    .find-item small { font-size:12px; color:var(--muted); }
+    .find-empty { padding:28px 14px; text-align:center; color:var(--muted); font-size:14px; }
+    tr.row-hit > td { background:#fff3d2 !important; }
+
+    .compare-lead { margin-bottom:18px; display:grid; grid-template-columns:repeat(auto-fit,minmax(186px,1fr)); gap:12px; }
+    .compare-lead article { padding:16px 18px; display:grid; gap:4px; border:1px solid var(--line); border-radius:18px; background:var(--white); }
+    .compare-lead strong { font-size:23px; color:var(--blue); }
+    .compare-lead strong.tight { font-size:16px; line-height:1.5; }
+    .compare-lead span { font-size:12px; color:var(--muted); }
+    .compare-wrap { border:1px solid var(--line); border-radius:20px; background:var(--white); overflow:auto; }
+    .compare-wrap table { width:100%; min-width:860px; border-collapse:collapse; }
+    .compare-wrap th {
+      position:sticky;
+      top:0;
+      z-index:1;
+      padding:14px 12px;
+      border:0;
+      background:#eef4f2;
+      font-size:13px;
+      white-space:nowrap;
+      cursor:pointer;
+      user-select:none;
+    }
+    .compare-wrap th[aria-sort="ascending"],.compare-wrap th[aria-sort="descending"] { color:var(--blue); background:#e3efec; }
+    .compare-wrap td { padding:13px 12px; border:0; border-top:1px solid #e9eff1; font-size:14px; }
+    .compare-wrap tbody tr:hover { background:#f6fbfa; }
+    .cmp-name { display:grid; gap:2px; }
+    .cmp-name b { font-size:14px; }
+    .cmp-name small { font-size:11px; color:var(--muted); }
+    .cmp-bar { min-width:118px; display:grid; grid-template-columns:1fr 44px; align-items:center; gap:8px; }
+    .cmp-bar div { height:8px; border-radius:99px; background:#e6eef0; overflow:hidden; }
+    .cmp-bar i { display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--aqua),var(--blue-2)); }
+    .cmp-bar span { font-size:12px; font-weight:800; direction:ltr; }
+
+    @media print {
+      .site-header,.hero,.metrics,#overview,#compare,#administrations,.tabs,.workspace-actions,footer { display:none !important; }
+      body { background:#fff; }
+      .workspace { margin:0; padding:0; }
+      .workspace-shell { border:0; box-shadow:none; }
+      .tab-panel { min-height:0; }
+      .asset-table { overflow:visible; }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="إدارات قطاع الري">
+      <span class="brand-mark">≈</span>
+      <span><b>إدارات قطاع الري</b><small>منصة الأصول والمنشآت المائية</small></span>
+    </a>
+    <nav class="main-nav" aria-label="التنقل الرئيسي">
+      <a href="#top">الرئيسية</a>
+      <a href="#overview">لوحة القطاع</a>
+      <a href="#compare">مقارنة الإدارات</a>
+      <a href="#administrations">الإدارات</a>
+      <a href="#workspace">تفاصيل الإدارة</a>
+    </nav>
+    <div class="header-actions">
+      <button class="install-button find-button" id="findButton" type="button">⌕ بحث شامل</button>
+      <button class="install-button sync-button" id="syncSettingsButton" type="button">إعداد المزامنة</button>
+      <button class="install-button" id="installButton" type="button">تثبيت التطبيق</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">سجل موحّد · هيكل إداري · دعم قرار</span>
+        <h1>كل إدارة.<br><span>كل أصل مائي.</span></h1>
+        <p>بوابة تشغيلية خفيفة تستعرض إدارات قطاع الري وهندساتها وترعها ومنشآتها من مصدر البيانات الفعلي، بدون أطر برمجية ثقيلة أو تمرير صناعي.</p>
+        <div class="hero-actions">
+          <a href="#administrations">استعراض الإدارات <span>←</span></a>
+          <button class="hero-find" id="heroFindButton" type="button">⌕ ابحث في السجل كله</button>
+          <span class="source-note">المصدر: سجل البيانات المرفق · دون إضافة بيانات افتراضية</span>
+        </div>
+        <div class="hierarchy" aria-label="تسلسل البيانات">
+          <span>▥ الإدارة</span><i>←</i><span>⌖ الهندسة</span><i>←</i><span>≈ الترعة</span><i>←</i><span>▰ المنشأة</span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="visual-seal">
+          <small>الموقف الرقمي للسجل</small>
+          <strong id="heroGeocoded">—</strong>
+          <span>منشأة مرتبطة مكانيًا</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics" aria-label="مؤشرات القطاع">
+      <article class="metric"><span class="metric-icon">▥</span><div><strong id="metricAdmins">—</strong><span>إدارة عامة</span></div></article>
+      <article class="metric"><span class="metric-icon">⌖</span><div><strong id="metricEngineers">—</strong><span>هندسة</span></div></article>
+      <article class="metric"><span class="metric-icon">≈</span><div><strong id="metricCanals">—</strong><span>ترعة ومجرى</span></div></article>
+      <article class="metric"><span class="metric-icon">▰</span><div><strong id="metricAssets">—</strong><span>سجل منشأة فريد</span></div></article>
+    </section>
+
+    <section class="digitization-strip" aria-label="موقف رقمنة البيانات">
+      <article><b>رقمنة شاملة للسجل</b><span>كل سجل قائم أو جديد له معرّف ثابت ومسار تحديث ومراجعة.</span></article>
+      <article><strong id="digitizedAssets">—</strong><span>منشأة قائمة مرقمنة</span></article>
+      <article><strong id="digitizedCanals">—</strong><span>ترعة قائمة بأورنيك رقمي</span></article>
+      <article><strong id="centralRecords">—</strong><span>سجل مركزي مضاف أو محدّث</span></article>
+      <article><strong id="pendingRecords">—</strong><span>تعديل ينتظر المزامنة</span></article>
+    </section>
+
+    <section class="section" id="overview">
+      <div class="section-head">
+        <div><span class="eyebrow">الموقف القطاعي</span><h2>قراءة تنفيذية من مصدر واحد</h2><p>مؤشرات محسوبة مباشرة من السجل المرفق بعد إزالة التكرارات المطابقة.</p></div>
+        <div class="status-group">
+          <span class="status loading" id="dataStatus">جارٍ تحميل البيانات</span>
+          <button class="status offline" id="syncStatus" type="button">المزامنة غير مفعّلة</button>
+        </div>
+      </div>
+      <div class="overview-grid">
+        <article class="panel">
+          <div class="panel-title"><div><h3>المنشآت حسب التصنيف</h3><small>تصنيف مستنتج من الاسم والنوع المسجلين</small></div></div>
+          <div class="bar-list" id="typeDistribution"><div class="loading-card"><div><div class="spinner"></div>تحميل التصنيفات…</div></div></div>
+        </article>
+        <article class="panel">
+          <div class="panel-title"><div><h3>أكبر الإدارات</h3><small>حسب عدد سجلات المنشآت</small></div></div>
+          <div class="rank-list" id="adminRanking"><div class="loading-card"><div><div class="spinner"></div>تحميل الترتيب…</div></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="compare">
+      <div class="section-head">
+        <div><span class="eyebrow">مقارنة قطاعية</span><h2>لوحة مقارنة الإدارات</h2><p>كل الإدارات العامة جنبًا إلى جنب بمؤشرات الحجم واكتمال البيانات. اضغط على رأس أي عمود للترتيب به، وعلى اسم الإدارة لفتح بطاقتها.</p></div>
+        <div class="admin-tools">
+          <button class="install-button" id="exportCompare" type="button">تصدير المقارنة CSV</button>
+        </div>
+      </div>
+      <div class="compare-lead" id="compareLead"></div>
+      <div class="compare-wrap" id="compareTable">
+        <div class="loading-card"><div><div class="spinner"></div>جارٍ إعداد المقارنة…</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="administrations">
+      <div class="section-head">
+        <div><span class="eyebrow">الدليل الإداري</span><h2>الإدارات العامة</h2><p>اختر إدارة لعرض هندساتها وترعها ومنشآتها بالتفصيل.</p></div>
+        <div class="admin-tools">
+          <label class="search"><b>⌕</b><input id="adminSearch" type="search" placeholder="ابحث باسم الإدارة أو المحافظة…" autocomplete="off"></label>
+        </div>
+      </div>
+      <div class="admin-grid" id="adminGrid">
+        <div class="loading-card"><div><div class="spinner"></div>جارٍ إعداد بطاقات الإدارات…</div></div>
+      </div>
+    </section>
+
+    <section class="workspace" id="workspace" hidden tabindex="-1">
+      <div class="workspace-shell">
+        <div class="workspace-head">
+          <div><span class="eyebrow">بطاقة الإدارة التشغيلية</span><h2 id="workspaceTitle">—</h2><p id="workspaceSubtitle">—</p></div>
+          <div class="workspace-actions">
+            <button id="addAsset" type="button">إضافة منشأة</button>
+            <button id="exportCsv" type="button">تصدير CSV</button>
+            <button id="printAdmin" type="button">طباعة التقرير</button>
+          </div>
+        </div>
+        <div class="workspace-metrics">
+          <article><strong id="wsEngineers">—</strong><span>هندسة</span></article>
+          <article><strong id="wsCanals">—</strong><span>ترعة ومجرى</span></article>
+          <article><strong id="wsAssets">—</strong><span>منشأة</span></article>
+          <article><strong id="wsReadiness">—</strong><span>جاهزية السجل</span></article>
+        </div>
+        <div class="tabs" role="tablist" aria-label="وحدات الإدارة">
+          <button class="tab" role="tab" aria-selected="true" data-tab="structure">الهيكل الإداري</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="assets">الكباري والمنشآت</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="coverage">التغطيات</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="property">الأملاك</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="canal_profile">أورنيك الترع</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="license">التراخيص</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="violation">محاضر المخالفات</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="removal_decision">قرارات الإزالة</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="human_resource">الموارد البشرية</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="vehicle_equipment">السيارات والمعدات</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="lined_canal">الترع المبطنة</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="quality">جودة البيانات</button>
+        </div>
+
+        <section class="tab-panel" data-panel="structure">
+          <div class="structure">
+            <aside class="side-list"><h3>الهندسات التابعة</h3><div class="side-list-container" id="engineerList"></div></aside>
+            <aside class="side-list"><h3>الترع والمجاري</h3><div class="side-list-container" id="canalList"></div></aside>
+            <div class="table-panel">
+              <div class="table-head"><div><h3>سجلات المنشآت</h3><p id="structureCaption">اختر هندسة أو ترعة لتضييق النطاق.</p></div></div>
+              <div id="structureTable"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-panel" data-panel="assets" hidden>
+          <div class="table-panel">
+            <div class="table-head">
+              <div><h3>الكباري والمنشآت المائية</h3><p>بحث وتصنيف داخل الإدارة المختارة.</p></div>
+              <div class="filters">
+                <input id="assetSearch" type="search" placeholder="اسم المنشأة أو الترعة…">
+                <select id="assetType"><option value="">كل التصنيفات</option></select>
+              </div>
+            </div>
+            <div id="assetsTable"></div>
+          </div>
+        </section>
+
+        <section class="tab-panel" data-panel="coverage" hidden><div class="records-module" data-record-module="coverage"></div></section>
+
+        <section class="tab-panel" data-panel="property" hidden><div class="records-module" data-record-module="property"></div></section>
+
+        <section class="tab-panel" data-panel="canal_profile" hidden><div class="records-module" data-record-module="canal_profile"></div></section>
+        <section class="tab-panel" data-panel="license" hidden><div class="records-module" data-record-module="license"></div></section>
+        <section class="tab-panel" data-panel="violation" hidden><div class="records-module" data-record-module="violation"></div></section>
+        <section class="tab-panel" data-panel="removal_decision" hidden><div class="records-module" data-record-module="removal_decision"></div></section>
+        <section class="tab-panel" data-panel="human_resource" hidden><div class="records-module" data-record-module="human_resource"></div></section>
+        <section class="tab-panel" data-panel="vehicle_equipment" hidden><div class="records-module" data-record-module="vehicle_equipment"></div></section>
+        <section class="tab-panel" data-panel="lined_canal" hidden><div class="records-module" data-record-module="lined_canal"></div></section>
+
+        <section class="tab-panel" data-panel="quality" hidden>
+          <div class="quality-grid" id="qualityGrid"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="find-dialog" id="findDialog">
+    <div class="dialog-body">
+      <h2>بحث شامل في السجل</h2>
+      <p>بحث واحد يغطي المنشآت والترع والهندسات والإدارات معًا، دون معرفة التبعية مسبقًا. يقبل أيضًا كود السجل مثل AST-XXXXXXXX.</p>
+      <div class="find-field"><b>⌕</b><input id="findInput" type="search" placeholder="اسم منشأة أو ترعة أو هندسة أو كود سجل…" autocomplete="off" spellcheck="false"></div>
+      <div class="find-results" id="findResults"><div class="find-empty">اكتب حرفين على الأقل لبدء البحث.</div></div>
+      <div class="dialog-actions"><button class="secondary-button" id="findClose" type="button">إغلاق</button></div>
+    </div>
+  </dialog>
+
+  <dialog id="installDialog">
+    <div class="dialog-body">
+      <h2>تثبيت «إدارات قطاع الري»</h2>
+      <p>افتح الرابط في Chrome مباشرة ثم اتبع الخطوات التالية.</p>
+      <div class="install-steps">
+        <div class="install-step"><b>١</b><span>افتح قائمة المتصفح ⋮.</span></div>
+        <div class="install-step"><b>٢</b><span>اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</span></div>
+        <div class="install-step"><b>٣</b><span>وافق على الإضافة، ثم افتح التطبيق من الأيقونة الجديدة.</span></div>
+      </div>
+      <button class="primary-button" id="closeInstallDialog" type="button" style="width:100%;margin-top:16px">فهمت</button>
+    </div>
+  </dialog>
+
+  <dialog id="syncDialog">
+    <form class="dialog-body" id="syncForm">
+      <h2>إعداد المزامنة المركزية</h2>
+      <p>يربط هذا الجهاز بقاعدة Google Sheets، ويحفظ التعديلات محليًا عند انقطاع الإنترنت ثم يرسلها تلقائيًا عند عودته.</p>
+      <div class="form-grid">
+        <label class="field full"><span>رابط Google Apps Script Web app</span><input id="syncEndpoint" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/.../exec" required></label>
+        <label class="field"><span>مفتاح المزامنة</span><input id="syncKey" type="password" autocomplete="current-password" required></label>
+        <label class="field"><span>اسم المستخدم في سجل المراجعة</span><input id="syncUser" type="text" maxlength="120" placeholder="مثال: م. محسن عبد الرشيد" required></label>
+      </div>
+      <div class="dialog-note" id="syncDialogNote">قاعدة البيانات: «قاعدة مزامنة تطبيق إدارات قطاع الري».</div>
+      <div class="dialog-actions">
+        <button class="secondary-button" id="syncClose" type="button">إغلاق</button>
+        <button class="secondary-button" id="syncNow" type="button">اختبار الاتصال</button>
+        <button class="primary-button" type="submit">حفظ ومزامنة</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dialog-wide" id="assetDialog">
+    <form class="dialog-body" id="assetForm">
+      <h2 id="assetDialogTitle">تعديل بيانات المنشأة</h2>
+      <p>يُحفظ التعديل في الجهاز فورًا، ثم يُرسل إلى Google Sheets ويظهر على كل الأجهزة المتصلة.</p>
+      <input id="assetRecordId" type="hidden">
+      <div class="form-grid">
+        <label class="field full"><span>كود السجل</span><div class="record-code-field"><input id="assetRecordCode" type="text" readonly><button class="record-code-button" id="copyAssetRecordCode" type="button">نسخ الكود</button></div></label>
+        <label class="field"><span>الإدارة *</span><input id="editAdm" type="text" maxlength="240" required></label>
+        <label class="field"><span>الهندسة *</span><input id="editEng" type="text" maxlength="240" required></label>
+        <label class="field"><span>الترعة أو المجرى *</span><input id="editCanal" type="text" maxlength="240" required></label>
+        <label class="field"><span>المحافظة</span><input id="editGov" type="text" maxlength="160"></label>
+        <label class="field full"><span>اسم المنشأة *</span><input id="editName" type="text" maxlength="300" required></label>
+        <label class="field"><span>النوع</span><input id="editType" type="text" maxlength="160"></label>
+        <label class="field"><span>الاستخدام</span><input id="editUse" type="text" maxlength="160"></label>
+        <label class="field"><span>المادة</span><input id="editMaterial" type="text" maxlength="160"></label>
+        <label class="field"><span>الكيلومتر</span><input id="editKm" type="number" min="0" max="100000" step="any" inputmode="decimal"></label>
+        <label class="field"><span>الطول (م)</span><input id="editLength" type="number" min="0" max="100000" step="any" inputmode="decimal"></label>
+        <label class="field"><span>العرض (م)</span><input id="editWidth" type="number" min="0" max="100000" step="any" inputmode="decimal"></label>
+        <label class="field"><span>خط الطول</span><input id="editLon" type="number" min="-180" max="180" step="any" inputmode="decimal"></label>
+        <label class="field"><span>دائرة العرض</span><input id="editLat" type="number" min="-90" max="90" step="any" inputmode="decimal"></label>
+      </div>
+      <div class="dialog-note" id="assetDialogNote">الحقول المعلّمة بنجمة مطلوبة.</div>
+      <div class="dialog-actions">
+        <button class="danger-button" id="deleteAsset" type="button">حذف مع إمكانية المراجعة</button>
+        <button class="secondary-button" id="assetClose" type="button">إلغاء</button>
+        <button class="primary-button" type="submit">حفظ التعديل</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dialog-wide" id="recordDialog">
+    <form class="dialog-body" id="recordForm">
+      <h2 id="recordDialogTitle">إضافة سجل</h2>
+      <p>كل سجل مرتبط بالإدارة الحالية، ويُحفظ على الجهاز ثم يتزامن مع Google Sheets وباقي الأجهزة.</p>
+      <div class="form-grid" id="recordFields"></div>
+      <div class="dialog-note" id="recordDialogNote">الحقول المعلّمة بنجمة مطلوبة.</div>
+      <div class="dialog-actions">
+        <button class="danger-button" id="deleteRecord" type="button">حذف مع الاحتفاظ بالمراجعة</button>
+        <button class="secondary-button" id="recordClose" type="button">إلغاء</button>
+        <button class="primary-button" type="submit">حفظ السجل</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.0 · ملف واحد · بحث شامل ولوحة مقارنة الإدارات</small></footer>
+
+  <script>
+/* ===== وحدة المزامنة — IrrigationSync ===== */
+(function (root) {
+  "use strict";
+
+  const KEYS = {
+    config: "irrigation_sync_config_v1",
+    remote: "irrigation_sync_remote_v1",
+    pending: "irrigation_sync_pending_v1",
+    conflicts: "irrigation_sync_conflicts_v1",
+    cursor: "irrigation_sync_cursor_v1",
+    device: "irrigation_sync_device_v1",
+  };
+  const DEFAULT_ENDPOINT = "https://script.google.com/macros/s/AKfycbzhH_U8JxPr-VK_ZCtYI_sbHslOlXiytTaQB_IhL57Zxysb2mg3tBV_27ncjOX8KO0-8A/exec";
+
+  function safeParse(value, fallback) {
+    try {
+      return value ? JSON.parse(value) : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function makeId(prefix) {
+    const uuid = root.crypto && typeof root.crypto.randomUUID === "function"
+      ? root.crypto.randomUUID()
+      : Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
+    return prefix + "-" + uuid;
+  }
+
+  function fnv1a64(text) {
+    let hash = 14695981039346656037n;
+    const prime = 1099511628211n;
+    for (let index = 0; index < text.length; index += 1) {
+      hash ^= BigInt(text.charCodeAt(index));
+      hash = BigInt.asUintN(64, hash * prime);
+    }
+    return hash.toString(36);
+  }
+
+  function stableRecordId(asset) {
+    const identity = [
+      asset.adm, asset.eng, asset.canal, asset.name,
+      asset.km ?? "", asset.lon ?? "", asset.lat ?? "",
+    ].join("|").normalize("NFKC");
+    return "asset-" + fnv1a64(identity);
+  }
+
+  function stableEntityRecordId(entityType, parts) {
+    const cleanType = cleanEntityType(entityType);
+    const identity = (Array.isArray(parts) ? parts : [parts])
+      .map((part) => String(part == null ? "" : part).trim())
+      .join("|")
+      .normalize("NFKC");
+    return cleanType + "-" + fnv1a64(identity);
+  }
+
+  function displayRecordCode(recordId, entityType) {
+      const prefixes = {
+        asset: "AST",
+        vehicle_equipment: "FLE",
+        coverage: "COV",
+        property: "PRP",
+      canal_profile: "CNL",
+      license: "LIC",
+      violation: "VIO",
+      removal_decision: "REM",
+      human_resource: "HR",
+      lined_canal: "LIN",
+    };
+    const cleanType = cleanEntityType(entityType || "asset");
+    const suffix = fnv1a64(String(recordId || ""))
+      .slice(-8)
+      .toUpperCase()
+      .padStart(8, "0");
+    return (prefixes[cleanType] || "REC") + "-" + suffix;
+  }
+
+  function cleanEntityType(value) {
+    const entityType = String(value || "asset").trim();
+    return /^[a-z][a-z0-9_]{0,39}$/.test(entityType) ? entityType : "asset";
+  }
+
+  function normalizeChange(change) {
+    return {
+      changeId: String(change.changeId || ""),
+      recordId: String(change.recordId || ""),
+      operation: change.operation === "delete" ? "delete" : "upsert",
+      entityType: cleanEntityType(change.entityType),
+      payload: change.payload && typeof change.payload === "object" ? change.payload : {},
+      baseVersion: Number(change.baseVersion) || 0,
+      version: Number(change.version) || 0,
+      updatedAt: String(change.updatedAt || ""),
+      updatedBy: String(change.updatedBy || ""),
+      deviceId: String(change.deviceId || ""),
+      deleted: Boolean(change.deleted || change.operation === "delete"),
+      checksum: String(change.checksum || ""),
+    };
+  }
+
+  function createSyncManager(options) {
+    const storage = options.storage || root.localStorage;
+    const fetchImpl = options.fetch || root.fetch.bind(root);
+    const onStatus = options.onStatus || function () {};
+    const onDataChange = options.onDataChange || function () {};
+    const isOnline = options.isOnline || function () {
+      return !root.navigator || root.navigator.onLine !== false;
+    };
+
+    const read = (key, fallback) => safeParse(storage.getItem(key), fallback);
+    const write = (key, value) => storage.setItem(key, JSON.stringify(value));
+    let activeRequest = null;
+
+    let deviceId = storage.getItem(KEYS.device);
+    if (!deviceId) {
+      deviceId = makeId("device");
+      storage.setItem(KEYS.device, deviceId);
+    }
+
+    function getConfig() {
+      return Object.assign({ endpoint: DEFAULT_ENDPOINT, key: "", user: "" }, read(KEYS.config, {}));
+    }
+
+    function saveConfig(config) {
+      const endpoint = String(config.endpoint || "").trim().replace(/\/+$/, "");
+      if (endpoint && (!/^https:\/\/script\.google\.com\/macros\/s\//.test(endpoint) || !/\/exec$/.test(endpoint))) {
+        throw new Error("رابط Web app غير صحيح؛ يجب أن يبدأ بـ script.google.com وينتهي بـ /exec");
+      }
+      const clean = {
+        endpoint,
+        key: String(config.key || "").trim(),
+        user: String(config.user || "").trim(),
+      };
+      write(KEYS.config, clean);
+      return clean;
+    }
+
+    function isConfigured() {
+      const config = getConfig();
+      return Boolean(config.endpoint && config.key && config.user);
+    }
+
+    function getRemoteMap() {
+      return read(KEYS.remote, {});
+    }
+
+    function getPending(entityType) {
+      const changes = read(KEYS.pending, []).map(normalizeChange);
+      if (!entityType) return changes;
+      const cleanType = cleanEntityType(entityType);
+      return changes.filter((change) => change.entityType === cleanType);
+    }
+
+    function getConflicts() {
+      return read(KEYS.conflicts, []);
+    }
+
+    function pendingCount() {
+      return getPending().length;
+    }
+
+    function applyOverlay(baseAssets, entityType) {
+      const cleanType = cleanEntityType(entityType || "asset");
+      const records = new Map(baseAssets.map((asset) => [asset.recordId, Object.assign({}, asset)]));
+      const orderedChanges = [
+        ...Object.values(getRemoteMap()).map(normalizeChange),
+        ...getPending(),
+      ].filter((change) => change.entityType === cleanType);
+      for (const change of orderedChanges) {
+        if (!change.recordId) continue;
+        if (change.deleted) {
+          records.delete(change.recordId);
+          continue;
+        }
+        const previous = records.get(change.recordId) || {};
+        records.set(change.recordId, Object.assign({}, previous, change.payload, {
+          recordId: change.recordId,
+          entityType: cleanType,
+          version: change.version || previous.version || 0,
+          updatedAt: change.updatedAt || previous.updatedAt || "",
+          updatedBy: change.updatedBy || previous.updatedBy || "",
+          locallyPending: !change.version,
+        }));
+      }
+      return [...records.values()];
+    }
+
+    function getRecords(entityType) {
+      return applyOverlay([], entityType);
+    }
+
+    function remoteCount(entityType) {
+      const cleanType = entityType ? cleanEntityType(entityType) : "";
+      return Object.values(getRemoteMap())
+        .map(normalizeChange)
+        .filter((change) => !change.deleted && (!cleanType || change.entityType === cleanType))
+        .length;
+    }
+
+    function queue(operation, asset, entityType) {
+      const config = getConfig();
+      const remote = getRemoteMap();
+      const pending = getPending();
+      const cleanType = cleanEntityType(entityType || asset.entityType || "asset");
+      const recordId = asset.recordId || makeId(cleanType);
+      const priorPending = pending.find((item) => item.recordId === recordId);
+      const change = normalizeChange({
+        changeId: priorPending ? priorPending.changeId : makeId("change"),
+        recordId,
+        operation,
+        entityType: cleanType,
+        payload: Object.assign({}, asset, { recordId, entityType: cleanType }),
+        baseVersion: priorPending ? priorPending.baseVersion : Number(remote[recordId]?.version) || Number(asset.version) || 0,
+        updatedAt: new Date().toISOString(),
+        updatedBy: config.user || "مستخدم محلي",
+        deviceId,
+        deleted: operation === "delete",
+      });
+      const next = pending.filter((item) => item.recordId !== recordId);
+      next.push(change);
+      write(KEYS.pending, next);
+      onStatus({ state: isOnline() ? "pending" : "offline", pending: next.length });
+      onDataChange();
+      return change;
+    }
+
+    function queueUpsert(asset, entityType) {
+      return queue("upsert", asset, entityType);
+    }
+
+    function queueDelete(asset, entityType) {
+      return queue("delete", asset, entityType);
+    }
+
+    async function request(payload, timeoutMs) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs || 18000);
+      try {
+        const response = await fetchImpl(getConfig().endpoint, {
+          method: "POST",
+          redirect: "follow",
+          cache: "no-store",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error("فشل الاتصال بخدمة المزامنة");
+        const result = await response.json();
+        if (!result || result.ok !== true) throw new Error(result?.error || "استجابة مزامنة غير صالحة");
+        return result;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    async function sync(forceFull) {
+      if (activeRequest) return activeRequest;
+      if (!isConfigured()) {
+        onStatus({ state: "setup", pending: pendingCount() });
+        return { ok: false, setup: true };
+      }
+      if (!isOnline()) {
+        onStatus({ state: "offline", pending: pendingCount() });
+        return { ok: false, offline: true };
+      }
+
+      const config = getConfig();
+      const pending = getPending();
+      onStatus({ state: "syncing", pending: pending.length });
+      activeRequest = request({
+        action: "sync",
+        apiVersion: 1,
+        key: config.key,
+        user: config.user,
+        deviceId,
+        since: forceFull ? "" : (storage.getItem(KEYS.cursor) || ""),
+        changes: pending,
+      }).then((result) => {
+        const remote = getRemoteMap();
+        for (const item of result.changes || []) {
+          const change = normalizeChange(item);
+          if (change.recordId) remote[change.recordId] = change;
+        }
+        for (const item of result.accepted || []) {
+          const change = normalizeChange(item);
+          if (change.recordId) remote[change.recordId] = change;
+        }
+        for (const item of result.conflicts || []) {
+          if (item.server && item.server.recordId) {
+            const change = normalizeChange(item.server);
+            remote[change.recordId] = change;
+          }
+        }
+        write(KEYS.remote, remote);
+
+        const acceptedIds = new Set((result.accepted || []).map((item) => item.changeId));
+        const conflictIds = new Set((result.conflicts || []).map((item) => item.changeId));
+        write(KEYS.pending, pending.filter((item) => !acceptedIds.has(item.changeId) && !conflictIds.has(item.changeId)));
+        if ((result.conflicts || []).length) {
+          write(KEYS.conflicts, [...getConflicts(), ...result.conflicts].slice(-100));
+        }
+        if (result.serverTime) storage.setItem(KEYS.cursor, result.serverTime);
+        const remaining = pendingCount();
+        onStatus({
+          state: (result.conflicts || []).length ? "conflict" : "synced",
+          pending: remaining,
+          conflicts: (result.conflicts || []).length,
+          at: result.serverTime,
+        });
+        onDataChange();
+        return result;
+      }).catch((error) => {
+        onStatus({ state: "error", pending: pendingCount(), error: error.message });
+        throw error;
+      }).finally(() => {
+        activeRequest = null;
+      });
+      return activeRequest;
+    }
+
+    function clearConflicts() {
+      write(KEYS.conflicts, []);
+    }
+
+    return {
+      deviceId,
+      stableRecordId,
+      makeRecordId: (entityType) => makeId(cleanEntityType(entityType)),
+      getConfig,
+      saveConfig,
+      isConfigured,
+      getPending,
+      getConflicts,
+      pendingCount,
+      applyOverlay,
+      getRecords,
+      remoteCount,
+      queueUpsert,
+      queueDelete,
+      clearConflicts,
+      sync,
+    };
+  }
+
+  root.IrrigationSync = { createSyncManager, stableRecordId, stableEntityRecordId, displayRecordCode };
+})(typeof window !== "undefined" ? window : globalThis);
+  </script>
+
+  <script>
+/* ===== وحدات السجلات — IrrigationModules ===== */
+(function (root) {
+  "use strict";
+
+  const number = new Intl.NumberFormat("ar-EG", { maximumFractionDigits: 3 });
+
+  const common = {
+    eng: { key: "eng", label: "الهندسة التابعة", type: "text", maxLength: 240 },
+    canal: { key: "canal", label: "الترعة أو المجرى", type: "text", maxLength: 240 },
+    notes: { key: "notes", label: "ملاحظات", type: "textarea", maxLength: 1200, full: true },
+    documentUrl: { key: "documentUrl", label: "رابط المستند أو الصور على Google Drive", type: "url", maxLength: 700, full: true },
+  };
+
+  const MODULES = {
+    vehicle_equipment: {
+      title: "السيارات والمعدات",
+      singular: "سيارة أو معدة",
+      icon: "⚙",
+      description: "سجل الأسطول والمعدات وحالتها الفنية والتشغيلية والتراخيص والصيانة والعهدة.",
+      keyField: "assetName",
+      columns: ["assetName", "assetType", "plateNumber", "eng", "custodian", "technicalCondition", "status", "licenseExpiry"],
+      fields: [
+        { key: "assetName", label: "اسم أو وصف السيارة/المعدة *", type: "text", required: true, maxLength: 300, full: true },
+        { key: "assetType", label: "نوع الأصل *", type: "select", required: true, options: ["سيارة ملاكي", "سيارة نقل", "ربع نقل", "ميكروباص", "أتوبيس", "دراجة نارية", "حفار", "لودر", "ونش", "جرار", "مقطورة", "مولد كهرباء", "طلمبة", "حفار برمائي", "لنش/قارب", "معدة أخرى"] },
+        { key: "fleetNumber", label: "رقم الأسطول أو العهدة", type: "text", maxLength: 120 },
+        { key: "eng", label: "الهندسة أو الوحدة التابعة", type: "text", maxLength: 240 },
+        { key: "workLocation", label: "موقع العمل الحالي", type: "text", maxLength: 300 },
+        { key: "plateNumber", label: "رقم اللوحات", type: "text", maxLength: 100 },
+        { key: "chassisNumber", label: "رقم الشاسيه", type: "text", maxLength: 160 },
+        { key: "engineNumber", label: "رقم المحرك", type: "text", maxLength: 160 },
+        { key: "manufacturer", label: "الماركة/الشركة المصنعة", type: "text", maxLength: 160 },
+        { key: "model", label: "الموديل", type: "text", maxLength: 160 },
+        { key: "manufactureYear", label: "سنة الصنع", type: "number", min: 1900, max: 2200, step: 1 },
+        { key: "ownershipType", label: "نوع الحيازة", type: "select", options: ["مملوكة", "عهدة", "مؤجرة", "منتدبة", "متبرع بها", "أخرى"] },
+        { key: "fuelType", label: "نوع الوقود/الطاقة", type: "select", options: ["بنزين", "سولار", "غاز طبيعي", "كهرباء", "هجين", "غير منطبق"] },
+        { key: "powerOrCapacity", label: "القدرة أو الحمولة", type: "text", maxLength: 160 },
+        { key: "odometerKm", label: "عداد المسافة (كم)", type: "number", min: 0, max: 1000000000, step: "any" },
+        { key: "operatingHours", label: "ساعات التشغيل", type: "number", min: 0, max: 1000000000, step: "any" },
+        { key: "custodian", label: "السائق أو مسؤول العهدة", type: "text", maxLength: 240 },
+        { key: "licenseNumber", label: "رقم الترخيص", type: "text", maxLength: 120 },
+        { key: "licenseExpiry", label: "انتهاء الترخيص", type: "date" },
+        { key: "insuranceExpiry", label: "انتهاء التأمين", type: "date" },
+        { key: "lastMaintenanceDate", label: "تاريخ آخر صيانة", type: "date" },
+        { key: "nextMaintenanceDate", label: "موعد الصيانة القادمة", type: "date" },
+        { key: "technicalCondition", label: "الحالة الفنية", type: "select", options: ["ممتازة", "جيدة", "متوسطة", "تحتاج صيانة", "عاطلة", "تكهين"] },
+        { key: "status", label: "الحالة التشغيلية", type: "select", options: ["تعمل", "احتياطي", "في الصيانة", "متوقفة", "خارج الخدمة", "مكهّنة"] },
+        { key: "latitude", label: "دائرة العرض", type: "number", min: -90, max: 90, step: "any" },
+        { key: "longitude", label: "خط الطول", type: "number", min: -180, max: 180, step: "any" },
+        common.documentUrl,
+        common.notes,
+      ],
+    },
+    coverage: {
+      title: "التغطيات",
+      singular: "تغطية",
+      icon: "▤",
+      description: "سجل رقمي كامل للتغطيات القائمة والمقترحة وحالتها الإنشائية والتشغيلية.",
+      keyField: "coverageName",
+      columns: ["coverageName", "canalName", "eng", "startKm", "lengthM", "coverageType", "structuralCondition", "status"],
+      fields: [
+        { key: "coverageName", label: "اسم أو وصف التغطية *", type: "text", required: true, maxLength: 300, full: true },
+        { key: "canalName", label: "الترعة أو المجرى *", type: "text", required: true, maxLength: 240 },
+        { key: "eng", label: "الهندسة التابعة *", type: "text", required: true, maxLength: 240 },
+        { key: "startKm", label: "بداية التغطية (كم)", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "endKm", label: "نهاية التغطية (كم)", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "lengthM", label: "الطول (م)", type: "number", min: 0, max: 10000000, step: "any" },
+        { key: "widthM", label: "العرض أو الفتحة (م)", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "coverageType", label: "نوع التغطية", type: "select", options: ["بلاطات خرسانية", "مواسير", "برابخ", "صندوقية", "مسلحة", "أخرى"] },
+        { key: "purpose", label: "الغرض", type: "select", options: ["مرور سيارات", "مشاة", "توسعة طريق", "خدمات", "حماية", "أخرى"] },
+        { key: "material", label: "المادة الإنشائية", type: "text", maxLength: 180 },
+        { key: "executionYear", label: "سنة التنفيذ", type: "number", min: 1900, max: 2200, step: 1 },
+        { key: "structuralCondition", label: "الحالة الإنشائية", type: "select", options: ["جيدة", "متوسطة", "تحتاج صيانة", "خطرة", "غير مقيمة"] },
+        { key: "status", label: "الحالة التشغيلية", type: "select", options: ["عاملة", "متوقفة", "تحت التنفيذ", "مقترحة", "ملغاة"] },
+        { key: "lastInspectionDate", label: "تاريخ آخر معاينة", type: "date" },
+        { key: "latitude", label: "دائرة العرض", type: "number", min: -90, max: 90, step: "any" },
+        { key: "longitude", label: "خط الطول", type: "number", min: -180, max: 180, step: "any" },
+        common.documentUrl,
+        common.notes,
+      ],
+    },
+    property: {
+      title: "الأملاك",
+      singular: "سجل ملكية",
+      icon: "◇",
+      description: "الأراضي والمباني والمنافع العامة والموقف القانوني والتعديات المرتبطة بها.",
+      keyField: "propertyNumber",
+      columns: ["propertyNumber", "propertyType", "locationDescription", "areaSqm", "legalStatus", "encroachmentStatus"],
+      fields: [
+        { key: "propertyNumber", label: "رقم سجل الملكية *", type: "text", required: true, maxLength: 120 },
+        { key: "propertyType", label: "نوع الأصل *", type: "select", required: true, options: ["أرض", "مبنى إداري", "استراحة", "مخزن", "ورشة", "منفعة عامة", "حرم ترعة", "أخرى"] },
+        common.eng,
+        common.canal,
+        { key: "locationDescription", label: "وصف الموقع *", type: "textarea", required: true, maxLength: 700, full: true },
+        { key: "areaSqm", label: "المساحة (م²)", type: "number", min: 0, max: 1000000000, step: "any" },
+        { key: "areaFeddan", label: "المساحة (فدان)", type: "number", min: 0, max: 10000000, step: "any" },
+        { key: "deedNumber", label: "رقم سند الملكية أو التخصيص", type: "text", maxLength: 160 },
+        { key: "currentUse", label: "الاستخدام الحالي", type: "text", maxLength: 240 },
+        { key: "occupant", label: "الشاغل أو المنتفع", type: "text", maxLength: 240 },
+        { key: "legalStatus", label: "الموقف القانوني", type: "select", options: ["ملكية مثبتة", "تخصيص", "انتفاع", "جارٍ التسجيل", "نزاع", "غير محدد"] },
+        { key: "encroachmentStatus", label: "موقف التعدي", type: "select", options: ["لا يوجد", "تعدٍ قائم", "تم تحرير محضر", "صدر قرار إزالة", "تمت الإزالة", "قيد المتابعة"] },
+        { key: "estimatedValue", label: "القيمة التقديرية (جنيه)", type: "number", min: 0, max: 1000000000000, step: "any" },
+        { key: "latitude", label: "دائرة العرض", type: "number", min: -90, max: 90, step: "any" },
+        { key: "longitude", label: "خط الطول", type: "number", min: -180, max: 180, step: "any" },
+        common.documentUrl,
+        common.notes,
+      ],
+    },
+    canal_profile: {
+      title: "أورنيك الترع",
+      singular: "أورنيك ترعة",
+      icon: "≈",
+      description: "البيانات الهندسية والتشغيلية الكاملة لكل ترعة داخل الإدارة.",
+      keyField: "canalName",
+      columns: ["canalName", "eng", "canalClass", "lengthKm", "designDischarge", "operationalStatus"],
+      fields: [
+        { key: "canalName", label: "اسم الترعة *", type: "text", required: true, maxLength: 240, full: true },
+        { key: "canalCode", label: "كود الترعة", type: "text", maxLength: 80 },
+        common.eng,
+        { key: "canalClass", label: "تصنيف الترعة", type: "select", options: ["رياح", "ترعة رئيسية", "ترعة فرعية", "ترعة توزيع", "مسقى عامة", "مجرى آخر"] },
+        { key: "sourceCanal", label: "المصدر أو المجرى الآخذ منه", type: "text", maxLength: 240 },
+        { key: "startKm", label: "بداية الترعة (كم)", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "endKm", label: "نهاية الترعة (كم)", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "lengthKm", label: "الطول الكلي (كم)", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "designDischarge", label: "التصرف التصميمي (م³/ث)", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "currentDischarge", label: "التصرف الحالي (م³/ث)", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "bedWidthDesign", label: "عرض القاع التصميمي (م)", type: "number", min: 0, max: 10000, step: "any" },
+        { key: "bedWidthCurrent", label: "عرض القاع الحالي (م)", type: "number", min: 0, max: 10000, step: "any" },
+        { key: "bedLevelStart", label: "منسوب القاع عند البداية (م)", type: "number", min: -100, max: 1000, step: "any" },
+        { key: "bedLevelEnd", label: "منسوب القاع عند النهاية (م)", type: "number", min: -100, max: 1000, step: "any" },
+        { key: "waterLevelUpstream", label: "منسوب المياه أمام الفم (م)", type: "number", min: -100, max: 1000, step: "any" },
+        { key: "waterLevelDownstream", label: "منسوب المياه عند النهاية (م)", type: "number", min: -100, max: 1000, step: "any" },
+        { key: "bankLevelRight", label: "منسوب الجسر الأيمن (م)", type: "number", min: -100, max: 1000, step: "any" },
+        { key: "bankLevelLeft", label: "منسوب الجسر الأيسر (م)", type: "number", min: -100, max: 1000, step: "any" },
+        { key: "commandAreaFeddan", label: "الزمام المخدوم (فدان)", type: "number", min: 0, max: 10000000, step: "any" },
+        { key: "servedVillages", label: "القرى والمناطق المخدومة", type: "textarea", maxLength: 800, full: true },
+        { key: "liningStatus", label: "موقف التأهيل أو التبطين", type: "select", options: ["غير مبطنة", "مبطنة جزئيًا", "مبطنة بالكامل", "جارٍ التنفيذ", "بحاجة إلى تأهيل"] },
+        { key: "linedLengthKm", label: "الطول المبطن (كم)", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "operationalStatus", label: "الحالة التشغيلية", type: "select", options: ["تعمل بكفاءة", "تعمل مع ملاحظات", "تحتاج صيانة", "متوقفة مؤقتًا", "خارج الخدمة"] },
+        { key: "lastDredgingDate", label: "تاريخ آخر تطهير", type: "date" },
+        { key: "maintenancePriority", label: "أولوية الصيانة", type: "select", options: ["عاجلة", "مرتفعة", "متوسطة", "منخفضة"] },
+        { key: "latitude", label: "دائرة العرض", type: "number", min: -90, max: 90, step: "any" },
+        { key: "longitude", label: "خط الطول", type: "number", min: -180, max: 180, step: "any" },
+        common.notes,
+      ],
+    },
+    license: {
+      title: "التراخيص",
+      singular: "ترخيص",
+      icon: "▧",
+      description: "تراخيص المآخذ والعبور والانتفاع والأعمال الواقعة على المجاري المائية.",
+      keyField: "licenseNumber",
+      columns: ["licenseNumber", "licenseType", "licenseeName", "canal", "issueDate", "status"],
+      fields: [
+        { key: "licenseNumber", label: "رقم الترخيص *", type: "text", required: true, maxLength: 120 },
+        { key: "licenseType", label: "نوع الترخيص *", type: "select", required: true, options: ["مأخذ مياه", "صرف", "عبور", "كوبري خاص", "تغطية", "انتفاع", "إشغال", "عمل داخل حرم الترعة", "أخرى"] },
+        { key: "licenseeName", label: "اسم المرخص له *", type: "text", required: true, maxLength: 240, full: true },
+        common.eng,
+        common.canal,
+        { key: "km", label: "الكيلومتر", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "bank", label: "الجسر", type: "select", options: ["الأيمن", "الأيسر", "كلا الجسرين", "داخل المجرى"] },
+        { key: "purpose", label: "الغرض من الترخيص", type: "textarea", maxLength: 700, full: true },
+        { key: "issueDate", label: "تاريخ الإصدار", type: "date" },
+        { key: "expiryDate", label: "تاريخ الانتهاء", type: "date" },
+        { key: "fee", label: "القيمة أو الرسوم (جنيه)", type: "number", min: 0, max: 100000000000, step: "any" },
+        { key: "status", label: "حالة الترخيص", type: "select", options: ["ساري", "منتهي", "تحت التجديد", "موقوف", "ملغي", "قيد المراجعة"] },
+        common.documentUrl,
+        common.notes,
+      ],
+    },
+    violation: {
+      title: "محاضر المخالفات",
+      singular: "محضر مخالفة",
+      icon: "⚠",
+      description: "تسجيل المخالفات الميدانية والإجراءات القانونية وموقف المتابعة.",
+      keyField: "reportNumber",
+      columns: ["reportNumber", "reportDate", "offenderName", "violationType", "canal", "legalStatus"],
+      fields: [
+        { key: "reportNumber", label: "رقم المحضر *", type: "text", required: true, maxLength: 120 },
+        { key: "reportDate", label: "تاريخ المحضر *", type: "date", required: true },
+        { key: "offenderName", label: "اسم المخالف", type: "text", maxLength: 240, full: true },
+        common.eng,
+        common.canal,
+        { key: "km", label: "الكيلومتر", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "bank", label: "الجسر أو الموقع", type: "select", options: ["الأيمن", "الأيسر", "كلا الجسرين", "داخل المجرى", "حرم الترعة"] },
+        { key: "violationType", label: "نوع المخالفة *", type: "select", required: true, options: ["ردم", "مبنى", "زراعة", "مأخذ مخالف", "صرف مخالف", "تغطية مخالفة", "إشغال", "تلوث", "قطع جسر", "أخرى"] },
+        { key: "description", label: "وصف المخالفة", type: "textarea", maxLength: 1200, full: true },
+        { key: "area", label: "المساحة أو الأبعاد", type: "text", maxLength: 160 },
+        { key: "inspector", label: "محرر المحضر", type: "text", maxLength: 200 },
+        { key: "legalStatus", label: "الموقف القانوني", type: "select", options: ["تم التحرير", "أُحيل للشؤون القانونية", "أُحيل للنيابة", "صدر قرار إزالة", "تم التصالح", "تمت الإزالة", "محفوظ"] },
+        { key: "estimatedFine", label: "الغرامة أو مقابل الانتفاع", type: "number", min: 0, max: 100000000000, step: "any" },
+        { key: "removalDecisionNo", label: "رقم قرار الإزالة المرتبط", type: "text", maxLength: 120 },
+        common.documentUrl,
+        common.notes,
+      ],
+    },
+    removal_decision: {
+      title: "قرارات الإزالة",
+      singular: "قرار إزالة",
+      icon: "✕",
+      description: "قرارات الإزالة وخطط التنفيذ والتنسيق الأمني وموقف الإغلاق.",
+      keyField: "decisionNumber",
+      columns: ["decisionNumber", "decisionDate", "violationReportNo", "offenderName", "canal", "executionStatus"],
+      fields: [
+        { key: "decisionNumber", label: "رقم قرار الإزالة *", type: "text", required: true, maxLength: 120 },
+        { key: "decisionDate", label: "تاريخ القرار *", type: "date", required: true },
+        { key: "violationReportNo", label: "رقم محضر المخالفة", type: "text", maxLength: 120 },
+        { key: "offenderName", label: "اسم المخالف", type: "text", maxLength: 240, full: true },
+        common.eng,
+        common.canal,
+        { key: "km", label: "الكيلومتر", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "issuingAuthority", label: "جهة إصدار القرار", type: "text", maxLength: 240 },
+        { key: "executionStatus", label: "موقف التنفيذ", type: "select", options: ["لم يُدرج", "مدرج بالخطة", "تم التنسيق", "جارٍ التنفيذ", "نُفذ كليًا", "نُفذ جزئيًا", "متعذر التنفيذ", "موقوف قضائيًا"] },
+        { key: "executionDate", label: "تاريخ التنفيذ", type: "date" },
+        { key: "executionCost", label: "تكلفة التنفيذ (جنيه)", type: "number", min: 0, max: 100000000000, step: "any" },
+        { key: "policeCoordination", label: "موقف التنسيق الأمني", type: "select", options: ["غير مطلوب", "لم يتم", "تم تحديد موعد", "تم التأمين", "تأجل"] },
+        { key: "remainingWork", label: "الأعمال المتبقية", type: "textarea", maxLength: 900, full: true },
+        common.documentUrl,
+        common.notes,
+      ],
+    },
+    human_resource: {
+      title: "الموارد البشرية",
+      singular: "موظف",
+      icon: "♙",
+      description: "قوة العمل والتخصصات والدرجات والتدريب والتوزيع على الهندسات.",
+      keyField: "employeeName",
+      columns: ["employeeCode", "employeeName", "jobTitle", "grade", "eng", "status"],
+      fields: [
+        { key: "employeeCode", label: "الكود الوظيفي *", type: "text", required: true, maxLength: 100 },
+        { key: "employeeName", label: "اسم الموظف *", type: "text", required: true, maxLength: 240, full: true },
+        { key: "jobTitle", label: "المسمى الوظيفي", type: "text", maxLength: 200 },
+        { key: "grade", label: "الدرجة الوظيفية", type: "text", maxLength: 120 },
+        { key: "specialization", label: "التخصص", type: "text", maxLength: 160 },
+        common.eng,
+        { key: "workplace", label: "مقر العمل", type: "text", maxLength: 240 },
+        { key: "employmentType", label: "نوع التعيين", type: "select", options: ["دائم", "مؤقت", "منتدب", "متعاقد", "عامل موسمي", "أخرى"] },
+        { key: "phone", label: "رقم التواصل الوظيفي", type: "tel", maxLength: 30 },
+        { key: "hireDate", label: "تاريخ التعيين", type: "date" },
+        { key: "status", label: "الحالة", type: "select", options: ["على رأس العمل", "إجازة", "منتدب خارج الإدارة", "معار", "تحت التدريب", "بلغ سن التقاعد", "منتهية خدمته"] },
+        { key: "training", label: "التدريب والمهارات", type: "textarea", maxLength: 900, full: true },
+        common.notes,
+      ],
+    },
+    lined_canal: {
+      title: "الترع المبطنة",
+      singular: "مشروع تبطين",
+      icon: "▰",
+      description: "الموقف التنفيذي والمالي والتعاقدي لمشروعات التأهيل والتبطين.",
+      keyField: "projectName",
+      columns: ["projectName", "canalName", "lengthKm", "contractor", "progressPercent", "status"],
+      fields: [
+        { key: "projectName", label: "اسم المشروع أو العملية *", type: "text", required: true, maxLength: 300, full: true },
+        { key: "canalName", label: "اسم الترعة *", type: "text", required: true, maxLength: 240 },
+        common.eng,
+        { key: "contractNumber", label: "رقم العقد أو العملية", type: "text", maxLength: 140 },
+        { key: "startKm", label: "من الكيلومتر", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "endKm", label: "إلى الكيلومتر", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "lengthKm", label: "الطول (كم)", type: "number", min: 0, max: 100000, step: "any" },
+        { key: "liningType", label: "نوع التبطين", type: "select", options: ["دبش ومونة", "خرسانة مسلحة", "بلاطات خرسانية", "تكسية حجرية", "قطاعات سابقة الصب", "نوع آخر"] },
+        { key: "contractor", label: "الشركة المنفذة", type: "text", maxLength: 240 },
+        { key: "consultant", label: "جهة الإشراف أو الاستشاري", type: "text", maxLength: 240 },
+        { key: "fundingSource", label: "جهة التمويل", type: "text", maxLength: 180 },
+        { key: "contractValue", label: "القيمة التعاقدية (جنيه)", type: "number", min: 0, max: 1000000000000, step: "any" },
+        { key: "startDate", label: "تاريخ البدء", type: "date" },
+        { key: "plannedFinish", label: "الانتهاء المخطط", type: "date" },
+        { key: "actualFinish", label: "الانتهاء الفعلي", type: "date" },
+        { key: "progressPercent", label: "نسبة التنفيذ ٪", type: "number", min: 0, max: 100, step: "any" },
+        { key: "status", label: "الموقف التنفيذي", type: "select", options: ["لم يبدأ", "جارٍ التنفيذ", "متوقف", "منتهي", "استلام ابتدائي", "استلام نهائي", "فترة ضمان"] },
+        { key: "provisionalAcceptanceDate", label: "تاريخ الاستلام الابتدائي", type: "date" },
+        { key: "warrantyEndDate", label: "نهاية فترة الضمان", type: "date" },
+        { key: "defects", label: "الملاحظات والعيوب", type: "textarea", maxLength: 1000, full: true },
+        { key: "latitude", label: "دائرة العرض", type: "number", min: -90, max: 90, step: "any" },
+        { key: "longitude", label: "خط الطول", type: "number", min: -180, max: 180, step: "any" },
+        common.documentUrl,
+        common.notes,
+      ],
+    },
+  };
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+  }
+
+  function csvCell(value) {
+    const text = value == null ? "" : String(value);
+    return /[,"\n]/.test(text) ? '"' + text.replaceAll('"', '""') + '"' : text;
+  }
+
+  function fieldLabel(definition, key) {
+    return definition.fields.find((field) => field.key === key)?.label.replace(" *", "") || key;
+  }
+
+  function displayValue(field, value) {
+    if (value === null || typeof value === "undefined" || value === "") return "—";
+    if (field?.type === "number" && Number.isFinite(Number(value))) return number.format(Number(value));
+    return String(value);
+  }
+
+  function sanitizeRecord(moduleType, raw) {
+    const definition = MODULES[moduleType];
+    if (!definition) throw new Error("نوع سجل غير مدعوم");
+    const clean = {
+      recordId: String(raw.recordId || ""),
+      entityType: moduleType,
+      adm: String(raw.adm || "").trim().slice(0, 240),
+      version: Number(raw.version) || 0,
+    };
+    definition.fields.forEach((field) => {
+      const value = raw[field.key];
+      if (field.type === "number") {
+        clean[field.key] = value === "" || value === null || typeof value === "undefined" ? null : Number(value);
+      } else {
+        clean[field.key] = String(value == null ? "" : value).trim().slice(0, field.maxLength || 700);
+      }
+    });
+    if (!clean.adm) throw new Error("يجب تحديد الإدارة");
+    definition.fields.filter((field) => field.required).forEach((field) => {
+      if (clean[field.key] === "" || clean[field.key] === null || Number.isNaN(clean[field.key])) {
+        throw new Error("البيان المطلوب: " + field.label.replace(" *", ""));
+      }
+    });
+    return clean;
+  }
+
+  function fieldControl(field, value) {
+    const attributes = [
+      'name="' + escapeHtml(field.key) + '"',
+      field.required ? "required" : "",
+      field.maxLength ? 'maxlength="' + field.maxLength + '"' : "",
+      typeof field.min !== "undefined" ? 'min="' + field.min + '"' : "",
+      typeof field.max !== "undefined" ? 'max="' + field.max + '"' : "",
+      field.step ? 'step="' + field.step + '"' : "",
+    ].filter(Boolean).join(" ");
+    const safeValue = escapeHtml(value == null ? "" : value);
+    let control;
+    if (field.type === "select") {
+      control = '<select ' + attributes + '><option value="">اختر…</option>' + field.options.map((option) =>
+        '<option value="' + escapeHtml(option) + '"' + (String(value || "") === option ? " selected" : "") + '>' + escapeHtml(option) + '</option>'
+      ).join("") + '</select>';
+    } else if (field.type === "textarea") {
+      control = '<textarea ' + attributes + '>' + safeValue + '</textarea>';
+    } else {
+      const inputMode = field.type === "number" ? ' inputmode="decimal"' : "";
+      control = '<input type="' + escapeHtml(field.type || "text") + '" value="' + safeValue + '" ' + attributes + inputMode + '>';
+    }
+    return '<label class="field' + (field.full ? " full" : "") + '"><span>' + escapeHtml(field.label) + '</span>' + control + '</label>';
+  }
+
+  function createPlatform(options) {
+    const sync = options.sync;
+    const getAdministration = options.getAdministration;
+    const getBaseRecords = typeof options.getBaseRecords === "function" ? options.getBaseRecords : () => [];
+    const roots = [...root.document.querySelectorAll("[data-record-module]")];
+    const dialog = root.document.getElementById("recordDialog");
+    const form = root.document.getElementById("recordForm");
+    const fields = root.document.getElementById("recordFields");
+    const title = root.document.getElementById("recordDialogTitle");
+    const note = root.document.getElementById("recordDialogNote");
+    const deleteButton = root.document.getElementById("deleteRecord");
+    let activeType = "";
+    let activeId = "";
+    const searches = {};
+
+    function allRecordsFor(type) {
+      return sync.applyOverlay(getBaseRecords(type) || [], type);
+    }
+
+    function recordsFor(type) {
+      const adm = getAdministration();
+      return allRecordsFor(type)
+        .filter((record) => record.adm === adm)
+        .sort((a, b) => String(b.updatedAt || b.recordId).localeCompare(String(a.updatedAt || a.recordId)));
+    }
+
+    function renderRoot(element) {
+      const type = element.dataset.recordModule;
+      const definition = MODULES[type];
+      if (!definition) return;
+      const adm = getAdministration();
+      const allRecords = adm ? recordsFor(type) : [];
+      const term = String(searches[type] || "").trim().toLowerCase();
+      const records = term ? allRecords.filter((record) => {
+        const recordCode = root.IrrigationSync.displayRecordCode(record.recordId, type);
+        return (recordCode + " " + JSON.stringify(record)).toLowerCase().includes(term);
+      }) : allRecords;
+      const headings = definition.columns.map((key) => '<th>' + escapeHtml(fieldLabel(definition, key)) + '</th>').join("");
+      const rows = records.slice(0, 500).map((record) => {
+        const recordCode = root.IrrigationSync.displayRecordCode(record.recordId, type);
+        const cells = definition.columns.map((key) => {
+          const field = definition.fields.find((item) => item.key === key);
+          const value = displayValue(field, record[key]);
+          return '<td>' + (field?.type === "url" && record[key]
+            ? '<a class="record-link" href="' + escapeHtml(record[key]) + '" target="_blank" rel="noopener">فتح المستند</a>'
+            : escapeHtml(value)) + '</td>';
+        }).join("");
+        const sourceBadge = record.locallyPending
+          ? '<span class="tag">بانتظار المزامنة</span>'
+          : record.version
+            ? '<span class="tag">سجل مركزي</span>'
+            : '<span class="tag">سجل أساسي رقمي</span>';
+        return '<tr><td><button class="record-code-button" type="button" data-copy-record-code="' + escapeHtml(recordCode) + '" title="نسخ كود السجل">' + escapeHtml(recordCode) + '<span>نسخ</span></button></td>' + cells + '<td><div class="row-actions"><button class="row-action" type="button" data-module-edit="' + escapeHtml(record.recordId) + '" data-module-type="' + type + '">تعديل</button>' + sourceBadge + '</div></td></tr>';
+      }).join("");
+      element.innerHTML =
+        '<div class="records-toolbar"><div class="records-heading"><span class="module-icon">' + definition.icon + '</span><div><h3>' + escapeHtml(definition.title) + '</h3><p>' + escapeHtml(adm ? definition.description : "اختر إدارة أولًا") + '</p></div><strong>' + number.format(allRecords.length) + '</strong></div>' +
+        '<div class="records-actions"><label class="search compact"><b>⌕</b><input type="search" data-module-search="' + type + '" value="' + escapeHtml(searches[type] || "") + '" placeholder="بحث داخل السجلات…"></label><button class="secondary-button" type="button" data-module-export="' + type + '"' + (!adm ? " disabled" : "") + '>تصدير CSV</button><button class="primary-button" type="button" data-module-add="' + type + '"' + (!adm ? " disabled" : "") + '>إضافة ' + escapeHtml(definition.singular) + '</button></div></div>' +
+        (records.length
+          ? '<div class="asset-table records-table"><table><thead><tr><th>كود السجل</th>' + headings + '<th>الإجراء</th></tr></thead><tbody>' + rows + '</tbody></table></div><div class="table-note">يعرض ' + number.format(records.length) + ' من ' + number.format(allRecords.length) + ' سجل داخل ' + escapeHtml(adm) + '.</div>'
+          : '<div class="records-empty"><b>' + (term ? "لا توجد نتائج مطابقة" : "لا توجد سجلات بعد") + '</b><span>' + (adm ? 'ابدأ بإضافة ' + escapeHtml(definition.singular) + ' لهذه الإدارة.' : 'اختر إحدى الإدارات من الدليل الإداري.') + '</span></div>');
+    }
+
+    function refresh(type) {
+      roots.filter((element) => !type || element.dataset.recordModule === type).forEach(renderRoot);
+    }
+
+    function openEditor(type, recordId) {
+      const definition = MODULES[type];
+      if (!definition) return;
+      const existing = recordId ? allRecordsFor(type).find((record) => record.recordId === recordId) : null;
+      const adm = getAdministration();
+      if (!adm) return;
+      activeType = type;
+      activeId = existing?.recordId || sync.makeRecordId(type);
+      const recordCode = root.IrrigationSync.displayRecordCode(activeId, type);
+      title.textContent = existing ? "تعديل " + definition.singular : "إضافة " + definition.singular;
+      fields.innerHTML = '<label class="field full"><span>كود السجل الرقمي</span><div class="record-code-field"><input value="' + escapeHtml(recordCode) + '" readonly><button class="record-code-button" type="button" data-copy-record-code="' + escapeHtml(recordCode) + '">نسخ الكود</button></div></label><label class="field full"><span>الإدارة</span><input value="' + escapeHtml(adm) + '" readonly></label>' + definition.fields.map((field) => {
+        const value = type === "canal_profile" && field.key === "canalCode" && !existing?.canalCode
+          ? recordCode
+          : existing?.[field.key];
+        return fieldControl(field, value);
+      }).join("");
+      note.className = "dialog-note";
+      note.textContent = existing?.locallyPending ? "هذا السجل لديه تعديل محلي بانتظار المزامنة." : "سيُحفظ السجل محليًا فورًا ثم يتزامن مع جميع الأجهزة.";
+      deleteButton.hidden = !existing;
+      dialog.showModal();
+    }
+
+    function formRecord() {
+      const existing = allRecordsFor(activeType).find((record) => record.recordId === activeId);
+      const data = Object.fromEntries(new FormData(form).entries());
+      return sanitizeRecord(activeType, Object.assign({}, existing || {}, data, {
+        recordId: activeId,
+        entityType: activeType,
+        adm: getAdministration(),
+        version: existing?.version || 0,
+      }));
+    }
+
+    function exportCsv(type) {
+      const definition = MODULES[type];
+      const adm = getAdministration();
+      const records = recordsFor(type);
+      const header = ["كود السجل", "الإدارة", ...definition.fields.map((field) => field.label.replace(" *", "")), "المعرف الداخلي", "الإصدار"];
+      const rows = records.map((record) => [root.IrrigationSync.displayRecordCode(record.recordId, type), adm, ...definition.fields.map((field) => record[field.key]), record.recordId, record.version || 0]);
+      const blob = new Blob(["\ufeff" + [header, ...rows].map((row) => row.map(csvCell).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = root.document.createElement("a");
+      link.href = url;
+      link.download = (adm + "-" + definition.title).replace(/[\\/:*?"<>|]/g, "-") + ".csv";
+      root.document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    root.document.addEventListener("click", (event) => {
+      const add = event.target.closest("[data-module-add]");
+      if (add) openEditor(add.dataset.moduleAdd, "");
+      const edit = event.target.closest("[data-module-edit]");
+      if (edit) openEditor(edit.dataset.moduleType, edit.dataset.moduleEdit);
+      const exportButton = event.target.closest("[data-module-export]");
+      if (exportButton) exportCsv(exportButton.dataset.moduleExport);
+    });
+    root.document.addEventListener("input", (event) => {
+      if (!event.target.matches("[data-module-search]")) return;
+      searches[event.target.dataset.moduleSearch] = event.target.value;
+      renderRoot(event.target.closest("[data-record-module]"));
+    });
+    root.document.getElementById("recordClose").addEventListener("click", () => dialog.close());
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      try {
+        if (!form.reportValidity()) return;
+        const record = formRecord();
+        sync.queueUpsert(record, activeType);
+        dialog.close();
+        refresh(activeType);
+        sync.sync(false).catch(() => undefined);
+      } catch (error) {
+        note.className = "dialog-note error";
+        note.textContent = error.message;
+      }
+    });
+    deleteButton.addEventListener("click", () => {
+      const definition = MODULES[activeType];
+      const record = allRecordsFor(activeType).find((item) => item.recordId === activeId);
+      if (!record || !root.confirm("سيُحذف سجل «" + (record[definition.keyField] || definition.singular) + "» من جميع الأجهزة. هل تريد المتابعة؟")) return;
+      sync.queueDelete(record, activeType);
+      dialog.close();
+      refresh(activeType);
+      sync.sync(false).catch(() => undefined);
+    });
+
+    refresh();
+    return { refresh, openEditor, recordsFor, allRecordsFor };
+  }
+
+  root.IrrigationModules = { MODULES, sanitizeRecord, createPlatform };
+})(typeof window !== "undefined" ? window : globalThis);
+  </script>
+  <script>
+    (() => {
+      "use strict";
+
+      const number = new Intl.NumberFormat("ar-EG");
+      const state = {
+        data:null,
+        baseAssets:[],
+        baseModuleRecords:{},
+        assets:[],
+        summaries:[],
+        selected:null,
+        selectedEngineer:"",
+        selectedCanal:"",
+        installPrompt:null,
+        sync:null,
+        platform:null,
+        searchIndex:null,
+        assetCodes:null,
+        compareSort:{key:"assets",dir:"desc"}
+      };
+
+      const byId = (id) => document.getElementById(id);
+      const escapeHtml = (value) => String(value ?? "")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+      const csvCell = (value) => {
+        const text = value == null ? "" : String(value);
+        return /[,"\n]/.test(text) ? '"' + text.replaceAll('"','""') + '"' : text;
+      };
+
+      async function copyRecordCode(code,button) {
+        const value = String(code || "");
+        if (!value) return;
+        try {
+          if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(value);
+          else {
+            const input = document.createElement("textarea");
+            input.value = value;
+            input.setAttribute("readonly","");
+            input.style.opacity = "0";
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand("copy");
+            input.remove();
+          }
+          const previous = button.textContent;
+          button.textContent = "تم النسخ";
+          window.setTimeout(() => { button.textContent = previous; },1200);
+        } catch {
+          window.prompt("انسخ كود السجل",value);
+        }
+      }
+
+      function decode(payload) {
+        return payload.R.map((row,index) => {
+          const asset = {
+            id:index,
+            adm:payload.A[row[0]] || "غير محدد",
+            eng:payload.E[row[1]] || "غير محدد",
+            canal:payload.C[row[2]] || "غير محدد",
+            gov:payload.G[row[3]] || "غير محدد",
+            type:payload.T[row[4]] || "غير مسجل",
+            use:payload.U[row[5]] || "غير محدد",
+            material:payload.M[row[6]] || "غير محدد",
+            name:payload.N[row[7]] || "منشأ بدون اسم",
+            km:row[8] === -1 ? null : row[8],
+            length:row[9] === -1 ? null : row[9],
+            width:row[10] === -1 ? null : row[10],
+            lon:row[11] === -1 ? null : row[11],
+            lat:row[12] === -1 ? null : row[12],
+            version:0
+          };
+          asset.recordSource = "السجل الأساسي الرقمي";
+          asset.recordId = window.IrrigationSync.stableRecordId(asset);
+          return asset;
+        });
+      }
+
+      function makeBaseCanalProfiles(items) {
+        const profiles = new Map();
+        for (const asset of items) {
+          if (!asset.canal || asset.canal === "غير محدد") continue;
+          const identity = [asset.adm, asset.eng, asset.canal];
+          const recordId = window.IrrigationSync.stableEntityRecordId("canal_profile", identity);
+          if (profiles.has(recordId)) continue;
+          profiles.set(recordId, {
+            recordId,
+            entityType:"canal_profile",
+            adm:asset.adm,
+            eng:asset.eng,
+            canalName:asset.canal,
+            canalCode:window.IrrigationSync.displayRecordCode(recordId,"canal_profile"),
+            canalClass:"",
+            sourceCanal:"",
+            startKm:null,
+            endKm:null,
+            lengthKm:null,
+            designDischarge:null,
+            currentDischarge:null,
+            bedWidthDesign:null,
+            bedWidthCurrent:null,
+            bedLevelStart:null,
+            bedLevelEnd:null,
+            waterLevelUpstream:null,
+            waterLevelDownstream:null,
+            bankLevelRight:null,
+            bankLevelLeft:null,
+            commandAreaFeddan:null,
+            servedVillages:"",
+            liningStatus:"",
+            linedLengthKm:null,
+            operationalStatus:"",
+            lastDredgingDate:"",
+            maintenancePriority:"",
+            latitude:null,
+            longitude:null,
+            notes:"",
+            recordSource:"السجل الأساسي الرقمي",
+            version:0
+          });
+        }
+        return [...profiles.values()];
+      }
+
+      function makeBaseCoverageRecords(items) {
+        return items.filter(item => classify(item) === "تغطية").map(item => {
+          const recordId = window.IrrigationSync.stableEntityRecordId("coverage",[item.recordId]);
+          return {
+            recordId,
+            entityType:"coverage",
+            adm:item.adm,
+            eng:item.eng,
+            canalName:item.canal,
+            coverageName:item.name,
+            startKm:item.km,
+            endKm:null,
+            lengthM:item.length,
+            widthM:item.width,
+            coverageType:"",
+            purpose:item.use === "غير محدد" ? "" : item.use,
+            material:item.material === "غير محدد" ? "" : item.material,
+            executionYear:null,
+            structuralCondition:"غير مقيمة",
+            status:"عاملة",
+            lastInspectionDate:"",
+            latitude:item.lat,
+            longitude:item.lon,
+            documentUrl:"",
+            notes:"محول تلقائيًا من سجل المنشآت الأساسي.",
+            recordSource:"السجل الأساسي الرقمي",
+            version:0
+          };
+        });
+      }
+
+      function readiness(items) {
+        if (!items.length) return 0;
+        let complete = 0;
+        for (const item of items) {
+          if (item.type !== "غير مسجل") complete++;
+          if (item.length !== null) complete++;
+          if (item.width !== null) complete++;
+          if (item.lat !== null && item.lon !== null) complete++;
+        }
+        return Math.round(complete / (items.length * 4) * 100);
+      }
+
+      function classify(item) {
+        const text = item.name + " " + item.type;
+        if (/تغطي|مغط/.test(text)) return "تغطية";
+        if (/سحار|بدال/.test(text)) return "سحارة/بدالة";
+        if (/فم|مأخذ/.test(text)) return "فم/مأخذ";
+        if (/حجز|قنطرة/.test(text)) return "منشأ حجز";
+        if (/عبار|عبّار|مواسير|بربخ/.test(text)) return "عبّارة/مواسير";
+        if (/هدار/.test(text)) return "هدار";
+        return "كوبري";
+      }
+
+      function makeSummaries(items) {
+        const groups = new Map();
+        for (const item of items) {
+          if (!groups.has(item.adm)) groups.set(item.adm,[]);
+          groups.get(item.adm).push(item);
+        }
+        return [...groups.entries()].map(([name,assets]) => ({
+          name,
+          assets,
+          engineers:new Set(assets.map(x => x.eng)).size,
+          canals:new Set(assets.map(x => x.canal)).size,
+          governorates:[...new Set(assets.map(x => x.gov))],
+          geocoded:assets.filter(x => x.lat !== null && x.lon !== null).length,
+          typed:assets.filter(x => x.type !== "غير مسجل").length,
+          sized:assets.filter(x => x.length !== null && x.width !== null).length,
+          readiness:readiness(assets)
+        })).sort((a,b) => b.assets.length - a.assets.length);
+      }
+
+      function setStatus(text,kind="") {
+        const element = byId("dataStatus");
+        element.textContent = text;
+        element.className = "status" + (kind ? " " + kind : "");
+      }
+
+      function setSyncStatus(detail) {
+        const element = byId("syncStatus");
+        const pending = detail.pending || 0;
+        const labels = {
+          setup:"المزامنة غير مفعّلة",
+          syncing:"جارٍ التزامن" + (pending ? " · " + number.format(pending) + " معلّق" : ""),
+          pending:number.format(pending) + " تعديل معلّق",
+          offline:"بدون اتصال" + (pending ? " · " + number.format(pending) + " معلّق" : ""),
+          conflict:"تعارض يحتاج مراجعة",
+          error:"تعذر التزامن" + (pending ? " · " + number.format(pending) + " معلّق" : ""),
+          synced:"متزامن مع Google Sheets"
+        };
+        element.textContent = labels[detail.state] || labels.setup;
+        element.className = "status " + (detail.state || "offline");
+        element.title = detail.error || "";
+      }
+
+      function renderMetrics() {
+        const assets = state.assets;
+        const admins = state.summaries.length;
+        const engineers = new Set(assets.map(x => x.eng)).size;
+        const canals = new Set(assets.map(x => x.canal)).size;
+        const geocoded = assets.filter(x => x.lat !== null && x.lon !== null).length;
+        byId("metricAdmins").textContent = number.format(admins);
+        byId("metricEngineers").textContent = number.format(engineers);
+        byId("metricCanals").textContent = number.format(canals);
+        byId("metricAssets").textContent = number.format(assets.length);
+        byId("heroGeocoded").textContent = number.format(geocoded);
+        const baseCanals = state.baseModuleRecords.canal_profile || [];
+        byId("digitizedAssets").textContent = number.format(state.baseAssets.length);
+        byId("digitizedCanals").textContent = number.format(baseCanals.length);
+        byId("centralRecords").textContent = number.format(state.sync ? state.sync.remoteCount() : 0);
+        byId("pendingRecords").textContent = number.format(state.sync ? state.sync.pendingCount() : 0);
+      }
+
+      function renderOverview() {
+        const distribution = new Map();
+        for (const item of state.assets) {
+          const key = classify(item);
+          distribution.set(key,(distribution.get(key) || 0) + 1);
+        }
+        const rows = [...distribution.entries()].sort((a,b) => b[1] - a[1]);
+        const max = rows[0]?.[1] || 1;
+        byId("typeDistribution").innerHTML = rows.map(([name,count]) =>
+          '<div class="bar-row"><span>' + escapeHtml(name) + '</span><div class="bar-track"><i style="width:' + (count/max*100).toFixed(2) + '%"></i></div><strong>' + number.format(count) + '</strong></div>'
+        ).join("");
+
+        byId("adminRanking").innerHTML = state.summaries.slice(0,8).map((item,index) =>
+          '<a class="rank-row" href="#workspace" data-admin="' + escapeHtml(item.name) + '"><em>' + String(index+1).padStart(2,"0") + '</em><span>' + escapeHtml(item.name) + '</span><strong>' + number.format(item.assets.length) + '</strong></a>'
+        ).join("");
+      }
+
+      function renderAdminGrid(query="") {
+        const term = query.trim();
+        const list = term
+          ? state.summaries.filter(item => [item.name,...item.governorates].join(" ").includes(term))
+          : state.summaries;
+        byId("adminGrid").innerHTML = list.length ? list.map((item,index) =>
+          '<a class="admin-card" href="#workspace" data-admin="' + escapeHtml(item.name) + '">' +
+            '<div class="admin-card-head"><span class="admin-index">' + String(index+1).padStart(2,"0") + '</span><div><small>' + escapeHtml(item.governorates.join(" · ")) + '</small><h3>' + escapeHtml(item.name) + '</h3></div><span class="admin-arrow">↙</span></div>' +
+            '<div class="admin-stats"><span><b>' + number.format(item.engineers) + '</b>هندسة</span><span><b>' + number.format(item.canals) + '</b>ترعة</span><span><b>' + number.format(item.assets.length) + '</b>منشأة</span></div>' +
+            '<div class="readiness"><div><i style="width:' + item.readiness + '%"></i></div><span>جاهزية البيانات ' + number.format(item.readiness) + '٪</span></div>' +
+          '</a>'
+        ).join("") : '<div class="empty">لا توجد إدارة مطابقة لعبارة البحث.</div>';
+      }
+
+      function groupBy(items,key) {
+        const map = new Map();
+        for (const item of items) {
+          const name = item[key];
+          if (!map.has(name)) map.set(name,[]);
+          map.get(name).push(item);
+        }
+        return [...map.entries()].sort((a,b) => b[1].length - a[1].length);
+      }
+
+      function tableHtml(items,limit=250) {
+        const shown = items.slice(0,limit);
+        if (!shown.length) return '<div class="empty">لا توجد سجلات مطابقة.</div>';
+        return '<div class="asset-table"><table><thead><tr><th>كود السجل</th><th>المنشأة</th><th>التصنيف</th><th>الترعة</th><th>النوع</th><th>الكيلومتر</th><th>الأبعاد م</th><th>الموقع</th><th>التحديث</th></tr></thead><tbody>' +
+          shown.map(item => {
+            const recordCode = window.IrrigationSync.displayRecordCode(item.recordId,"asset");
+            return '<tr>' +
+            '<td><button class="record-code-button" type="button" data-copy-record-code="' + escapeHtml(recordCode) + '" title="نسخ كود السجل">' + escapeHtml(recordCode) + '<span>نسخ</span></button></td>' +
+            '<td><b>' + escapeHtml(item.name) + '</b><small>' + escapeHtml(item.eng) + (item.locallyPending ? ' · بانتظار المزامنة' : '') + '</small></td>' +
+            '<td><span class="tag">' + escapeHtml(classify(item)) + '</span></td>' +
+            '<td>' + escapeHtml(item.canal) + '</td>' +
+            '<td>' + escapeHtml(item.type) + '</td>' +
+            '<td class="numeric">' + (item.km ?? "—") + '</td>' +
+            '<td class="numeric">' + (item.length ?? "—") + ' × ' + (item.width ?? "—") + '</td>' +
+            '<td>' + (item.lat !== null && item.lon !== null ? '<a class="tag" target="_blank" rel="noopener" href="https://maps.google.com/?q=' + item.lat + ',' + item.lon + '">الخريطة</a>' : '—') + '</td>' +
+            '<td><div class="row-actions"><button class="row-action" type="button" data-edit-id="' + escapeHtml(item.recordId) + '">تعديل</button><span class="tag">' + (item.locallyPending ? 'بانتظار المزامنة' : item.version ? 'سجل مركزي' : 'سجل أساسي رقمي') + '</span></div></td>' +
+          '</tr>';
+          }).join("") +
+          '</tbody></table><div class="table-note">عرض ' + number.format(shown.length) + ' من ' + number.format(items.length) + ' سجلًا' + (items.length > limit ? ' · استخدم البحث لتضييق النتائج' : '') + '</div></div>';
+      }
+
+      function renderStructure() {
+        const summary = state.selected;
+        if (!summary) return;
+        const engineers = groupBy(summary.assets,"eng");
+        byId("engineerList").innerHTML =
+          '<button class="' + (!state.selectedEngineer ? "active" : "") + '" data-engineer=""><span><b>كل الهندسات</b><small>' + number.format(summary.assets.length) + ' منشأة</small></span></button>' +
+          engineers.map(([name,items]) => '<button class="' + (state.selectedEngineer === name ? "active" : "") + '" data-engineer="' + escapeHtml(name) + '"><span><b>' + escapeHtml(name) + '</b><small>' + number.format(new Set(items.map(x=>x.canal)).size) + ' ترعة</small></span><strong>' + number.format(items.length) + '</strong></button>').join("");
+
+        const engineerItems = state.selectedEngineer ? summary.assets.filter(x => x.eng === state.selectedEngineer) : summary.assets;
+        const canals = groupBy(engineerItems,"canal");
+        byId("canalList").innerHTML =
+          '<button class="' + (!state.selectedCanal ? "active" : "") + '" data-canal=""><span><b>كل الترع</b><small>' + number.format(engineerItems.length) + ' منشأة</small></span></button>' +
+          canals.map(([name,items]) => '<button class="' + (state.selectedCanal === name ? "active" : "") + '" data-canal="' + escapeHtml(name) + '"><span><b>' + escapeHtml(name) + '</b><small>' + number.format(items.length) + ' منشأة</small></span></button>').join("");
+
+        const finalItems = state.selectedCanal ? engineerItems.filter(x => x.canal === state.selectedCanal) : engineerItems;
+        byId("structureCaption").textContent = [
+          state.selectedEngineer || "كل الهندسات",
+          state.selectedCanal || "كل الترع",
+          number.format(finalItems.length) + " منشأة"
+        ].join(" · ");
+        byId("structureTable").innerHTML = tableHtml(finalItems);
+      }
+
+      function renderAssets() {
+        if (!state.selected) return;
+        const types = [...new Set(state.selected.assets.map(classify))].sort();
+        byId("assetType").innerHTML = '<option value="">كل التصنيفات</option>' + types.map(x => '<option value="' + escapeHtml(x) + '">' + escapeHtml(x) + '</option>').join("");
+        filterAssets();
+      }
+
+      function filterAssets() {
+        if (!state.selected) return;
+        const term = byId("assetSearch").value.trim();
+        const type = byId("assetType").value;
+        const items = state.selected.assets.filter(item => {
+          if (type && classify(item) !== type) return false;
+          const recordCode = window.IrrigationSync.displayRecordCode(item.recordId,"asset");
+          return !term || [recordCode,item.name,item.canal,item.eng,item.type].join(" ").toLowerCase().includes(term.toLowerCase());
+        });
+        byId("assetsTable").innerHTML = tableHtml(items,350);
+      }
+
+      function renderQuality() {
+        if (!state.selected) return;
+        const items = state.selected.assets;
+        const measures = [
+          ["اكتمال النوع",items.filter(x => x.type !== "غير مسجل").length],
+          ["اكتمال الطول",items.filter(x => x.length !== null).length],
+          ["اكتمال العرض",items.filter(x => x.width !== null).length],
+          ["التغطية الجغرافية",items.filter(x => x.lat !== null && x.lon !== null).length]
+        ];
+        byId("qualityGrid").innerHTML = measures.map(([label,count]) => {
+          const percent = Math.round(count / items.length * 100);
+          return '<article class="quality-card"><span>' + label + '</span><strong>' + number.format(percent) + '٪</strong><div><i style="width:' + percent + '%"></i></div></article>';
+        }).join("") + '<div class="quality-note"><b>مهم:</b> مؤشرات الاكتمال لا تعبّر عن الحالة الإنشائية. قرار الصيانة أو الإحلال يحتاج فحصًا ميدانيًا وبيانات عمر المنشأ والأحمال والنحر والاختبارات.</div>';
+      }
+
+      function renderSelectedWorkspace(resetFilters) {
+        const selectedName = typeof state.selected === "string" ? state.selected : state.selected?.name;
+        const summary = state.summaries.find(item => item.name === selectedName);
+        if (!summary) {
+          state.selected = null;
+          byId("workspace").hidden = true;
+          return;
+        }
+        state.selected = summary;
+        if (resetFilters) {
+          state.selectedEngineer = "";
+          state.selectedCanal = "";
+          byId("assetSearch").value = "";
+        } else {
+          if (!summary.assets.some(item => item.eng === state.selectedEngineer)) state.selectedEngineer = "";
+          if (state.selectedCanal && !summary.assets.some(item => (!state.selectedEngineer || item.eng === state.selectedEngineer) && item.canal === state.selectedCanal)) state.selectedCanal = "";
+        }
+        byId("workspace").hidden = false;
+        byId("workspaceTitle").textContent = summary.name;
+        byId("workspaceSubtitle").textContent = summary.governorates.join(" · ") + " · المصدر الأساسي + تحديثات Google Sheets";
+        byId("wsEngineers").textContent = number.format(summary.engineers);
+        byId("wsCanals").textContent = number.format(summary.canals);
+        byId("wsAssets").textContent = number.format(summary.assets.length);
+        byId("wsReadiness").textContent = number.format(summary.readiness) + "٪";
+        renderStructure();
+        renderAssets();
+        renderQuality();
+        state.platform?.refresh();
+      }
+
+      const arabicDigitPattern = /[\u0660-\u0669]/g;
+      const codePrefixPattern = /^(ast|fle|cov|prp|cnl|lic|vio|rem|hr|lin|rec)\b/;
+
+      function normalizeText(value) {
+        return String(value == null ? "" : value)
+          .replace(arabicDigitPattern,(digit) => String(digit.charCodeAt(0) - 1632))
+          .replace(/[\u064B-\u0652\u0670\u0640]/g,"")
+          .replace(/[\u0622\u0623\u0625\u0671]/g,"\u0627")
+          .replace(/\u0649/g,"\u064A")
+          .replace(/\u0629/g,"\u0647")
+          .replace(/[\u0624\u0626]/g,"\u0621")
+          .replace(/[_\-\/\\.,()\[\]«»"']/g," ")
+          .replace(/\s+/g," ")
+          .trim()
+          .toLowerCase();
+      }
+
+      function ensureSearchIndex() {
+        if (state.searchIndex) return state.searchIndex;
+        const assets = state.assets.map(item => ({
+          kind:"asset",
+          adm:item.adm,
+          eng:item.eng,
+          canal:item.canal,
+          record:item.recordId,
+          label:item.name,
+          meta:item.adm + " ← " + item.eng + " ← " + item.canal + (item.km === null ? "" : " · ك " + item.km),
+          hay:normalizeText(item.name + " " + item.canal + " " + item.eng + " " + item.type + " " + item.adm)
+        }));
+        const canalMap = new Map();
+        const engineerMap = new Map();
+        for (const item of state.assets) {
+          const canalKey = item.adm + "|" + item.canal;
+          if (!canalMap.has(canalKey)) canalMap.set(canalKey,{adm:item.adm,canal:item.canal,engineers:new Set(),count:0});
+          const canalEntry = canalMap.get(canalKey);
+          canalEntry.count += 1;
+          canalEntry.engineers.add(item.eng);
+          const engineerKey = item.adm + "|" + item.eng;
+          if (!engineerMap.has(engineerKey)) engineerMap.set(engineerKey,{adm:item.adm,eng:item.eng,canals:new Set(),count:0});
+          const engineerEntry = engineerMap.get(engineerKey);
+          engineerEntry.count += 1;
+          engineerEntry.canals.add(item.canal);
+        }
+        const canals = [...canalMap.values()].map(entry => ({
+          kind:"canal",
+          adm:entry.adm,
+          canal:entry.canal,
+          label:entry.canal,
+          meta:entry.adm + " · " + [...entry.engineers].slice(0,2).join(" / ") + " · " + number.format(entry.count) + " منشأة",
+          hay:normalizeText(entry.canal + " " + entry.adm)
+        }));
+        const engineers = [...engineerMap.values()].map(entry => ({
+          kind:"engineer",
+          adm:entry.adm,
+          eng:entry.eng,
+          label:entry.eng,
+          meta:entry.adm + " · " + number.format(entry.canals.size) + " ترعة · " + number.format(entry.count) + " منشأة",
+          hay:normalizeText(entry.eng + " " + entry.adm)
+        }));
+        const admins = state.summaries.map(summary => ({
+          kind:"admin",
+          adm:summary.name,
+          label:summary.name,
+          meta:summary.governorates.join(" · ") + " · " + number.format(summary.assets.length) + " منشأة",
+          hay:normalizeText(summary.name + " " + summary.governorates.join(" "))
+        }));
+        state.searchIndex = {assets,canals,engineers,admins};
+        return state.searchIndex;
+      }
+
+      function ensureAssetCodes() {
+        if (state.assetCodes) return state.assetCodes;
+        const index = ensureSearchIndex();
+        state.assetCodes = index.assets.map(entry => normalizeText(window.IrrigationSync.displayRecordCode(entry.record,"asset")));
+        return state.assetCodes;
+      }
+
+      function matchEntries(entries,tokens,limit,codes) {
+        const hits = [];
+        for (let position = 0; position < entries.length; position += 1) {
+          const hay = codes ? entries[position].hay + " " + codes[position] : entries[position].hay;
+          let score = 0;
+          let matched = true;
+          for (const token of tokens) {
+            const at = hay.indexOf(token);
+            if (at === -1) { matched = false; break; }
+            score += at === 0 ? 3 : hay.charAt(at - 1) === " " ? 2 : 1;
+          }
+          if (!matched) continue;
+          hits.push({entry:entries[position],score:score * 1000 - hay.length});
+        }
+        hits.sort((a,b) => b.score - a.score);
+        return {total:hits.length,items:hits.slice(0,limit).map(hit => hit.entry)};
+      }
+
+      function findItemHtml(entry) {
+        return '<button class="find-item" type="button"' +
+          ' data-hit-kind="' + escapeHtml(entry.kind) + '"' +
+          ' data-hit-adm="' + escapeHtml(entry.adm || "") + '"' +
+          ' data-hit-eng="' + escapeHtml(entry.eng || "") + '"' +
+          ' data-hit-canal="' + escapeHtml(entry.canal || "") + '"' +
+          ' data-hit-record="' + escapeHtml(entry.record || "") + '"' +
+          '><b>' + escapeHtml(entry.label) + '</b><small>' + escapeHtml(entry.meta) + '</small></button>';
+      }
+
+      function renderFindResults() {
+        const container = byId("findResults");
+        if (!state.assets.length) {
+          container.innerHTML = '<div class="find-empty">البيانات لم تُحمّل بعد.</div>';
+          return;
+        }
+        const term = normalizeText(byId("findInput").value);
+        if (term.length < 2) {
+          container.innerHTML = '<div class="find-empty">اكتب حرفين على الأقل للبحث في ' +
+            number.format(state.assets.length) + ' منشأة و' +
+            number.format(new Set(state.assets.map(x => x.canal)).size) + ' ترعة و' +
+            number.format(new Set(state.assets.map(x => x.eng)).size) + ' هندسة.</div>';
+          return;
+        }
+        const tokens = term.split(" ").filter(Boolean);
+        const index = ensureSearchIndex();
+        const codes = codePrefixPattern.test(term) ? ensureAssetCodes() : null;
+        const groups = [
+          ["الإدارات العامة",matchEntries(index.admins,tokens,6,null)],
+          ["الهندسات",matchEntries(index.engineers,tokens,8,null)],
+          ["الترع والمجاري",matchEntries(index.canals,tokens,10,null)],
+          ["المنشآت المائية",matchEntries(index.assets,tokens,14,codes)]
+        ].filter(group => group[1].total > 0);
+        if (!groups.length) {
+          container.innerHTML = '<div class="find-empty">لا توجد نتائج مطابقة. جرّب جزءًا من الاسم فقط.</div>';
+          return;
+        }
+        container.innerHTML = groups.map(group =>
+          '<section class="find-group"><h4><span>' + escapeHtml(group[0]) + '</span><em>' +
+          number.format(group[1].items.length) + ' من ' + number.format(group[1].total) +
+          '</em></h4><div class="find-list">' + group[1].items.map(findItemHtml).join("") + '</div></section>'
+        ).join("");
+      }
+
+      function highlightRecord(recordId) {
+        window.setTimeout(() => {
+          const target = document.querySelector('[data-edit-id="' + recordId + '"]');
+          const row = target ? target.closest("tr") : null;
+          if (!row) {
+            byId("workspace").scrollIntoView({block:"start"});
+            return;
+          }
+          row.classList.add("row-hit");
+          row.scrollIntoView({block:"center",inline:"nearest"});
+          window.setTimeout(() => row.classList.remove("row-hit"),2800);
+        },80);
+      }
+
+      function gotoSearchHit(hit) {
+        const administration = hit.hitAdm || "";
+        if (!administration) return;
+        selectAdmin(administration);
+        if (!state.selected) return;
+        if (hit.hitKind === "engineer") {
+          state.selectedEngineer = hit.hitEng || "";
+          state.selectedCanal = "";
+        } else if (hit.hitKind === "canal") {
+          state.selectedEngineer = "";
+          state.selectedCanal = hit.hitCanal || "";
+        } else if (hit.hitKind === "asset") {
+          state.selectedEngineer = hit.hitEng || "";
+          state.selectedCanal = hit.hitCanal || "";
+        }
+        if (hit.hitKind !== "admin") renderStructure();
+        activateTab("structure");
+        byId("findDialog").close();
+        if (hit.hitKind === "asset" && hit.hitRecord) highlightRecord(hit.hitRecord);
+        else byId("workspace").scrollIntoView({block:"start"});
+      }
+
+      function openFindDialog() {
+        byId("findDialog").showModal();
+        renderFindResults();
+        window.setTimeout(() => byId("findInput").focus(),40);
+      }
+
+      const compareColumns = [
+        ["name","الإدارة العامة"],
+        ["engineers","هندسة"],
+        ["canals","ترعة"],
+        ["assets","منشأة"],
+        ["geo","إحداثيات ٪"],
+        ["typed","نوع مسجل ٪"],
+        ["sized","أبعاد كاملة ٪"],
+        ["readiness","جاهزية السجل"]
+      ];
+
+      function compareValue(summary,key) {
+        const total = summary.assets.length || 1;
+        if (key === "name") return summary.name;
+        if (key === "engineers") return summary.engineers;
+        if (key === "canals") return summary.canals;
+        if (key === "assets") return summary.assets.length;
+        if (key === "geo") return Math.round(summary.geocoded / total * 100);
+        if (key === "typed") return Math.round(summary.typed / total * 100);
+        if (key === "sized") return Math.round(summary.sized / total * 100);
+        return summary.readiness;
+      }
+
+      function compareBarCell(value) {
+        return '<td><div class="cmp-bar"><div><i style="width:' + value + '%"></i></div><span>' + number.format(value) + '٪</span></div></td>';
+      }
+
+      function sortedCompareRows() {
+        const sort = state.compareSort;
+        return state.summaries.slice().sort((a,b) => {
+          const left = compareValue(a,sort.key);
+          const right = compareValue(b,sort.key);
+          const result = typeof left === "string"
+            ? String(left).localeCompare(String(right),"ar")
+            : left - right;
+          return sort.dir === "asc" ? result : -result;
+        });
+      }
+
+      function renderCompareLead() {
+        const summaries = state.summaries;
+        const container = byId("compareLead");
+        if (!summaries.length) { container.innerHTML = ""; return; }
+        const notable = summaries.filter(item => item.assets.length >= 50);
+        const ranked = (notable.length ? notable : summaries).slice()
+          .sort((a,b) => b.readiness - a.readiness || b.assets.length - a.assets.length);
+        const best = ranked[0];
+        const worst = ranked[ranked.length - 1];
+        const totalAssets = summaries.reduce((sum,item) => sum + item.assets.length,0);
+        const totalGeocoded = summaries.reduce((sum,item) => sum + item.geocoded,0);
+        const weighted = Math.round(summaries.reduce((sum,item) => sum + item.readiness * item.assets.length,0) / (totalAssets || 1));
+        const card = (value,label,tight) => '<article><strong' + (tight ? ' class="tight"' : '') + '>' + value + '</strong><span>' + escapeHtml(label) + '</span></article>';
+        container.innerHTML =
+          card(number.format(summaries.length),"إدارة عامة تحت المقارنة",false) +
+          card(escapeHtml(best.name) + " · " + number.format(best.readiness) + "٪","أعلى جاهزية سجل (٥٠ منشأة فأكثر)",true) +
+          card(escapeHtml(worst.name) + " · " + number.format(worst.readiness) + "٪","أدنى جاهزية سجل (٥٠ منشأة فأكثر)",true) +
+          card(number.format(weighted) + "٪","متوسط الجاهزية مرجّحًا بعدد المنشآت",false) +
+          card(number.format(Math.round(totalGeocoded / (totalAssets || 1) * 100)) + "٪","الربط المكاني على مستوى القطاع",false);
+      }
+
+      function renderCompare() {
+        const container = byId("compareTable");
+        if (!state.summaries.length) {
+          container.innerHTML = '<div class="empty">البيانات غير متاحة.</div>';
+          byId("compareLead").innerHTML = "";
+          return;
+        }
+        const sort = state.compareSort;
+        const head = compareColumns.map(column => {
+          const active = sort.key === column[0];
+          const arrow = active ? (sort.dir === "asc" ? " ▲" : " ▼") : "";
+          const order = active ? (sort.dir === "asc" ? "ascending" : "descending") : "none";
+          return '<th data-cmp-sort="' + column[0] + '" aria-sort="' + order + '" title="ترتيب حسب ' + escapeHtml(column[1]) + '">' + escapeHtml(column[1]) + arrow + '</th>';
+        }).join("");
+        const body = sortedCompareRows().map((summary,position) => {
+          const total = summary.assets.length || 1;
+          return '<tr>' +
+            '<td class="numeric">' + String(position + 1).padStart(2,"0") + '</td>' +
+            '<td><a class="cmp-name" href="#workspace" data-admin="' + escapeHtml(summary.name) + '"><b>' + escapeHtml(summary.name) + '</b><small>' + escapeHtml(summary.governorates.join(" · ")) + '</small></a></td>' +
+            '<td class="numeric">' + number.format(summary.engineers) + '</td>' +
+            '<td class="numeric">' + number.format(summary.canals) + '</td>' +
+            '<td class="numeric">' + number.format(summary.assets.length) + '</td>' +
+            compareBarCell(Math.round(summary.geocoded / total * 100)) +
+            compareBarCell(Math.round(summary.typed / total * 100)) +
+            compareBarCell(Math.round(summary.sized / total * 100)) +
+            compareBarCell(summary.readiness) +
+          '</tr>';
+        }).join("");
+        container.innerHTML = '<table><thead><tr><th>#</th>' + head + '</tr></thead><tbody>' + body + '</tbody></table>';
+        renderCompareLead();
+      }
+
+      function exportCompareCsv() {
+        if (!state.summaries.length) return;
+        const header = ["م","الإدارة العامة","المحافظات","هندسة","ترعة","منشأة","بإحداثيات ٪","نوع مسجل ٪","أبعاد كاملة ٪","جاهزية السجل ٪"];
+        const rows = sortedCompareRows().map((summary,position) => {
+          const total = summary.assets.length || 1;
+          return [
+            position + 1,
+            summary.name,
+            summary.governorates.join(" · "),
+            summary.engineers,
+            summary.canals,
+            summary.assets.length,
+            Math.round(summary.geocoded / total * 100),
+            Math.round(summary.typed / total * 100),
+            Math.round(summary.sized / total * 100),
+            summary.readiness
+          ];
+        });
+        const csv = "\ufeff" + [header,...rows].map(row => row.map(csvCell).join(",")).join("\n");
+        const blob = new Blob([csv],{type:"text/csv;charset=utf-8"});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "مقارنة-الادارات.csv";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url),1000);
+      }
+
+      function refreshAllViews() {
+        state.assets = state.sync ? state.sync.applyOverlay(state.baseAssets) : state.baseAssets.slice();
+        state.summaries = makeSummaries(state.assets);
+        state.searchIndex = null;
+        state.assetCodes = null;
+        renderMetrics();
+        renderOverview();
+        renderCompare();
+        renderAdminGrid(byId("adminSearch").value);
+        if (state.selected) renderSelectedWorkspace(false);
+        else state.platform?.refresh();
+      }
+
+      function selectAdmin(name) {
+        const summary = state.summaries.find(item => item.name === name);
+        if (!summary) return;
+        state.selected = summary;
+        renderSelectedWorkspace(true);
+      }
+
+      function activateTab(name) {
+        document.querySelectorAll(".tab").forEach(button => button.setAttribute("aria-selected",String(button.dataset.tab === name)));
+        document.querySelectorAll(".tab-panel").forEach(panel => panel.hidden = panel.dataset.panel !== name);
+      }
+
+      function exportCsv() {
+        if (!state.selected) return;
+        const header = ["كود السجل","الإدارة","الهندسة","الترعة","اسم المنشأة","التصنيف","النوع","الاستخدام","المادة","الكيلومتر","الطول م","العرض م","خط الطول","دائرة العرض","المحافظة","المعرف الداخلي"];
+        const rows = state.selected.assets.map(x => [window.IrrigationSync.displayRecordCode(x.recordId,"asset"),x.adm,x.eng,x.canal,x.name,classify(x),x.type,x.use,x.material,x.km,x.length,x.width,x.lon,x.lat,x.gov,x.recordId]);
+        const csv = "\ufeff" + [header,...rows].map(row => row.map(csvCell).join(",")).join("\n");
+        const blob = new Blob([csv],{type:"text/csv;charset=utf-8"});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = state.selected.name.replace(/[\\/:*?"<>|]/g,"-") + ".csv";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url),1000);
+      }
+
+      function optionalNumber(id) {
+        const value = byId(id).value.trim();
+        return value === "" ? null : Number(value);
+      }
+
+      function setFormValue(id,value) {
+        byId(id).value = value == null ? "" : String(value);
+      }
+
+      function openAssetDialog(recordId) {
+        const existing = recordId ? state.assets.find(item => item.recordId === recordId) : null;
+        const summary = state.selected;
+        const asset = existing || {
+          recordId:state.sync.makeRecordId(),
+          adm:summary?.name || "",
+          eng:state.selectedEngineer || "",
+          canal:state.selectedCanal || "",
+          gov:summary?.governorates?.[0] || "",
+          name:"",
+          type:"",
+          use:"",
+          material:"",
+          km:null,
+          length:null,
+          width:null,
+          lon:null,
+          lat:null,
+          version:0
+        };
+        byId("assetDialogTitle").textContent = existing ? "تعديل بيانات المنشأة" : "إضافة منشأة جديدة";
+        setFormValue("assetRecordId",asset.recordId);
+        setFormValue("assetRecordCode",window.IrrigationSync.displayRecordCode(asset.recordId,"asset"));
+        setFormValue("editAdm",asset.adm);
+        setFormValue("editEng",asset.eng);
+        setFormValue("editCanal",asset.canal);
+        setFormValue("editGov",asset.gov);
+        setFormValue("editName",asset.name);
+        setFormValue("editType",asset.type === "غير مسجل" ? "" : asset.type);
+        setFormValue("editUse",asset.use === "غير محدد" ? "" : asset.use);
+        setFormValue("editMaterial",asset.material === "غير محدد" ? "" : asset.material);
+        setFormValue("editKm",asset.km);
+        setFormValue("editLength",asset.length);
+        setFormValue("editWidth",asset.width);
+        setFormValue("editLon",asset.lon);
+        setFormValue("editLat",asset.lat);
+        byId("deleteAsset").hidden = !existing;
+        byId("assetDialogNote").textContent = existing && existing.locallyPending
+          ? "هذا السجل لديه تعديل محلي بانتظار المزامنة."
+          : "الحقول المعلّمة بنجمة مطلوبة.";
+        byId("assetDialog").showModal();
+      }
+
+      function assetFromForm() {
+        const existing = state.assets.find(item => item.recordId === byId("assetRecordId").value);
+        return {
+          recordId:byId("assetRecordId").value,
+          id:existing?.id ?? byId("assetRecordId").value,
+          adm:byId("editAdm").value.trim(),
+          eng:byId("editEng").value.trim(),
+          canal:byId("editCanal").value.trim(),
+          gov:byId("editGov").value.trim() || "غير محدد",
+          name:byId("editName").value.trim(),
+          type:byId("editType").value.trim() || "غير مسجل",
+          use:byId("editUse").value.trim() || "غير محدد",
+          material:byId("editMaterial").value.trim() || "غير محدد",
+          km:optionalNumber("editKm"),
+          length:optionalNumber("editLength"),
+          width:optionalNumber("editWidth"),
+          lon:optionalNumber("editLon"),
+          lat:optionalNumber("editLat"),
+          version:existing?.version || 0
+        };
+      }
+
+      function openSyncDialog() {
+        const config = state.sync.getConfig();
+        setFormValue("syncEndpoint",config.endpoint);
+        setFormValue("syncKey",config.key);
+        setFormValue("syncUser",config.user);
+        const pending = state.sync.pendingCount();
+        const conflicts = state.sync.getConflicts().length;
+        byId("syncDialogNote").className = "dialog-note";
+        byId("syncDialogNote").textContent =
+          "قاعدة البيانات جاهزة · " + number.format(pending) + " تعديل معلّق" +
+          (conflicts ? " · " + number.format(conflicts) + " تعارض محفوظ للمراجعة" : "");
+        byId("syncDialog").showModal();
+      }
+
+      function saveSyncFields() {
+        return state.sync.saveConfig({
+          endpoint:byId("syncEndpoint").value,
+          key:byId("syncKey").value,
+          user:byId("syncUser").value
+        });
+      }
+
+      async function runSyncFromDialog(closeAfter) {
+        const note = byId("syncDialogNote");
+        try {
+          if (!byId("syncForm").reportValidity()) return;
+          saveSyncFields();
+          note.className = "dialog-note";
+          note.textContent = "جارٍ اختبار الاتصال والمزامنة…";
+          const result = await state.sync.sync(true);
+          if (!result || result.ok !== true) throw new Error("لم يكتمل الاتصال");
+          note.textContent = "تم الاتصال بنجاح، وأصبحت بيانات هذا الجهاز متزامنة.";
+          if (closeAfter) byId("syncDialog").close();
+        } catch (error) {
+          note.className = "dialog-note error";
+          note.textContent = "تعذر الاتصال: " + error.message;
+        }
+      }
+
+      function initializeSync() {
+        state.sync = window.IrrigationSync.createSyncManager({
+          onStatus:setSyncStatus,
+          onDataChange:() => {
+            if (state.baseAssets.length) refreshAllViews();
+          }
+        });
+        state.platform = window.IrrigationModules.createPlatform({
+          sync:state.sync,
+          getAdministration:() => state.selected?.name || "",
+          getBaseRecords:(type) => state.baseModuleRecords[type] || []
+        });
+        setSyncStatus({
+          state:state.sync.isConfigured() ? (navigator.onLine ? "pending" : "offline") : "setup",
+          pending:state.sync.pendingCount()
+        });
+      }
+
+      async function loadData() {
+        try {
+          if (!("DecompressionStream" in window)) throw new Error("المتصفح يحتاج إلى تحديث لدعم فك ضغط البيانات");
+          const response = await fetch("./data/sector.json.gz?v=1");
+          if (!response.ok) throw new Error("تعذر تحميل البيانات (HTTP " + response.status + ")");
+          const payload = JSON.parse(await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).text());
+          state.data = payload;
+          state.baseAssets = decode(payload);
+          state.baseModuleRecords.canal_profile = makeBaseCanalProfiles(state.baseAssets);
+          state.baseModuleRecords.coverage = makeBaseCoverageRecords(state.baseAssets);
+          refreshAllViews();
+          setStatus("متصل · البيانات محمّلة");
+          if (state.sync.isConfigured()) state.sync.sync(true).catch(() => undefined);
+        } catch (error) {
+          setStatus("تعذر تحميل البيانات","error");
+          byId("adminGrid").innerHTML = '<div class="empty">تعذر تحميل ملف البيانات. أعد فتح الصفحة أثناء الاتصال بالإنترنت.</div>';
+          byId("typeDistribution").innerHTML = '<div class="empty">البيانات غير متاحة.</div>';
+          byId("adminRanking").innerHTML = '<div class="empty">البيانات غير متاحة.</div>';
+          byId("compareTable").innerHTML = '<div class="empty">البيانات غير متاحة.</div>';
+        }
+      }
+
+      document.addEventListener("click",(event) => {
+        const copyCode = event.target.closest("[data-copy-record-code]");
+        if (copyCode) {
+          copyRecordCode(copyCode.dataset.copyRecordCode,copyCode);
+          return;
+        }
+        const edit = event.target.closest("[data-edit-id]");
+        if (edit) {
+          openAssetDialog(edit.dataset.editId);
+          return;
+        }
+        const admin = event.target.closest("[data-admin]");
+        if (admin) selectAdmin(admin.dataset.admin);
+        const tab = event.target.closest(".tab");
+        if (tab) activateTab(tab.dataset.tab);
+        const engineer = event.target.closest("[data-engineer]");
+        if (engineer) {
+          state.selectedEngineer = engineer.dataset.engineer;
+          state.selectedCanal = "";
+          renderStructure();
+        }
+        const canal = event.target.closest("[data-canal]");
+        if (canal) {
+          state.selectedCanal = canal.dataset.canal;
+          renderStructure();
+        }
+      });
+
+      let findDebounce = 0;
+      byId("findButton").addEventListener("click",openFindDialog);
+      byId("heroFindButton").addEventListener("click",openFindDialog);
+      byId("findClose").addEventListener("click",() => byId("findDialog").close());
+      byId("findInput").addEventListener("input",() => {
+        window.clearTimeout(findDebounce);
+        findDebounce = window.setTimeout(renderFindResults,140);
+      });
+      byId("findResults").addEventListener("click",(event) => {
+        const hit = event.target.closest(".find-item");
+        if (hit) gotoSearchHit(hit.dataset);
+      });
+      byId("compareTable").addEventListener("click",(event) => {
+        const cell = event.target.closest("[data-cmp-sort]");
+        if (!cell) return;
+        const key = cell.dataset.cmpSort;
+        if (state.compareSort.key === key) state.compareSort.dir = state.compareSort.dir === "asc" ? "desc" : "asc";
+        else state.compareSort = {key:key,dir:key === "name" ? "asc" : "desc"};
+        renderCompare();
+      });
+      byId("exportCompare").addEventListener("click",exportCompareCsv);
+      document.addEventListener("keydown",(event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+          event.preventDefault();
+          openFindDialog();
+        }
+      });
+      byId("adminSearch").addEventListener("input",event => renderAdminGrid(event.target.value));
+      byId("assetSearch").addEventListener("input",filterAssets);
+      byId("assetType").addEventListener("change",filterAssets);
+      byId("addAsset").addEventListener("click",() => openAssetDialog(""));
+      byId("exportCsv").addEventListener("click",exportCsv);
+      byId("printAdmin").addEventListener("click",() => window.print());
+      byId("syncSettingsButton").addEventListener("click",openSyncDialog);
+      byId("syncStatus").addEventListener("click",openSyncDialog);
+      byId("syncClose").addEventListener("click",() => byId("syncDialog").close());
+      byId("syncNow").addEventListener("click",() => runSyncFromDialog(false));
+      byId("syncForm").addEventListener("submit",(event) => {
+        event.preventDefault();
+        runSyncFromDialog(true);
+      });
+      byId("assetClose").addEventListener("click",() => byId("assetDialog").close());
+      byId("copyAssetRecordCode").addEventListener("click",event => copyRecordCode(byId("assetRecordCode").value,event.currentTarget));
+      byId("assetForm").addEventListener("submit",(event) => {
+        event.preventDefault();
+        if (!event.currentTarget.reportValidity()) return;
+        const asset = assetFromForm();
+        state.sync.queueUpsert(asset);
+        byId("assetDialog").close();
+        state.sync.sync(false).catch(() => undefined);
+      });
+      byId("deleteAsset").addEventListener("click",() => {
+        const asset = state.assets.find(item => item.recordId === byId("assetRecordId").value);
+        if (!asset) return;
+        const confirmed = window.confirm("سيُحذف «" + asset.name + "» من جميع الأجهزة بعد المزامنة، مع الاحتفاظ بالعملية في سجل المراجعة. هل تريد المتابعة؟");
+        if (!confirmed) return;
+        state.sync.queueDelete(asset);
+        byId("assetDialog").close();
+        state.sync.sync(false).catch(() => undefined);
+      });
+      byId("closeInstallDialog").addEventListener("click",() => byId("installDialog").close());
+      byId("installButton").addEventListener("click",async () => {
+        if (state.installPrompt) {
+          await state.installPrompt.prompt();
+          state.installPrompt = null;
+        } else {
+          byId("installDialog").showModal();
+        }
+      });
+      window.addEventListener("beforeinstallprompt",event => {
+        event.preventDefault();
+        state.installPrompt = event;
+      },{once:true});
+      window.addEventListener("online",() => state.sync.sync(false).catch(() => undefined));
+      window.addEventListener("offline",() => setSyncStatus({state:"offline",pending:state.sync.pendingCount()}));
+      document.addEventListener("visibilitychange",() => {
+        if (document.visibilityState === "visible" && state.sync.isConfigured()) {
+          state.sync.sync(false).catch(() => undefined);
+        }
+      });
+      window.setInterval(() => {
+        if (state.sync.isConfigured() && document.visibilityState === "visible") {
+          state.sync.sync(false).catch(() => undefined);
+        }
+      },60000);
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("./sw.js?v=1",{updateViaCache:"none"}).catch(() => undefined);
+      }
+
+      initializeSync();
+      loadData();
+    })();
+  </script>
+</body>
+</html>
