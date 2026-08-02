@@ -848,6 +848,21 @@
     .board-empty { padding:26px 20px; border:1px dashed var(--line); border-radius:20px; text-align:center; background:#fbfdfe; display:grid; gap:10px; }
     .board-empty b { font-size:16px; }
     .board-empty span { font-size:13px; color:var(--muted); }
+    .alert-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:11px; margin-bottom:16px; }
+    .alert-cards article { padding:16px 18px; display:grid; gap:4px; border:1px solid var(--line); border-radius:18px; background:var(--white); }
+    .alert-cards strong { font-size:26px; }
+    .alert-cards span { font-size:12px; color:var(--muted); }
+    .alert-cards article.past strong { color:var(--red); }
+    .alert-cards article.soon strong { color:var(--warn); }
+    .alert-cards article.mid strong { color:var(--gold); }
+    .alert-cards article.ok strong { color:var(--green); }
+    .due { font-weight:800; white-space:nowrap; }
+    .due.past { color:var(--red); }
+    .due.soon { color:var(--warn); }
+    .due.mid { color:var(--gold); }
+    .board-list { display:grid; gap:12px; }
+    .board-kind { margin-inline-end:7px; }
+    .board-chip em { font-style:normal; font-weight:800; color:var(--blue); }
     .board-index { display:grid; gap:8px; }
     .board-index h4 { margin:0; font-size:14px; color:var(--blue); }
     .board-index-list { display:flex; flex-wrap:wrap; gap:8px; }
@@ -1005,6 +1020,7 @@
       <div class="section-head">
         <div><span class="eyebrow">مقارنة قطاعية</span><h2>لوحة مقارنة الإدارات</h2><p>كل الإدارات العامة جنبًا إلى جنب بمؤشرات الحجم واكتمال البيانات. اضغط على رأس أي عمود للترتيب به، وعلى اسم الإدارة لفتح بطاقتها.</p></div>
         <div class="admin-tools">
+          <button class="install-button" id="printSector" type="button">طباعة التقرير القطاعى</button>
           <button class="install-button" id="exportCompare" type="button">تصدير المقارنة CSV</button>
         </div>
       </div>
@@ -1046,6 +1062,7 @@
           <button class="tab" role="tab" aria-selected="true" data-tab="structure">الهيكل الإداري</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="assets">الكباري والمنشآت</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="boards">لوحة المناسيب والتصرفات</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="alerts">الصلاحيات والتنبيهات</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="coverage">التغطيات</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="property">الأملاك</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="canal_profile">أورنيك الترع</button>
@@ -1086,6 +1103,10 @@
           <div class="module" id="boardsPanel"></div>
         </section>
 
+        <section class="tab-panel" data-panel="alerts" hidden>
+          <div class="module" id="alertsPanel"></div>
+        </section>
+
         <section class="tab-panel" data-panel="coverage" hidden><div class="records-module" data-record-module="coverage"></div></section>
 
         <section class="tab-panel" data-panel="property" hidden><div class="records-module" data-record-module="property"></div></section>
@@ -1107,16 +1128,18 @@
 
   <dialog id="boardDialog">
     <form class="dialog-body" id="boardForm">
-      <h2 id="boardDialogTitle">رابط لوحة المناسيب والتصرفات</h2>
+      <h2 id="boardDialogTitle">ربط تطبيق بالإدارة</h2>
       <p>يُحفظ الرابط على هذا الجهاز فورًا. أرسله لى لأضيفه إلى النسخة المنشورة فيظهر على كل الأجهزة.</p>
       <div class="form-grid">
         <label class="field full"><span>الإدارة</span><input id="boardAdm" type="text" readonly></label>
-        <label class="field full"><span>اسم اللوحة *</span><input id="boardName" type="text" maxlength="160" placeholder="مثال: لوحة مناسيب وتصرفات ..." required></label>
-        <label class="field full"><span>رابط اللوحة *</span><input id="boardUrl" type="url" inputmode="url" placeholder="https://mohseno2002.github.io/..." required></label>
+        <input id="boardIndex" type="hidden">
+        <label class="field full"><span>اسم التطبيق *</span><input id="boardName" type="text" maxlength="160" placeholder="مثال: لوحة مناسيب وتصرفات ..." required></label>
+        <label class="field"><span>النوع</span><select id="boardKind"></select></label>
+        <label class="field full"><span>الرابط *</span><input id="boardUrl" type="url" inputmode="url" placeholder="https://mohseno2002.github.io/..." required></label>
       </div>
       <div class="dialog-note" id="boardDialogNote">الرابط يجب أن يبدأ بـ https://</div>
       <div class="dialog-actions">
-        <button class="danger-button" id="boardClear" type="button" hidden>حذف الرابط المحلى</button>
+        <button class="danger-button" id="boardClear" type="button" hidden>حذف هذا الرابط</button>
         <button class="secondary-button" id="boardClose" type="button">إلغاء</button>
         <button class="primary-button" type="submit">حفظ الرابط</button>
       </div>
@@ -1229,7 +1252,7 @@
 
   <section id="printReport" aria-hidden="true"></section>
 
-  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.4 · لوحة المناسيب والتصرفات تُفتح داخل التطبيق</small></footer>
+  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.5 · تطبيقات متعددة لكل إدارة · الصلاحيات · التقرير القطاعى</small></footer>
 
   <script>
 /* ===== وحدة المزامنة — IrrigationSync ===== */
@@ -2111,6 +2134,7 @@
         searchIndex:null,
         assetCodes:null,
         tables:{},
+        alertScope:"admin",
         compareSort:{key:"assets",dir:"desc"}
       };
 
@@ -2510,6 +2534,7 @@
         renderStructure();
         renderAssets();
         renderBoards();
+        renderAlerts();
         renderQuality();
         state.platform?.refresh();
       }
@@ -2901,7 +2926,7 @@
         const total = items.length || 1;
         const percent = (count) => number.format(Math.round(count / total * 100)) + "٪";
 
-        const board = boardFor(summary.name);
+        const boards = boardsFor(summary.name);
         const distribution = new Map();
         for (const item of items) {
           const key = classify(item);
@@ -2942,7 +2967,7 @@
           '<div class="rep-rule"></div>' +
           '<div class="rep-title">تقرير الموقف الرقمى لسجل الأصول والمنشآت المائية</div>' +
           '<div class="rep-sub">الإدارة العامة: ' + escapeHtml(summary.name) + ' · النطاق: ' + escapeHtml(summary.governorates.join(" · ")) +
-            (board ? '<br>لوحة المناسيب والتصرفات: ' + escapeHtml(board.name) + ' — ' + escapeHtml(board.url) : '') + '</div>' +
+            (boards.length ? '<br>تطبيقات الإدارة: ' + boards.map(item => escapeHtml(item.name)).join(' · ') : '') + '</div>' +
           '<div class="rep-h3">أولًا: المؤشرات العامة</div>' +
           '<table class="rep-table"><thead><tr><th>البيان</th><th>القيمة</th><th>البيان</th><th>القيمة</th></tr></thead><tbody>' +
             repRow(["عدد الهندسات التابعة",number.format(summary.engineers),"عدد الترع والمجارى",number.format(summary.canals)],0) +
@@ -2969,42 +2994,82 @@
       /* ===== سجل لوحات المناسيب والتصرفات =====
          DEFAULT_BOARDS = اللوحات المنشورة (تظهر على كل الأجهزة).
          تجاوزات المستخدم تُحفظ على الجهاز فقط لحين إضافتها هنا. */
+      const BOARD_KINDS = [
+        ["board","لوحة تشغيلية","▦"],
+        ["twin","توأم رقمى","⋔"],
+        ["field","منظومة ميدانية","☏"],
+        ["monitor","رصد ومتابعة","◉"],
+        ["other","أخرى","⇱"]
+      ];
       const DEFAULT_BOARDS = {
-        "الجيزة":{name:"لوحة ري الجيزة",url:"https://mohseno2002.github.io/Giza-/"},
-        "الاسماعيلية وغرب سيناء":{name:"التوأم الرقمى لترعة الإسماعيلية",url:"https://mohseno2002.github.io/ismailia-dt/"}
+        "الجيزة":[
+          {name:"لوحة مناسيب وتصرفات ري الجيزة",url:"https://mohseno2002.github.io/Giza-/",kind:"board"},
+          {name:"نظام شكاوى رى الجيزة",url:"https://mohseno2002.github.io/giza-irrigation/",kind:"field"}
+        ],
+        "الاسماعيلية وغرب سيناء":[
+          {name:"التوأم الرقمى لترعة الإسماعيلية",url:"https://mohseno2002.github.io/ismailia-dt/",kind:"twin"},
+          {name:"صحة المجرى والتعديات — الإسماعيلية",url:"https://mohseno2002.github.io/ismailia-canal/",kind:"monitor"}
+        ]
       };
-      const BOARDS_KEY = "irrigation_admin_boards_v1";
+      const BOARDS_KEY = "irrigation_admin_boards_v2";
+      const BOARDS_KEY_OLD = "irrigation_admin_boards_v1";
 
       function localBoards() {
+        let map = {};
         try {
           const raw = window.localStorage.getItem(BOARDS_KEY);
-          const parsed = raw ? JSON.parse(raw) : {};
-          return parsed && typeof parsed === "object" ? parsed : {};
+          const parsed = raw ? JSON.parse(raw) : null;
+          if (parsed && typeof parsed === "object") map = parsed;
+          else {
+            const legacy = window.localStorage.getItem(BOARDS_KEY_OLD);
+            const old = legacy ? JSON.parse(legacy) : null;
+            if (old && typeof old === "object") {
+              Object.keys(old).forEach((name) => {
+                if (old[name] && old[name].url) map[name] = [{name:old[name].name,url:old[name].url,kind:"board"}];
+              });
+            }
+          }
         } catch (error) {
-          return {};
+          map = {};
         }
+        Object.keys(map).forEach((name) => { if (!Array.isArray(map[name])) map[name] = []; });
+        return map;
       }
 
       function saveLocalBoards(map) {
         try { window.localStorage.setItem(BOARDS_KEY,JSON.stringify(map)); } catch (error) { return; }
       }
 
-      function boardFor(administration) {
-        const overrides = localBoards();
-        if (overrides[administration] && overrides[administration].url) {
-          return Object.assign({},overrides[administration],{local:true});
-        }
-        if (DEFAULT_BOARDS[administration]) {
-          return Object.assign({},DEFAULT_BOARDS[administration],{local:false});
-        }
-        return null;
+      function boardsFor(administration) {
+        const published = (DEFAULT_BOARDS[administration] || []).map(item => Object.assign({},item,{local:false}));
+        const local = (localBoards()[administration] || [])
+          .filter(item => item && item.url)
+          .map(item => Object.assign({kind:"board"},item,{local:true}));
+        const seen = new Set();
+        return published.concat(local).filter((item) => {
+          if (seen.has(item.url)) return false;
+          seen.add(item.url);
+          return true;
+        });
+      }
+
+      function boardByUrl(administration,url) {
+        return boardsFor(administration).find(item => item.url === url) || null;
+      }
+
+      function boardKindLabel(kind) {
+        const found = BOARD_KINDS.find(entry => entry[0] === kind);
+        return found ? found[1] : "أخرى";
+      }
+
+      function boardKindIcon(kind) {
+        const found = BOARD_KINDS.find(entry => entry[0] === kind);
+        return found ? found[2] : "⇱";
       }
 
       function boardsIndex() {
-        const overrides = localBoards();
-        const names = new Set(Object.keys(DEFAULT_BOARDS).concat(Object.keys(overrides)));
         return state.summaries
-          .filter(summary => names.has(summary.name) && boardFor(summary.name))
+          .filter(summary => boardsFor(summary.name).length)
           .map(summary => summary.name);
       }
 
@@ -3017,43 +3082,51 @@
         const container = byId("boardsPanel");
         if (!container) return;
         if (!summary) { container.innerHTML = ""; return; }
-        const board = boardFor(summary.name);
+        const boards = boardsFor(summary.name);
         const available = boardsIndex();
         const head = '<div class="board-hero"><h3>لوحة المناسيب والتصرفات — ' + escapeHtml(summary.name) + '</h3>' +
-          '<p>اللوحة التشغيلية اليومية للإدارة: المناسيب أمام وخلف المنشآت، التصرفات، ومتابعة الحجوز. تُبنى لوحة مستقلة لكل إدارة ويُضاف رابطها هنا.</p></div>';
+          '<p>مركز تطبيقات الإدارة: اللوحة التشغيلية اليومية، التوأم الرقمى، والمنظومات الميدانية. تُفتح جميعها داخل التطبيق.</p>' +
+          '<div class="board-actions"><button type="button" data-board-add="' + escapeHtml(summary.name) + '">＋ إضافة رابط</button></div></div>';
 
-        const card = board
-          ? '<article class="board-card">' +
-              '<div class="board-name">' + escapeHtml(board.name) + (board.local ? ' <span class="tag">رابط محلى</span>' : '') + '</div>' +
-              '<div class="board-url">' + escapeHtml(hostOf(board.url)) + '</div>' +
-              '<div class="board-actions">' +
-                '<button class="primary" type="button" data-board-open="' + escapeHtml(summary.name) + '">فتح اللوحة داخل التطبيق ←</button>' +
-                '<a href="' + escapeHtml(board.url) + '" target="_blank" rel="noopener">تبويب خارجى ↗</a>' +
-                '<button type="button" data-copy-record-code="' + escapeHtml(board.url) + '">نسخ الرابط</button>' +
-                '<button type="button" data-board-edit="' + escapeHtml(summary.name) + '">تعديل الرابط</button>' +
-              '</div>' +
-            '</article>'
-          : '<div class="board-empty"><b>لم تُنشأ لوحة لهذه الإدارة بعد</b>' +
-              '<span>يمكنك ربط لوحة قائمة الآن، أو تركها لحين إنشائها.</span>' +
-              '<div class="board-actions" style="justify-content:center"><button type="button" data-board-edit="' + escapeHtml(summary.name) + '">ربط لوحة بهذه الإدارة</button></div>' +
+        const cards = boards.length
+          ? boards.map((board,position) =>
+              '<article class="board-card">' +
+                '<div class="board-name"><span class="board-kind">' + boardKindIcon(board.kind) + '</span>' + escapeHtml(board.name) +
+                  ' <span class="tag">' + escapeHtml(boardKindLabel(board.kind)) + '</span>' +
+                  (board.local ? ' <span class="tag">رابط محلى</span>' : '') + '</div>' +
+                '<div class="board-url">' + escapeHtml(hostOf(board.url)) + '</div>' +
+                '<div class="board-actions">' +
+                  '<button class="primary" type="button" data-board-open="' + escapeHtml(summary.name) + '" data-board-url="' + escapeHtml(board.url) + '">فتح داخل التطبيق ←</button>' +
+                  '<a href="' + escapeHtml(board.url) + '" target="_blank" rel="noopener">تبويب خارجى ↗</a>' +
+                  '<button type="button" data-copy-record-code="' + escapeHtml(board.url) + '">نسخ</button>' +
+                  (board.local
+                    ? '<button type="button" data-board-edit="' + escapeHtml(summary.name) + '" data-board-index="' + position + '">تعديل</button>'
+                    : '') +
+                '</div>' +
+              '</article>'
+            ).join("")
+          : '<div class="board-empty"><b>لا توجد تطبيقات مرتبطة بهذه الإدارة بعد</b>' +
+              '<span>اربط لوحة أو توأمًا رقميًا قائمًا الآن، أو اتركها لحين إنشائها.</span>' +
+              '<div class="board-actions" style="justify-content:center"><button type="button" data-board-add="' + escapeHtml(summary.name) + '">ربط تطبيق بهذه الإدارة</button></div>' +
             '</div>';
 
-        const index = '<div class="board-index"><h4>اللوحات المتاحة على مستوى القطاع (' + number.format(available.length) + ' من ' + number.format(state.summaries.length) + ')</h4>' +
+        const index = '<div class="board-index"><h4>الإدارات التى لها تطبيقات (' + number.format(available.length) + ' من ' + number.format(state.summaries.length) + ')</h4>' +
           '<div class="board-index-list">' + (available.length
-            ? available.map(name => '<button class="board-chip' + (name === summary.name ? ' on' : '') + '" type="button" data-board-open="' + escapeHtml(name) + '" data-admin="' + escapeHtml(name) + '">≈ ' + escapeHtml(name) + '</button>').join("")
-            : '<span class="board-note">لا توجد لوحات مسجلة بعد.</span>') + '</div></div>';
+            ? available.map(name => '<button class="board-chip' + (name === summary.name ? ' on' : '') + '" type="button" data-admin="' + escapeHtml(name) + '">≈ ' + escapeHtml(name) + ' <em>' + number.format(boardsFor(name).length) + '</em></button>').join("")
+            : '<span class="board-note">لا توجد تطبيقات مسجلة بعد.</span>') + '</div></div>';
 
-        const note = '<div class="board-note"><b>ملاحظة:</b> الروابط التى تضيفها من هذا الجهاز تُحفظ محليًا فقط. لتظهر على كل الأجهزة تُضاف إلى النسخة المنشورة من التطبيق.</div>';
+        const note = '<div class="board-note"><b>ملاحظة:</b> الروابط التى تضيفها من هذا الجهاز تُحفظ محليًا فقط وتظهر بشارة «رابط محلى». لتظهر على كل الأجهزة تُضاف إلى النسخة المنشورة من التطبيق.</div>';
 
-        container.innerHTML = head + card + index + note;
+        container.innerHTML = head + '<div class="board-list">' + cards + '</div>' + index + note;
       }
 
       /* ===== العارض المدمج للوحات — الإطارات تُخزَّن فلا يُعاد التحميل عند التنقل ===== */
       const boardFrames = {};
       let boardSlowTimer = 0;
 
-      function openBoardViewer(administration) {
-        const board = boardFor(administration);
+      function openBoardViewer(administration,url) {
+        const list = boardsFor(administration);
+        const board = (url ? boardByUrl(administration,url) : null) || list[0];
         if (!board) return;
         byId("bvName").textContent = board.name;
         byId("bvUrl").textContent = hostOf(board.url);
@@ -3116,18 +3189,212 @@
         boardSlowTimer = window.setTimeout(() => { byId("bvSlow").hidden = false; },8000);
       }
 
-      function openBoardDialog(administration) {
-        const board = boardFor(administration);
-        const overrides = localBoards();
+      function openBoardDialog(administration,index) {
+        const local = localBoards()[administration] || [];
+        const editing = index !== undefined && index !== "" ? local[Number(index)] : null;
         setFormValue("boardAdm",administration);
-        setFormValue("boardName",board ? board.name : "لوحة مناسيب وتصرفات " + administration);
-        setFormValue("boardUrl",board ? board.url : "");
-        byId("boardClear").hidden = !overrides[administration];
+        setFormValue("boardIndex",editing ? String(index) : "");
+        setFormValue("boardName",editing ? editing.name : "");
+        setFormValue("boardUrl",editing ? editing.url : "");
+        byId("boardKind").innerHTML = BOARD_KINDS.map(entry =>
+          '<option value="' + entry[0] + '"' + (editing && editing.kind === entry[0] ? " selected" : "") + '>' + escapeHtml(entry[1]) + '</option>'
+        ).join("");
+        byId("boardDialogTitle").textContent = editing ? "تعديل رابط تطبيق" : "ربط تطبيق بالإدارة";
+        byId("boardClear").hidden = !editing;
         byId("boardDialogNote").className = "dialog-note";
-        byId("boardDialogNote").textContent = board && !board.local
-          ? "هذه الإدارة لها رابط منشور. أى تعديل هنا يتجاوزه على هذا الجهاز فقط."
-          : "الرابط يجب أن يبدأ بـ https://";
+        byId("boardDialogNote").textContent = "الرابط يجب أن يبدأ بـ https:// — الروابط المنشورة لا تُعدَّل من هنا.";
         byId("boardDialog").showModal();
+      }
+
+      /* ===== الصلاحيات والمواعيد الملزمة ===== */
+      const DEADLINE_FIELDS = [
+        {type:"vehicle_equipment",key:"licenseExpiry",label:"انتهاء ترخيص المركبة"},
+        {type:"vehicle_equipment",key:"insuranceExpiry",label:"انتهاء التأمين"},
+        {type:"vehicle_equipment",key:"nextMaintenanceDate",label:"موعد الصيانة القادمة"},
+        {type:"license",key:"expiryDate",label:"انتهاء الترخيص"},
+        {type:"removal_decision",key:"executionDate",label:"موعد تنفيذ قرار الإزالة"},
+        {type:"lined_canal",key:"plannedFinish",label:"الانتهاء المخطط للتبطين"},
+        {type:"lined_canal",key:"warrantyEndDate",label:"نهاية فترة الضمان"}
+      ];
+
+      function dueClass(days) {
+        if (days < 0) return "past";
+        if (days <= 30) return "soon";
+        if (days <= 60) return "mid";
+        return "";
+      }
+
+      function dueText(days) {
+        if (days < 0) return "متأخر " + number.format(Math.abs(days)) + " يوم";
+        if (days === 0) return "اليوم";
+        return "باقٍ " + number.format(days) + " يوم";
+      }
+
+      function deadlineRows(sectorScope) {
+        if (!state.platform || !window.IrrigationModules) return [];
+        const definitions = window.IrrigationModules.MODULES;
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const administration = state.selected ? state.selected.name : "";
+        const rows = [];
+        DEADLINE_FIELDS.forEach((entry) => {
+          const definition = definitions[entry.type];
+          if (!definition) return;
+          let records = [];
+          try { records = state.platform.allRecordsFor(entry.type) || []; } catch (error) { records = []; }
+          records.forEach((record) => {
+            if (!sectorScope && record.adm !== administration) return;
+            const raw = record[entry.key];
+            if (!raw) return;
+            const when = new Date(String(raw));
+            if (Number.isNaN(when.getTime())) return;
+            when.setHours(0,0,0,0);
+            rows.push({
+              item:entry.label,
+              module:definition.title,
+              moduleType:entry.type,
+              recordId:record.recordId,
+              title:String(record[definition.columns[0]] || "").trim() || definition.singular,
+              adm:record.adm || "",
+              eng:record.eng || "",
+              date:String(raw).slice(0,10),
+              days:Math.round((when.getTime() - today.getTime()) / 86400000)
+            });
+          });
+        });
+        return rows.sort((a,b) => a.days - b.days);
+      }
+
+      function renderAlerts() {
+        const container = byId("alertsPanel");
+        if (!container) return;
+        if (!state.selected) { container.innerHTML = ""; return; }
+        const sectorScope = state.alertScope === "sector";
+        const rows = deadlineRows(sectorScope);
+        const past = rows.filter(row => row.days < 0).length;
+        const soon = rows.filter(row => row.days >= 0 && row.days <= 30).length;
+        const mid = rows.filter(row => row.days > 30 && row.days <= 60).length;
+        const later = rows.filter(row => row.days > 60 && row.days <= 90).length;
+        const listed = rows.filter(row => row.days <= 90);
+
+        const head = '<div class="module-intro"><h3>الصلاحيات والمواعيد الملزمة' + (sectorScope ? ' — على مستوى القطاع' : ' — ' + escapeHtml(state.selected.name)) + '</h3>' +
+          '<p>تراخيص المركبات والتأمين ومواعيد الصيانة، وتراخيص الانتفاع، ومواعيد تنفيذ قرارات الإزالة، وبرامج التبطين وفترات الضمان — مرتبة بالأقرب استحقاقًا.</p>' +
+          '<div class="board-actions" style="margin-top:12px">' +
+            '<button type="button" data-alert-scope="' + (sectorScope ? "admin" : "sector") + '">' + (sectorScope ? "قصر العرض على هذه الإدارة" : "عرض القطاع كله") + '</button>' +
+            (listed.length ? '<button type="button" id="exportAlerts">تصدير CSV</button>' : '') +
+          '</div></div>';
+
+        const cards = '<div class="alert-cards">' +
+          '<article class="past"><strong>' + number.format(past) + '</strong><span>منتهٍ أو متأخر</span></article>' +
+          '<article class="soon"><strong>' + number.format(soon) + '</strong><span>ينتهى خلال ٣٠ يومًا</span></article>' +
+          '<article class="mid"><strong>' + number.format(mid) + '</strong><span>خلال ٣١ – ٦٠ يومًا</span></article>' +
+          '<article class="ok"><strong>' + number.format(later) + '</strong><span>خلال ٦١ – ٩٠ يومًا</span></article>' +
+        '</div>';
+
+        const table = listed.length
+          ? '<div class="asset-table"><table><thead><tr><th>البند</th><th>السجل</th><th>الوحدة</th>' + (sectorScope ? '<th>الإدارة</th>' : '<th>الهندسة</th>') + '<th>التاريخ</th><th>المتبقى</th><th>الإجراء</th></tr></thead><tbody>' +
+            listed.map(row =>
+              '<tr><td>' + escapeHtml(row.item) + '</td>' +
+              '<td><b>' + escapeHtml(row.title) + '</b></td>' +
+              '<td><span class="tag">' + escapeHtml(row.module) + '</span></td>' +
+              '<td>' + escapeHtml(sectorScope ? row.adm : (row.eng || "—")) + '</td>' +
+              '<td class="numeric">' + escapeHtml(row.date) + '</td>' +
+              '<td class="due ' + dueClass(row.days) + '">' + escapeHtml(dueText(row.days)) + '</td>' +
+              '<td><button class="row-action" type="button" data-alert-open="' + escapeHtml(row.recordId) + '" data-alert-type="' + escapeHtml(row.moduleType) + '" data-alert-adm="' + escapeHtml(row.adm) + '">فتح السجل</button></td></tr>'
+            ).join("") +
+            '</tbody></table></div><div class="table-note">عرض ' + number.format(listed.length) + ' بندًا مستحقًا خلال ٩٠ يومًا أو متأخرًا · إجمالى البنود ذات المواعيد ' + number.format(rows.length) + '</div>'
+          : '<div class="records-empty"><b>' + (rows.length ? "لا توجد مواعيد مستحقة خلال ٩٠ يومًا" : "لا توجد سجلات بمواعيد مسجلة بعد") + '</b>' +
+            '<span>تظهر هنا تلقائيًا بمجرد تسجيل تواريخ الترخيص أو التأمين أو الصيانة أو التنفيذ داخل الوحدات التخصصية.</span></div>';
+
+        container.innerHTML = head + cards + table;
+        const exportButton = byId("exportAlerts");
+        if (exportButton) exportButton.addEventListener("click",() => exportAlertsCsv(listed,sectorScope));
+      }
+
+      function exportAlertsCsv(rows,sectorScope) {
+        if (!rows.length) return;
+        const header = ["البند","السجل","الوحدة","الإدارة","الهندسة","التاريخ","المتبقى بالأيام"];
+        const body = rows.map(row => [row.item,row.title,row.module,row.adm,row.eng,row.date,row.days]);
+        const csv = "\ufeff" + [header,...body].map(row => row.map(csvCell).join(",")).join("\n");
+        const blob = new Blob([csv],{type:"text/csv;charset=utf-8"});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = (sectorScope ? "الصلاحيات-القطاع" : "الصلاحيات-" + (state.selected ? state.selected.name : "")).replace(/[\\/:*?"<>|]/g,"-") + ".csv";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url),1000);
+      }
+
+      /* ===== التقرير القطاعى الموحّد ===== */
+      function buildSectorReport() {
+        const target = byId("printReport");
+        if (!state.summaries.length) { target.innerHTML = ""; return false; }
+        const all = state.assets;
+        const total = all.length || 1;
+        const geocoded = all.filter(x => x.lat !== null && x.lon !== null).length;
+        const typed = all.filter(x => x.type !== "غير مسجل").length;
+        const sized = all.filter(x => x.length !== null && x.width !== null).length;
+        const weighted = Math.round(state.summaries.reduce((sum,item) => sum + item.readiness * item.assets.length,0) / total);
+        const ranked = state.summaries.slice().sort((a,b) => b.readiness - a.readiness || b.assets.length - a.assets.length);
+
+        const adminRows = state.summaries.slice()
+          .sort((a,b) => b.assets.length - a.assets.length)
+          .map((summary,position) => {
+            const count = summary.assets.length || 1;
+            return repRow([
+              String(position + 1),
+              escapeHtml(summary.name),
+              escapeHtml(summary.governorates.join(" · ")),
+              number.format(summary.engineers),
+              number.format(summary.canals),
+              number.format(summary.assets.length),
+              number.format(Math.round(summary.geocoded / count * 100)) + "٪",
+              number.format(summary.readiness) + "٪"
+            ],3);
+          }).join("");
+
+        target.innerHTML =
+          '<div class="rep-head">' +
+            '<div class="rep-org">جمهورية مصر العربية<br>وزارة الموارد المائية والرى<br>الإدارة المركزية للموارد المائية والرى<br>للقاهرة والجيزة</div>' +
+            '<div>' + emblemSvg() + '</div>' +
+            '<div class="rep-ref"><div><b>رقم الملف</b>: ......................</div><div><b>رقم الصادر</b>: ......................</div><div><b>التاريخ</b>: ' + reportDate() + '</div></div>' +
+          '</div>' +
+          '<div class="rep-rule"></div>' +
+          '<div class="rep-title">التقرير القطاعى الموحّد لسجل الأصول والمنشآت المائية</div>' +
+          '<div class="rep-sub">' + number.format(state.summaries.length) + ' إدارة عامة · تاريخ الاستخراج ' + reportDate() + '</div>' +
+          '<div class="rep-h3">أولًا: المؤشرات القطاعية</div>' +
+          '<table class="rep-table"><thead><tr><th>البيان</th><th>القيمة</th><th>البيان</th><th>القيمة</th></tr></thead><tbody>' +
+            repRow(["عدد الإدارات العامة",number.format(state.summaries.length),"عدد الهندسات",number.format(new Set(all.map(x => x.eng)).size)],0) +
+            repRow(["عدد الترع والمجارى",number.format(new Set(all.map(x => x.canal)).size),"إجمالى المنشآت المسجلة",number.format(all.length)],0) +
+            repRow(["المرتبطة بإحداثيات",number.format(geocoded) + " (" + number.format(Math.round(geocoded / total * 100)) + "٪)","ذات النوع المسجل",number.format(typed) + " (" + number.format(Math.round(typed / total * 100)) + "٪)"],0) +
+            repRow(["كاملة الأبعاد",number.format(sized) + " (" + number.format(Math.round(sized / total * 100)) + "٪)","متوسط الجاهزية مرجّحًا",number.format(weighted) + "٪"],0) +
+          '</tbody></table>' +
+          '<div class="rep-h3">ثانيًا: فجوات البيانات على مستوى القطاع</div>' +
+          '<table class="rep-table"><thead><tr><th>الفجوة</th><th>عدد السجلات</th><th>النسبة من الإجمالى</th></tr></thead><tbody>' +
+            repRow(["منشآت بلا إحداثيات",number.format(all.length - geocoded),number.format(Math.round((all.length - geocoded) / total * 100)) + "٪"],1) +
+            repRow(["منشآت بلا نوع مسجل",number.format(all.length - typed),number.format(Math.round((all.length - typed) / total * 100)) + "٪"],1) +
+            repRow(["منشآت ناقصة الأبعاد",number.format(all.length - sized),number.format(Math.round((all.length - sized) / total * 100)) + "٪"],1) +
+          '</tbody></table>' +
+          '<div class="rep-h3">ثالثًا: أعلى وأدنى الإدارات جاهزية</div>' +
+          '<table class="rep-table"><thead><tr><th>الأعلى جاهزية</th><th>النسبة</th><th>الأدنى جاهزية</th><th>النسبة</th></tr></thead><tbody>' +
+            ranked.slice(0,5).map((summary,position) => {
+              const low = ranked[ranked.length - 1 - position];
+              return repRow([escapeHtml(summary.name),number.format(summary.readiness) + "٪",escapeHtml(low.name),number.format(low.readiness) + "٪"],0);
+            }).join("") +
+          '</tbody></table>' +
+          '<div class="rep-h3">رابعًا: بيان الإدارات العامة</div>' +
+          '<table class="rep-table"><thead><tr><th>م</th><th>الإدارة</th><th>النطاق</th><th>هندسة</th><th>ترعة</th><th>منشأة</th><th>إحداثيات</th><th>جاهزية</th></tr></thead><tbody>' + adminRows + '</tbody></table>' +
+          '<div class="rep-note"><b>ملاحظة فنية:</b> مؤشرات الجاهزية تعبّر عن اكتمال البيانات المسجلة فقط ولا تعبّر عن الحالة الإنشائية للمنشآت.<br><b>المصدر:</b> سجل الأصول والمنشآت المائية الرقمى — دون إضافة أى بيانات تقديرية.</div>' +
+          '<div class="rep-sign"><div></div><div class="rep-sign-box">' +
+            '<div class="rep-role">رئيس الإدارة المركزية للموارد المائية والرى<br>للقاهرة والجيزة</div>' +
+            '<div class="rep-sign-space"></div>' +
+            '<div class="rep-name">مهندس / محسن عبد الرشيد الشامى</div>' +
+          '</div></div>' +
+          '<div class="rep-foot-rule"></div>' +
+          '<div class="rep-foot">13 شارع مراد — الجيزة · ت: 35725700 / 35724700 · فاكس: 35724700 · centraldepartment.moi@gmail.com</div>';
+        return true;
       }
 
       function refreshAllViews() {
@@ -3350,12 +3617,33 @@
           const name = boardOpen.dataset.boardOpen;
           if (name !== state.selected?.name) selectAdmin(name);
           activateTab("boards");
-          openBoardViewer(name);
+          openBoardViewer(name,boardOpen.dataset.boardUrl || "");
+          return;
+        }
+        const alertScope = event.target.closest("[data-alert-scope]");
+        if (alertScope) {
+          state.alertScope = alertScope.dataset.alertScope;
+          renderAlerts();
+          return;
+        }
+        const alertOpen = event.target.closest("[data-alert-open]");
+        if (alertOpen) {
+          const administration = alertOpen.dataset.alertAdm;
+          if (administration && administration !== state.selected?.name) selectAdmin(administration);
+          activateTab(alertOpen.dataset.alertType);
+          if (state.platform) {
+            try { state.platform.openEditor(alertOpen.dataset.alertType,alertOpen.dataset.alertOpen); } catch (error) { return; }
+          }
+          return;
+        }
+        const boardAdd = event.target.closest("[data-board-add]");
+        if (boardAdd) {
+          openBoardDialog(boardAdd.dataset.boardAdd,"");
           return;
         }
         const boardEdit = event.target.closest("[data-board-edit]");
         if (boardEdit) {
-          openBoardDialog(boardEdit.dataset.boardEdit);
+          openBoardDialog(boardEdit.dataset.boardEdit,boardEdit.dataset.boardIndex);
           return;
         }
         const copyCode = event.target.closest("[data-copy-record-code]");
@@ -3406,6 +3694,10 @@
         renderCompare();
       });
       byId("exportCompare").addEventListener("click",exportCompareCsv);
+      byId("printSector").addEventListener("click",() => {
+        if (!buildSectorReport()) { window.alert("البيانات لم تُحمّل بعد."); return; }
+        window.setTimeout(() => window.print(),60);
+      });
       byId("bvClose").addEventListener("click",closeBoardViewer);
       byId("bvReload").addEventListener("click",reloadBoardViewer);
       byId("bvSlow").addEventListener("click",() => {
@@ -3415,9 +3707,13 @@
       byId("boardClose").addEventListener("click",() => byId("boardDialog").close());
       byId("boardClear").addEventListener("click",() => {
         const administration = byId("boardAdm").value;
+        const index = Number(byId("boardIndex").value);
         const overrides = localBoards();
-        delete overrides[administration];
-        saveLocalBoards(overrides);
+        if (Array.isArray(overrides[administration]) && !Number.isNaN(index)) {
+          overrides[administration].splice(index,1);
+          if (!overrides[administration].length) delete overrides[administration];
+          saveLocalBoards(overrides);
+        }
         byId("boardDialog").close();
         renderBoards();
       });
@@ -3430,8 +3726,13 @@
           byId("boardDialogNote").textContent = "الرابط يجب أن يبدأ بـ https://";
           return;
         }
+        const administration = byId("boardAdm").value;
         const overrides = localBoards();
-        overrides[byId("boardAdm").value] = {name:byId("boardName").value.trim(),url:url};
+        if (!Array.isArray(overrides[administration])) overrides[administration] = [];
+        const entry = {name:byId("boardName").value.trim(),url:url,kind:byId("boardKind").value};
+        const position = byId("boardIndex").value;
+        if (position === "") overrides[administration].push(entry);
+        else overrides[administration][Number(position)] = entry;
         saveLocalBoards(overrides);
         byId("boardDialog").close();
         renderBoards();
@@ -3514,7 +3815,7 @@
       },60000);
 
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("./sw.js?v=1.4",{updateViaCache:"none"}).catch(() => undefined);
+        navigator.serviceWorker.register("./sw.js?v=1.5",{updateViaCache:"none"}).catch(() => undefined);
       }
 
       initializeSync();

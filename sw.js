@@ -2,7 +2,7 @@
    استراتيجية: كاش-أولاً للقشرة والبيانات (التطبيق يفتح فورًا وبدون إنترنت)،
    مع تحديث صامت فى الخلفية. أى تعديل فى index.html يستوجب رفع VERSION. */
 
-const VERSION = "1.4";
+const VERSION = "1.5";
 const CACHE = "irrigation-assets-" + VERSION;
 const ROOT = new URL("./", self.registration.scope);
 const CORE = [
