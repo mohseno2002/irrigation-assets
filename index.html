@@ -1097,7 +1097,7 @@
     </form>
   </dialog>
 
-  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.0 · ملف واحد · بحث شامل ولوحة مقارنة الإدارات</small></footer>
+  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.1 · ملف واحد · بحث شامل ولوحة مقارنة الإدارات</small></footer>
 
   <script>
 /* ===== وحدة المزامنة — IrrigationSync ===== */
@@ -1981,6 +1981,7 @@
         compareSort:{key:"assets",dir:"desc"}
       };
 
+      const DATA_URL = "./sector.json.gz?v=2";
       const byId = (id) => document.getElementById(id);
       const escapeHtml = (value) => String(value ?? "")
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
@@ -2825,8 +2826,8 @@
       async function loadData() {
         try {
           if (!("DecompressionStream" in window)) throw new Error("المتصفح يحتاج إلى تحديث لدعم فك ضغط البيانات");
-          const response = await fetch("./data/sector.json.gz?v=1");
-          if (!response.ok) throw new Error("تعذر تحميل البيانات (HTTP " + response.status + ")");
+          const response = await fetch(DATA_URL);
+          if (!response.ok) throw new Error("HTTP " + response.status + " من الخادم");
           const payload = JSON.parse(await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).text());
           state.data = payload;
           state.baseAssets = decode(payload);
@@ -2836,8 +2837,18 @@
           setStatus("متصل · البيانات محمّلة");
           if (state.sync.isConfigured()) state.sync.sync(true).catch(() => undefined);
         } catch (error) {
-          setStatus("تعذر تحميل البيانات","error");
-          byId("adminGrid").innerHTML = '<div class="empty">تعذر تحميل ملف البيانات. أعد فتح الصفحة أثناء الاتصال بالإنترنت.</div>';
+          const detail = String(error && error.message ? error.message : error);
+          const hint = /404/.test(detail)
+            ? "الملف غير موجود فى هذا المسار — تأكد أن sector.json.gz مرفوع بجوار index.html مباشرة."
+            : /40[13]/.test(detail)
+            ? "الخادم رفض الطلب (صلاحيات)."
+            : /Failed to fetch|NetworkError|Load failed/i.test(detail)
+            ? "تعذر الوصول للشبكة أو حُجب الطلب."
+            : /DecompressionStream|فك ضغط|incorrect header/i.test(detail)
+            ? "الملف ليس بصيغة gzip سليمة أو المتصفح لا يدعم فك الضغط."
+            : "";
+          setStatus("تعذر تحميل البيانات · " + detail,"error");
+          byId("adminGrid").innerHTML = '<div class="empty"><b>تعذر تحميل ملف البيانات</b><br>المسار المطلوب: ' + escapeHtml(DATA_URL) + '<br>الخطأ: ' + escapeHtml(detail) + (hint ? '<br>' + escapeHtml(hint) : '') + '</div>';
           byId("typeDistribution").innerHTML = '<div class="empty">البيانات غير متاحة.</div>';
           byId("adminRanking").innerHTML = '<div class="empty">البيانات غير متاحة.</div>';
           byId("compareTable").innerHTML = '<div class="empty">البيانات غير متاحة.</div>';
@@ -2959,7 +2970,7 @@
       },60000);
 
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("./sw.js?v=1",{updateViaCache:"none"}).catch(() => undefined);
+        navigator.serviceWorker.register("./sw.js?v=1.1",{updateViaCache:"none"}).catch(() => undefined);
       }
 
       initializeSync();
