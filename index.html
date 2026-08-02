@@ -792,6 +792,69 @@
     .table-more { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
     .table-more-actions { display:flex; gap:8px; flex-wrap:wrap; }
 
+    #boardViewer {
+      position:fixed;
+      inset:0;
+      z-index:60;
+      display:none;
+      flex-direction:column;
+      background:var(--paper);
+    }
+    #boardViewer.show { display:flex; }
+    .bv-bar {
+      flex:none;
+      min-height:58px;
+      padding:8px 12px;
+      display:flex;
+      align-items:center;
+      gap:9px;
+      border-bottom:1px solid var(--line);
+      background:var(--white);
+    }
+    .bv-bar b { flex:1; min-width:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .bv-bar small { display:block; font:600 11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace; direction:ltr; text-align:left; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .bv-btn {
+      min-height:42px;
+      padding:0 13px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:var(--white);
+      color:var(--blue);
+      font-size:13px;
+      font-weight:700;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .bv-mark { width:36px; height:36px; flex:none; display:grid; place-items:center; border-radius:11px; background:#eaf3f1; color:var(--blue); font-size:18px; }
+    .bv-host { position:relative; flex:1; min-height:0; }
+    .bv-frame { position:absolute; inset:0; width:100%; height:100%; border:0; display:none; opacity:0; transition:opacity .28s; background:var(--white); }
+    .bv-frame.on { opacity:1; }
+    .bv-load { position:absolute; inset:0; display:grid; place-items:center; text-align:center; background:var(--paper); }
+    .bv-load .spinner { margin:0 auto 14px; }
+    .bv-load p { margin:0 0 14px; font-size:14px; color:var(--muted); }
+
+    .board-hero { padding:24px; border:1px solid var(--line); border-radius:22px; background:linear-gradient(135deg,#edf5f2,var(--white)); display:grid; gap:14px; }
+    .board-hero h3 { margin:0; font-size:21px; }
+    .board-hero p { margin:0; font-size:14px; color:var(--muted); line-height:1.9; }
+    .board-card { padding:20px; border:1px solid #9fc5c3; border-radius:20px; background:var(--white); display:grid; gap:12px; }
+    .board-card .board-name { font-size:18px; font-weight:800; color:var(--blue); }
+    .board-card .board-url { font:600 12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace; direction:ltr; text-align:left; color:var(--muted); word-break:break-all; }
+    .board-actions { display:flex; gap:9px; flex-wrap:wrap; }
+    .board-actions a,.board-actions button { min-height:48px; padding:0 18px; display:inline-flex; align-items:center; justify-content:center; border-radius:14px; border:1px solid var(--line); background:var(--white); color:var(--blue); font-size:14px; font-weight:700; cursor:pointer; }
+    .board-actions a.primary { border-color:transparent; background:linear-gradient(135deg,var(--blue-2),var(--blue)); color:#fff; }
+    .board-empty { padding:26px 20px; border:1px dashed var(--line); border-radius:20px; text-align:center; background:#fbfdfe; display:grid; gap:10px; }
+    .board-empty b { font-size:16px; }
+    .board-empty span { font-size:13px; color:var(--muted); }
+    .board-index { display:grid; gap:8px; }
+    .board-index h4 { margin:0; font-size:14px; color:var(--blue); }
+    .board-index-list { display:flex; flex-wrap:wrap; gap:8px; }
+    .board-chip { min-height:42px; padding:0 14px; display:inline-flex; align-items:center; gap:7px; border:1px solid var(--line); border-radius:999px; background:var(--white); font-size:13px; cursor:pointer; }
+    .board-chip.on { border-color:#9fc5c3; background:#eaf3f1; color:var(--blue); font-weight:700; }
+    .board-note { padding:13px 15px; border:1px solid var(--line); border-radius:14px; background:#f7f5ef; font-size:12.5px; line-height:1.9; }
+
     .compare-lead { margin-bottom:18px; display:grid; grid-template-columns:repeat(auto-fit,minmax(186px,1fr)); gap:12px; }
     .compare-lead article { padding:16px 18px; display:grid; gap:4px; border:1px solid var(--line); border-radius:18px; background:var(--white); }
     .compare-lead strong { font-size:23px; color:var(--blue); }
@@ -982,6 +1045,7 @@
         <div class="tabs" role="tablist" aria-label="وحدات الإدارة">
           <button class="tab" role="tab" aria-selected="true" data-tab="structure">الهيكل الإداري</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="assets">الكباري والمنشآت</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="boards">لوحة المناسيب والتصرفات</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="coverage">التغطيات</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="property">الأملاك</button>
           <button class="tab" role="tab" aria-selected="false" data-tab="canal_profile">أورنيك الترع</button>
@@ -1018,6 +1082,10 @@
           </div>
         </section>
 
+        <section class="tab-panel" data-panel="boards" hidden>
+          <div class="module" id="boardsPanel"></div>
+        </section>
+
         <section class="tab-panel" data-panel="coverage" hidden><div class="records-module" data-record-module="coverage"></div></section>
 
         <section class="tab-panel" data-panel="property" hidden><div class="records-module" data-record-module="property"></div></section>
@@ -1036,6 +1104,24 @@
       </div>
     </section>
   </main>
+
+  <dialog id="boardDialog">
+    <form class="dialog-body" id="boardForm">
+      <h2 id="boardDialogTitle">رابط لوحة المناسيب والتصرفات</h2>
+      <p>يُحفظ الرابط على هذا الجهاز فورًا. أرسله لى لأضيفه إلى النسخة المنشورة فيظهر على كل الأجهزة.</p>
+      <div class="form-grid">
+        <label class="field full"><span>الإدارة</span><input id="boardAdm" type="text" readonly></label>
+        <label class="field full"><span>اسم اللوحة *</span><input id="boardName" type="text" maxlength="160" placeholder="مثال: لوحة مناسيب وتصرفات ..." required></label>
+        <label class="field full"><span>رابط اللوحة *</span><input id="boardUrl" type="url" inputmode="url" placeholder="https://mohseno2002.github.io/..." required></label>
+      </div>
+      <div class="dialog-note" id="boardDialogNote">الرابط يجب أن يبدأ بـ https://</div>
+      <div class="dialog-actions">
+        <button class="danger-button" id="boardClear" type="button" hidden>حذف الرابط المحلى</button>
+        <button class="secondary-button" id="boardClose" type="button">إلغاء</button>
+        <button class="primary-button" type="submit">حفظ الرابط</button>
+      </div>
+    </form>
+  </dialog>
 
   <dialog class="find-dialog" id="findDialog">
     <div class="dialog-body">
@@ -1122,9 +1208,28 @@
     </form>
   </dialog>
 
+  <div id="boardViewer" aria-hidden="true" role="dialog" aria-label="عارض لوحة الإدارة">
+    <div class="bv-bar">
+      <button class="bv-btn" id="bvClose" type="button">⟶ رجوع</button>
+      <span class="bv-mark">≈</span>
+      <b><span id="bvName">—</span><small id="bvUrl"></small></b>
+      <button class="bv-btn" id="bvReload" type="button" title="إعادة تحميل">⟳</button>
+      <a class="bv-btn" id="bvExternal" href="#" target="_blank" rel="noopener" title="فتح فى تبويب خارجى">↗</a>
+    </div>
+    <div class="bv-host" id="bvHost">
+      <div class="bv-load" id="bvLoad">
+        <div>
+          <div class="spinner"></div>
+          <p id="bvLoadText">جارٍ فتح اللوحة…</p>
+          <button class="bv-btn" id="bvSlow" type="button" hidden>يتأخر؟ افتح فى تبويب خارجى ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <section id="printReport" aria-hidden="true"></section>
 
-  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.2 · بحث شامل للوحدات · جدول بلا سقف · تقرير رسمى</small></footer>
+  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.4 · لوحة المناسيب والتصرفات تُفتح داخل التطبيق</small></footer>
 
   <script>
 /* ===== وحدة المزامنة — IrrigationSync ===== */
@@ -2404,6 +2509,7 @@
         byId("wsReadiness").textContent = number.format(summary.readiness) + "٪";
         renderStructure();
         renderAssets();
+        renderBoards();
         renderQuality();
         state.platform?.refresh();
       }
@@ -2795,6 +2901,7 @@
         const total = items.length || 1;
         const percent = (count) => number.format(Math.round(count / total * 100)) + "٪";
 
+        const board = boardFor(summary.name);
         const distribution = new Map();
         for (const item of items) {
           const key = classify(item);
@@ -2834,7 +2941,8 @@
           '</div>' +
           '<div class="rep-rule"></div>' +
           '<div class="rep-title">تقرير الموقف الرقمى لسجل الأصول والمنشآت المائية</div>' +
-          '<div class="rep-sub">الإدارة العامة: ' + escapeHtml(summary.name) + ' · النطاق: ' + escapeHtml(summary.governorates.join(" · ")) + '</div>' +
+          '<div class="rep-sub">الإدارة العامة: ' + escapeHtml(summary.name) + ' · النطاق: ' + escapeHtml(summary.governorates.join(" · ")) +
+            (board ? '<br>لوحة المناسيب والتصرفات: ' + escapeHtml(board.name) + ' — ' + escapeHtml(board.url) : '') + '</div>' +
           '<div class="rep-h3">أولًا: المؤشرات العامة</div>' +
           '<table class="rep-table"><thead><tr><th>البيان</th><th>القيمة</th><th>البيان</th><th>القيمة</th></tr></thead><tbody>' +
             repRow(["عدد الهندسات التابعة",number.format(summary.engineers),"عدد الترع والمجارى",number.format(summary.canals)],0) +
@@ -2856,6 +2964,170 @@
           '<div class="rep-foot-rule"></div>' +
           '<div class="rep-foot">13 شارع مراد — الجيزة · ت: 35725700 / 35724700 · فاكس: 35724700 · centraldepartment.moi@gmail.com</div>';
         return true;
+      }
+
+      /* ===== سجل لوحات المناسيب والتصرفات =====
+         DEFAULT_BOARDS = اللوحات المنشورة (تظهر على كل الأجهزة).
+         تجاوزات المستخدم تُحفظ على الجهاز فقط لحين إضافتها هنا. */
+      const DEFAULT_BOARDS = {
+        "الجيزة":{name:"لوحة ري الجيزة",url:"https://mohseno2002.github.io/Giza-/"},
+        "الاسماعيلية وغرب سيناء":{name:"التوأم الرقمى لترعة الإسماعيلية",url:"https://mohseno2002.github.io/ismailia-dt/"}
+      };
+      const BOARDS_KEY = "irrigation_admin_boards_v1";
+
+      function localBoards() {
+        try {
+          const raw = window.localStorage.getItem(BOARDS_KEY);
+          const parsed = raw ? JSON.parse(raw) : {};
+          return parsed && typeof parsed === "object" ? parsed : {};
+        } catch (error) {
+          return {};
+        }
+      }
+
+      function saveLocalBoards(map) {
+        try { window.localStorage.setItem(BOARDS_KEY,JSON.stringify(map)); } catch (error) { return; }
+      }
+
+      function boardFor(administration) {
+        const overrides = localBoards();
+        if (overrides[administration] && overrides[administration].url) {
+          return Object.assign({},overrides[administration],{local:true});
+        }
+        if (DEFAULT_BOARDS[administration]) {
+          return Object.assign({},DEFAULT_BOARDS[administration],{local:false});
+        }
+        return null;
+      }
+
+      function boardsIndex() {
+        const overrides = localBoards();
+        const names = new Set(Object.keys(DEFAULT_BOARDS).concat(Object.keys(overrides)));
+        return state.summaries
+          .filter(summary => names.has(summary.name) && boardFor(summary.name))
+          .map(summary => summary.name);
+      }
+
+      function hostOf(url) {
+        try { return new URL(url).host + new URL(url).pathname; } catch (error) { return String(url); }
+      }
+
+      function renderBoards() {
+        const summary = state.selected;
+        const container = byId("boardsPanel");
+        if (!container) return;
+        if (!summary) { container.innerHTML = ""; return; }
+        const board = boardFor(summary.name);
+        const available = boardsIndex();
+        const head = '<div class="board-hero"><h3>لوحة المناسيب والتصرفات — ' + escapeHtml(summary.name) + '</h3>' +
+          '<p>اللوحة التشغيلية اليومية للإدارة: المناسيب أمام وخلف المنشآت، التصرفات، ومتابعة الحجوز. تُبنى لوحة مستقلة لكل إدارة ويُضاف رابطها هنا.</p></div>';
+
+        const card = board
+          ? '<article class="board-card">' +
+              '<div class="board-name">' + escapeHtml(board.name) + (board.local ? ' <span class="tag">رابط محلى</span>' : '') + '</div>' +
+              '<div class="board-url">' + escapeHtml(hostOf(board.url)) + '</div>' +
+              '<div class="board-actions">' +
+                '<button class="primary" type="button" data-board-open="' + escapeHtml(summary.name) + '">فتح اللوحة داخل التطبيق ←</button>' +
+                '<a href="' + escapeHtml(board.url) + '" target="_blank" rel="noopener">تبويب خارجى ↗</a>' +
+                '<button type="button" data-copy-record-code="' + escapeHtml(board.url) + '">نسخ الرابط</button>' +
+                '<button type="button" data-board-edit="' + escapeHtml(summary.name) + '">تعديل الرابط</button>' +
+              '</div>' +
+            '</article>'
+          : '<div class="board-empty"><b>لم تُنشأ لوحة لهذه الإدارة بعد</b>' +
+              '<span>يمكنك ربط لوحة قائمة الآن، أو تركها لحين إنشائها.</span>' +
+              '<div class="board-actions" style="justify-content:center"><button type="button" data-board-edit="' + escapeHtml(summary.name) + '">ربط لوحة بهذه الإدارة</button></div>' +
+            '</div>';
+
+        const index = '<div class="board-index"><h4>اللوحات المتاحة على مستوى القطاع (' + number.format(available.length) + ' من ' + number.format(state.summaries.length) + ')</h4>' +
+          '<div class="board-index-list">' + (available.length
+            ? available.map(name => '<button class="board-chip' + (name === summary.name ? ' on' : '') + '" type="button" data-board-open="' + escapeHtml(name) + '" data-admin="' + escapeHtml(name) + '">≈ ' + escapeHtml(name) + '</button>').join("")
+            : '<span class="board-note">لا توجد لوحات مسجلة بعد.</span>') + '</div></div>';
+
+        const note = '<div class="board-note"><b>ملاحظة:</b> الروابط التى تضيفها من هذا الجهاز تُحفظ محليًا فقط. لتظهر على كل الأجهزة تُضاف إلى النسخة المنشورة من التطبيق.</div>';
+
+        container.innerHTML = head + card + index + note;
+      }
+
+      /* ===== العارض المدمج للوحات — الإطارات تُخزَّن فلا يُعاد التحميل عند التنقل ===== */
+      const boardFrames = {};
+      let boardSlowTimer = 0;
+
+      function openBoardViewer(administration) {
+        const board = boardFor(administration);
+        if (!board) return;
+        byId("bvName").textContent = board.name;
+        byId("bvUrl").textContent = hostOf(board.url);
+        byId("bvExternal").href = board.url;
+        byId("bvLoadText").textContent = "جارٍ فتح " + board.name + "…";
+        byId("bvSlow").hidden = true;
+
+        const host = byId("bvHost");
+        const key = board.url;
+        let frame = boardFrames[key];
+        const fresh = !frame;
+        Object.keys(boardFrames).forEach((other) => {
+          boardFrames[other].style.display = other === key ? "block" : "none";
+        });
+        if (fresh) {
+          frame = document.createElement("iframe");
+          frame.className = "bv-frame";
+          frame.title = board.name;
+          frame.setAttribute("allow","fullscreen; geolocation");
+          frame.setAttribute("referrerpolicy","no-referrer");
+          frame.src = board.url;
+          boardFrames[key] = frame;
+          host.appendChild(frame);
+          frame.style.display = "block";
+          frame.addEventListener("load",() => {
+            frame.classList.add("on");
+            byId("bvLoad").hidden = true;
+            window.clearTimeout(boardSlowTimer);
+          });
+        }
+        byId("bvLoad").hidden = !fresh && frame.classList.contains("on");
+        if (!frame.classList.contains("on")) {
+          window.clearTimeout(boardSlowTimer);
+          boardSlowTimer = window.setTimeout(() => { byId("bvSlow").hidden = false; },8000);
+        }
+        const viewer = byId("boardViewer");
+        viewer.classList.add("show");
+        viewer.setAttribute("aria-hidden","false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeBoardViewer() {
+        const viewer = byId("boardViewer");
+        if (!viewer.classList.contains("show")) return;
+        viewer.classList.remove("show");
+        viewer.setAttribute("aria-hidden","true");
+        document.body.style.overflow = "";
+        window.clearTimeout(boardSlowTimer);
+      }
+
+      function reloadBoardViewer() {
+        const url = byId("bvExternal").getAttribute("href");
+        const frame = boardFrames[url];
+        if (!frame) return;
+        frame.classList.remove("on");
+        byId("bvLoad").hidden = false;
+        byId("bvSlow").hidden = true;
+        frame.src = frame.src;
+        window.clearTimeout(boardSlowTimer);
+        boardSlowTimer = window.setTimeout(() => { byId("bvSlow").hidden = false; },8000);
+      }
+
+      function openBoardDialog(administration) {
+        const board = boardFor(administration);
+        const overrides = localBoards();
+        setFormValue("boardAdm",administration);
+        setFormValue("boardName",board ? board.name : "لوحة مناسيب وتصرفات " + administration);
+        setFormValue("boardUrl",board ? board.url : "");
+        byId("boardClear").hidden = !overrides[administration];
+        byId("boardDialogNote").className = "dialog-note";
+        byId("boardDialogNote").textContent = board && !board.local
+          ? "هذه الإدارة لها رابط منشور. أى تعديل هنا يتجاوزه على هذا الجهاز فقط."
+          : "الرابط يجب أن يبدأ بـ https://";
+        byId("boardDialog").showModal();
       }
 
       function refreshAllViews() {
@@ -3073,6 +3345,19 @@
           growAssetTable(allTable.dataset.allTable,true);
           return;
         }
+        const boardOpen = event.target.closest("[data-board-open]");
+        if (boardOpen) {
+          const name = boardOpen.dataset.boardOpen;
+          if (name !== state.selected?.name) selectAdmin(name);
+          activateTab("boards");
+          openBoardViewer(name);
+          return;
+        }
+        const boardEdit = event.target.closest("[data-board-edit]");
+        if (boardEdit) {
+          openBoardDialog(boardEdit.dataset.boardEdit);
+          return;
+        }
         const copyCode = event.target.closest("[data-copy-record-code]");
         if (copyCode) {
           copyRecordCode(copyCode.dataset.copyRecordCode,copyCode);
@@ -3121,7 +3406,42 @@
         renderCompare();
       });
       byId("exportCompare").addEventListener("click",exportCompareCsv);
+      byId("bvClose").addEventListener("click",closeBoardViewer);
+      byId("bvReload").addEventListener("click",reloadBoardViewer);
+      byId("bvSlow").addEventListener("click",() => {
+        const url = byId("bvExternal").getAttribute("href");
+        if (url) window.open(url,"_blank","noopener");
+      });
+      byId("boardClose").addEventListener("click",() => byId("boardDialog").close());
+      byId("boardClear").addEventListener("click",() => {
+        const administration = byId("boardAdm").value;
+        const overrides = localBoards();
+        delete overrides[administration];
+        saveLocalBoards(overrides);
+        byId("boardDialog").close();
+        renderBoards();
+      });
+      byId("boardForm").addEventListener("submit",(event) => {
+        event.preventDefault();
+        if (!event.currentTarget.reportValidity()) return;
+        const url = byId("boardUrl").value.trim();
+        if (!/^https:\/\//i.test(url)) {
+          byId("boardDialogNote").className = "dialog-note error";
+          byId("boardDialogNote").textContent = "الرابط يجب أن يبدأ بـ https://";
+          return;
+        }
+        const overrides = localBoards();
+        overrides[byId("boardAdm").value] = {name:byId("boardName").value.trim(),url:url};
+        saveLocalBoards(overrides);
+        byId("boardDialog").close();
+        renderBoards();
+      });
       document.addEventListener("keydown",(event) => {
+        if (event.key === "Escape" && byId("boardViewer").classList.contains("show")) {
+          event.preventDefault();
+          closeBoardViewer();
+          return;
+        }
         if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
           event.preventDefault();
           openFindDialog();
@@ -3194,7 +3514,7 @@
       },60000);
 
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("./sw.js?v=1.2",{updateViaCache:"none"}).catch(() => undefined);
+        navigator.serviceWorker.register("./sw.js?v=1.4",{updateViaCache:"none"}).catch(() => undefined);
       }
 
       initializeSync();
