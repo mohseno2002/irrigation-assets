@@ -1,10 +1,13 @@
 /* منصة الأصول والمنشآت المائية — عامل الخدمة
-   استراتيجية: كاش-أولاً للقشرة والبيانات (التطبيق يفتح فورًا وبدون إنترنت)،
-   مع تحديث صامت فى الخلفية. أى تعديل فى index.html يستوجب رفع VERSION. */
+   القشرة (index.html): الشبكة أولًا بمهلة قصيرة ثم الكاش — يضمن وصول أى تحديث فورًا
+   ولا يعطّل الفتح دون اتصال. البيانات والأيقونات: الكاش أولًا مع تحديث صامت.
+   أى تعديل فى index.html يستوجب رفع VERSION. */
 
-const VERSION = "1.5";
+const VERSION = "1.6";
 const CACHE = "irrigation-assets-" + VERSION;
 const ROOT = new URL("./", self.registration.scope);
+const SHELL = new URL("./index.html", ROOT).href;
+const SHELL_TIMEOUT = 2500;
 const CORE = [
   "./",
   "./index.html",
@@ -34,16 +37,51 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-function refresh(request) {
-  return fetch(request)
-    .then((response) => {
-      if (response && response.ok && response.type === "basic") {
-        const copy = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(request, copy));
+function store(request, response) {
+  if (response && response.ok && response.type === "basic") {
+    const copy = response.clone();
+    caches.open(CACHE).then((cache) => cache.put(request, copy));
+  }
+  return response;
+}
+
+/* القشرة: أول ما يرد من الشبكة يُقدَّم ويُحدَّث الكاش؛ وإن تأخرت أو انقطعت يُقدَّم الكاش */
+function shellResponse() {
+  return new Promise((resolve) => {
+    let settled = false;
+    const fromCache = () => caches.match(SHELL).then((cached) => {
+      if (settled) return;
+      if (cached) {
+        settled = true;
+        resolve(cached);
       }
-      return response;
-    })
-    .catch(() => undefined);
+    });
+    const timer = setTimeout(fromCache, SHELL_TIMEOUT);
+    fetch(new Request(SHELL, { cache: "reload" }))
+      .then((response) => {
+        if (response && response.ok) {
+          store(new Request(SHELL), response);
+          if (!settled) {
+            settled = true;
+            clearTimeout(timer);
+            resolve(response);
+          }
+          return;
+        }
+        return caches.match(SHELL).then((cached) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          resolve(cached || response || Response.error());
+        });
+      })
+      .catch(() => caches.match(SHELL).then((cached) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(cached || Response.error());
+      }));
+  });
 }
 
 self.addEventListener("fetch", (event) => {
@@ -53,32 +91,19 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // التنقل: الكاش أولاً حتى يفتح التطبيق فورًا وبدون شبكة
   if (request.mode === "navigate") {
-    const shell = new URL("./index.html", ROOT).href;
-    event.respondWith(
-      caches.match(shell).then((cached) => {
-        const network = refresh(new Request(shell));
-        return cached || network.then((response) => response || Response.error());
-      })
-    );
+    event.respondWith(shellResponse());
     return;
   }
 
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) {
-        refresh(request);
+        fetch(request).then((response) => store(request, response)).catch(() => undefined);
         return cached;
       }
       return fetch(request)
-        .then((response) => {
-          if (response && response.ok && response.type === "basic") {
-            const copy = response.clone();
-            caches.open(CACHE).then((cache) => cache.put(request, copy));
-          }
-          return response;
-        })
+        .then((response) => store(request, response))
         .catch(() => Response.error());
     })
   );

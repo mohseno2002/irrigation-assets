@@ -1252,7 +1252,7 @@
 
   <section id="printReport" aria-hidden="true"></section>
 
-  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.5 · تطبيقات متعددة لكل إدارة · الصلاحيات · التقرير القطاعى</small></footer>
+  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.6 · تحديث فورى · تطبيقات متعددة · الصلاحيات · التقرير القطاعى</small></footer>
 
   <script>
 /* ===== وحدة المزامنة — IrrigationSync ===== */
@@ -3815,7 +3815,16 @@
       },60000);
 
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("./sw.js?v=1.5",{updateViaCache:"none"}).catch(() => undefined);
+        const hadController = Boolean(navigator.serviceWorker.controller);
+        let swReloading = false;
+        navigator.serviceWorker.addEventListener("controllerchange",() => {
+          if (!hadController || swReloading) return;
+          swReloading = true;
+          window.location.reload();
+        });
+        navigator.serviceWorker.register("./sw.js?v=1.6",{updateViaCache:"none"})
+          .then((registration) => { registration.update(); })
+          .catch(() => undefined);
       }
 
       initializeSync();
