@@ -789,6 +789,8 @@
     .find-item small { font-size:12px; color:var(--muted); }
     .find-empty { padding:28px 14px; text-align:center; color:var(--muted); font-size:14px; }
     tr.row-hit > td { background:#fff3d2 !important; }
+    .table-more { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .table-more-actions { display:flex; gap:8px; flex-wrap:wrap; }
 
     .compare-lead { margin-bottom:18px; display:grid; grid-template-columns:repeat(auto-fit,minmax(186px,1fr)); gap:12px; }
     .compare-lead article { padding:16px 18px; display:grid; gap:4px; border:1px solid var(--line); border-radius:18px; background:var(--white); }
@@ -820,14 +822,37 @@
     .cmp-bar i { display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,var(--aqua),var(--blue-2)); }
     .cmp-bar span { font-size:12px; font-weight:800; direction:ltr; }
 
+    #printReport { display:none; }
+
     @media print {
-      .site-header,.hero,.metrics,#overview,#compare,#administrations,.tabs,.workspace-actions,footer { display:none !important; }
-      body { background:#fff; }
-      .workspace { margin:0; padding:0; }
-      .workspace-shell { border:0; box-shadow:none; }
-      .tab-panel { min-height:0; }
-      .asset-table { overflow:visible; }
+      body > * { display:none !important; }
+      body > #printReport { display:block !important; }
+      body { margin:0; background:#fff; color:#111; font-size:11pt; }
+      @page { size:A4; margin:12mm; }
+      .rep-table,.rep-sign { page-break-inside:avoid; }
     }
+
+    #printReport { color:#111; direction:rtl; }
+    .rep-head { display:grid; grid-template-columns:1fr 128px 1fr; align-items:center; gap:12px; }
+    .rep-org { font-size:12pt; font-weight:700; line-height:1.9; color:#0e3b5c; }
+    .rep-ref { border:1.4px solid #0e3b5c; border-radius:6px; padding:8px 10px; font-size:10pt; line-height:2; }
+    .rep-ref b { display:inline-block; min-width:74px; color:#0e3b5c; }
+    .rep-rule { height:2.5px; background:#111; margin:10px 0 14px; }
+    .rep-title { text-align:center; margin-bottom:4px; font-size:15pt; font-weight:800; color:#0e3b5c; }
+    .rep-sub { text-align:center; font-size:10pt; color:#444; margin-bottom:14px; }
+    .rep-h3 { font-size:11.5pt; font-weight:800; color:#0e3b5c; margin:16px 0 6px; }
+    .rep-table { width:100%; border-collapse:collapse; margin-bottom:6px; }
+    .rep-table th { border:1.2px solid #0e3b5c; background:#0e3b5c; color:#fff; padding:6px 8px; font-size:10pt; }
+    .rep-table td { border:1.2px solid #0e3b5c; padding:6px 8px; font-size:10pt; }
+    .rep-num { direction:ltr; text-align:center; }
+    .rep-note { border:1.2px solid #c9d6df; border-radius:6px; padding:9px 11px; font-size:9.5pt; line-height:1.9; background:#f4f8fa; margin-top:12px; }
+    .rep-sign { margin-top:26px; display:grid; grid-template-columns:1fr 310px; }
+    .rep-sign-box { text-align:center; font-size:11pt; line-height:2; }
+    .rep-sign-box .rep-role { font-weight:700; color:#0e3b5c; }
+    .rep-sign-space { height:52px; }
+    .rep-sign-box .rep-name { font-weight:800; }
+    .rep-foot-rule { height:2px; background:#111; margin-top:22px; }
+    .rep-foot { padding-top:6px; text-align:center; font-size:9pt; color:#333; }
 
     @media (prefers-reduced-motion:reduce) {
       *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
@@ -1097,7 +1122,9 @@
     </form>
   </dialog>
 
-  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.1 · ملف واحد · بحث شامل ولوحة مقارنة الإدارات</small></footer>
+  <section id="printReport" aria-hidden="true"></section>
+
+  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 1.2 · بحث شامل للوحدات · جدول بلا سقف · تقرير رسمى</small></footer>
 
   <script>
 /* ===== وحدة المزامنة — IrrigationSync ===== */
@@ -1978,6 +2005,7 @@
         platform:null,
         searchIndex:null,
         assetCodes:null,
+        tables:{},
         compareSort:{key:"assets",dir:"desc"}
       };
 
@@ -2240,7 +2268,39 @@
         return [...map.entries()].sort((a,b) => b[1].length - a[1].length);
       }
 
-      function tableHtml(items,limit=250) {
+      const TABLE_PAGE = 200;
+
+      function renderAssetTable(containerId,items) {
+        state.tables[containerId] = {items:items,shown:Math.min(TABLE_PAGE,items.length)};
+        paintAssetTable(containerId);
+      }
+
+      function paintAssetTable(containerId) {
+        const entry = state.tables[containerId];
+        if (!entry) return;
+        byId(containerId).innerHTML = tableHtml(entry.items,entry.shown,containerId);
+      }
+
+      function growAssetTable(containerId,toEnd) {
+        const entry = state.tables[containerId];
+        if (!entry) return;
+        entry.shown = toEnd ? entry.items.length : Math.min(entry.items.length,entry.shown + TABLE_PAGE);
+        paintAssetTable(containerId);
+      }
+
+      function tableFooter(total,shownCount,containerId) {
+        if (!containerId || shownCount >= total) {
+          return '<div class="table-note">عرض ' + number.format(total) + ' سجلًا · القائمة كاملة</div>';
+        }
+        const remaining = total - shownCount;
+        return '<div class="table-note table-more"><span>عرض ' + number.format(shownCount) + ' من ' + number.format(total) + ' سجلًا</span>' +
+          '<span class="table-more-actions">' +
+          '<button class="row-action" type="button" data-more-table="' + escapeHtml(containerId) + '">عرض ' + number.format(Math.min(TABLE_PAGE,remaining)) + ' إضافية</button>' +
+          '<button class="row-action" type="button" data-all-table="' + escapeHtml(containerId) + '">عرض الكل (' + number.format(total) + ')</button>' +
+          '</span></div>';
+      }
+
+      function tableHtml(items,limit=250,containerId="") {
         const shown = items.slice(0,limit);
         if (!shown.length) return '<div class="empty">لا توجد سجلات مطابقة.</div>';
         return '<div class="asset-table"><table><thead><tr><th>كود السجل</th><th>المنشأة</th><th>التصنيف</th><th>الترعة</th><th>النوع</th><th>الكيلومتر</th><th>الأبعاد م</th><th>الموقع</th><th>التحديث</th></tr></thead><tbody>' +
@@ -2258,7 +2318,7 @@
             '<td><div class="row-actions"><button class="row-action" type="button" data-edit-id="' + escapeHtml(item.recordId) + '">تعديل</button><span class="tag">' + (item.locallyPending ? 'بانتظار المزامنة' : item.version ? 'سجل مركزي' : 'سجل أساسي رقمي') + '</span></div></td>' +
           '</tr>';
           }).join("") +
-          '</tbody></table><div class="table-note">عرض ' + number.format(shown.length) + ' من ' + number.format(items.length) + ' سجلًا' + (items.length > limit ? ' · استخدم البحث لتضييق النتائج' : '') + '</div></div>';
+          '</tbody></table></div>' + tableFooter(items.length,shown.length,containerId);
       }
 
       function renderStructure() {
@@ -2281,7 +2341,7 @@
           state.selectedCanal || "كل الترع",
           number.format(finalItems.length) + " منشأة"
         ].join(" · ");
-        byId("structureTable").innerHTML = tableHtml(finalItems);
+        renderAssetTable("structureTable",finalItems);
       }
 
       function renderAssets() {
@@ -2300,7 +2360,7 @@
           const recordCode = window.IrrigationSync.displayRecordCode(item.recordId,"asset");
           return !term || [recordCode,item.name,item.canal,item.eng,item.type].join(" ").toLowerCase().includes(term.toLowerCase());
         });
-        byId("assetsTable").innerHTML = tableHtml(items,350);
+        renderAssetTable("assetsTable",items);
       }
 
       function renderQuality() {
@@ -2414,14 +2474,48 @@
           meta:summary.governorates.join(" · ") + " · " + number.format(summary.assets.length) + " منشأة",
           hay:normalizeText(summary.name + " " + summary.governorates.join(" "))
         }));
-        state.searchIndex = {assets,canals,engineers,admins};
+        const modules = {};
+        if (state.platform && window.IrrigationModules) {
+          const definitions = window.IrrigationModules.MODULES;
+          Object.keys(definitions).forEach((type) => {
+            const definition = definitions[type];
+            let records = [];
+            try { records = state.platform.allRecordsFor(type) || []; } catch (error) { records = []; }
+            if (!records.length) return;
+            modules[type] = records.map(record => {
+              const values = definition.fields
+                .map(field => record[field.key])
+                .filter(value => value !== null && value !== undefined && value !== "");
+              const primary = String(record[definition.columns[0]] || "").trim() || definition.singular;
+              const secondary = definition.columns.slice(1,4)
+                .map(key => record[key])
+                .filter(value => value !== null && value !== undefined && value !== "");
+              return {
+                kind:"module",
+                moduleType:type,
+                moduleTitle:definition.title,
+                adm:record.adm || "",
+                eng:record.eng || "",
+                canal:record.canal || record.canalName || "",
+                record:record.recordId,
+                label:primary,
+                meta:[record.adm || "", ...secondary].filter(Boolean).join(" · "),
+                hay:normalizeText(definition.title + " " + (record.adm || "") + " " + values.join(" "))
+              };
+            });
+          });
+        }
+        state.searchIndex = {assets,canals,engineers,admins,modules};
         return state.searchIndex;
       }
 
       function ensureAssetCodes() {
         if (state.assetCodes) return state.assetCodes;
         const index = ensureSearchIndex();
-        state.assetCodes = index.assets.map(entry => normalizeText(window.IrrigationSync.displayRecordCode(entry.record,"asset")));
+        state.assetCodes = {asset:index.assets.map(entry => normalizeText(window.IrrigationSync.displayRecordCode(entry.record,"asset")))};
+        Object.keys(index.modules).forEach((type) => {
+          state.assetCodes[type] = index.modules[type].map(entry => normalizeText(window.IrrigationSync.displayRecordCode(entry.record,type)));
+        });
         return state.assetCodes;
       }
 
@@ -2450,6 +2544,7 @@
           ' data-hit-eng="' + escapeHtml(entry.eng || "") + '"' +
           ' data-hit-canal="' + escapeHtml(entry.canal || "") + '"' +
           ' data-hit-record="' + escapeHtml(entry.record || "") + '"' +
+          ' data-hit-module="' + escapeHtml(entry.moduleType || "") + '"' +
           '><b>' + escapeHtml(entry.label) + '</b><small>' + escapeHtml(entry.meta) + '</small></button>';
       }
 
@@ -2474,13 +2569,19 @@
           ["الإدارات العامة",matchEntries(index.admins,tokens,6,null)],
           ["الهندسات",matchEntries(index.engineers,tokens,8,null)],
           ["الترع والمجاري",matchEntries(index.canals,tokens,10,null)],
-          ["المنشآت المائية",matchEntries(index.assets,tokens,14,codes)]
-        ].filter(group => group[1].total > 0);
-        if (!groups.length) {
+          ["المنشآت المائية",matchEntries(index.assets,tokens,14,codes ? codes.asset : null)]
+        ];
+        Object.keys(index.modules).forEach((type) => {
+          const entries = index.modules[type];
+          if (!entries.length) return;
+          groups.push([entries[0].moduleTitle,matchEntries(entries,tokens,8,codes ? codes[type] : null)]);
+        });
+        const visible = groups.filter(group => group[1].total > 0);
+        if (!visible.length) {
           container.innerHTML = '<div class="find-empty">لا توجد نتائج مطابقة. جرّب جزءًا من الاسم فقط.</div>';
           return;
         }
-        container.innerHTML = groups.map(group =>
+        container.innerHTML = visible.map(group =>
           '<section class="find-group"><h4><span>' + escapeHtml(group[0]) + '</span><em>' +
           number.format(group[1].items.length) + ' من ' + number.format(group[1].total) +
           '</em></h4><div class="find-list">' + group[1].items.map(findItemHtml).join("") + '</div></section>'
@@ -2506,6 +2607,17 @@
         if (!administration) return;
         selectAdmin(administration);
         if (!state.selected) return;
+        if (hit.hitKind === "module") {
+          activateTab(hit.hitModule);
+          byId("findDialog").close();
+          byId("workspace").scrollIntoView({block:"start"});
+          if (state.platform && hit.hitRecord) {
+            window.setTimeout(() => {
+              try { state.platform.openEditor(hit.hitModule,hit.hitRecord); } catch (error) { return; }
+            },300);
+          }
+          return;
+        }
         if (hit.hitKind === "engineer") {
           state.selectedEngineer = hit.hitEng || "";
           state.selectedCanal = "";
@@ -2649,6 +2761,101 @@
         link.click();
         link.remove();
         setTimeout(() => URL.revokeObjectURL(url),1000);
+      }
+
+      function emblemSvg() {
+        return '<svg viewBox="0 0 128 128" width="118" height="118" role="img" aria-label="شعار الإدارة">' +
+          '<circle cx="64" cy="64" r="61" fill="none" stroke="#0e3b5c" stroke-width="2.4"/>' +
+          '<circle cx="64" cy="64" r="53" fill="none" stroke="#0e3b5c" stroke-width="1.1"/>' +
+          '<path d="M26 74h76" stroke="#0e3b5c" stroke-width="3.2" stroke-linecap="round"/>' +
+          '<path d="M30 74V52h68v22" fill="none" stroke="#0e3b5c" stroke-width="2.6"/>' +
+          '<path d="M47 74V56M64 74V56M81 74V56" stroke="#0e3b5c" stroke-width="2.2"/>' +
+          '<path d="M30 46h68" stroke="#c9a84c" stroke-width="4" stroke-linecap="round"/>' +
+          '<path d="M26 88c9 6 18 6 27 0s18-6 27 0 18 6 22 0" fill="none" stroke="#0e3b5c" stroke-width="2.6" stroke-linecap="round"/>' +
+          '<path d="M26 99c9 6 18 6 27 0s18-6 27 0 18 6 22 0" fill="none" stroke="#0e3b5c" stroke-width="2.2" stroke-linecap="round" opacity=".7"/>' +
+          '</svg>';
+      }
+
+      function reportDate() {
+        const now = new Date();
+        return String(now.getDate()).padStart(2,"0") + "/" + String(now.getMonth() + 1).padStart(2,"0") + "/" + now.getFullYear();
+      }
+
+      function repRow(cells,numericFrom) {
+        return '<tr>' + cells.map((cell,position) =>
+          '<td' + (numericFrom !== undefined && position >= numericFrom ? ' class="rep-num"' : '') + '>' + cell + '</td>'
+        ).join("") + '</tr>';
+      }
+
+      function buildPrintReport() {
+        const summary = state.selected;
+        const target = byId("printReport");
+        if (!summary) { target.innerHTML = ""; return false; }
+        const items = summary.assets;
+        const total = items.length || 1;
+        const percent = (count) => number.format(Math.round(count / total * 100)) + "٪";
+
+        const distribution = new Map();
+        for (const item of items) {
+          const key = classify(item);
+          distribution.set(key,(distribution.get(key) || 0) + 1);
+        }
+        const distributionRows = [...distribution.entries()].sort((a,b) => b[1] - a[1]).map(entry =>
+          repRow([escapeHtml(entry[0]),number.format(entry[1]),number.format(Math.round(entry[1] / total * 100)) + "٪"],1)
+        ).join("");
+
+        const engineerRows = groupBy(items,"eng").map(entry => {
+          const list = entry[1];
+          const count = list.length || 1;
+          return repRow([
+            escapeHtml(entry[0]),
+            number.format(new Set(list.map(x => x.canal)).size),
+            number.format(list.length),
+            number.format(Math.round(list.filter(x => x.lat !== null && x.lon !== null).length / count * 100)) + "٪",
+            number.format(readiness(list)) + "٪"
+          ],1);
+        }).join("");
+
+        let moduleRows = "";
+        if (state.platform && window.IrrigationModules) {
+          const definitions = window.IrrigationModules.MODULES;
+          moduleRows = Object.keys(definitions).map((type) => {
+            let count = 0;
+            try { count = (state.platform.recordsFor(type) || []).length; } catch (error) { count = 0; }
+            return count ? repRow([escapeHtml(definitions[type].title),number.format(count)],1) : "";
+          }).join("");
+        }
+
+        target.innerHTML =
+          '<div class="rep-head">' +
+            '<div class="rep-org">جمهورية مصر العربية<br>وزارة الموارد المائية والرى<br>الإدارة المركزية للموارد المائية والرى<br>للقاهرة والجيزة</div>' +
+            '<div>' + emblemSvg() + '</div>' +
+            '<div class="rep-ref"><div><b>رقم الملف</b>: ......................</div><div><b>رقم الصادر</b>: ......................</div><div><b>التاريخ</b>: ' + reportDate() + '</div></div>' +
+          '</div>' +
+          '<div class="rep-rule"></div>' +
+          '<div class="rep-title">تقرير الموقف الرقمى لسجل الأصول والمنشآت المائية</div>' +
+          '<div class="rep-sub">الإدارة العامة: ' + escapeHtml(summary.name) + ' · النطاق: ' + escapeHtml(summary.governorates.join(" · ")) + '</div>' +
+          '<div class="rep-h3">أولًا: المؤشرات العامة</div>' +
+          '<table class="rep-table"><thead><tr><th>البيان</th><th>القيمة</th><th>البيان</th><th>القيمة</th></tr></thead><tbody>' +
+            repRow(["عدد الهندسات التابعة",number.format(summary.engineers),"عدد الترع والمجارى",number.format(summary.canals)],0) +
+            repRow(["إجمالى المنشآت المسجلة",number.format(items.length),"المنشآت المرتبطة بإحداثيات",number.format(summary.geocoded) + " (" + percent(summary.geocoded) + ")"],0) +
+            repRow(["المنشآت ذات النوع المسجل",number.format(summary.typed) + " (" + percent(summary.typed) + ")","المنشآت كاملة الأبعاد",number.format(summary.sized) + " (" + percent(summary.sized) + ")"],0) +
+            repRow(["جاهزية السجل الرقمى",number.format(summary.readiness) + "٪","تاريخ استخراج التقرير",reportDate()],0) +
+          '</tbody></table>' +
+          '<div class="rep-h3">ثانيًا: توزيع المنشآت حسب التصنيف</div>' +
+          '<table class="rep-table"><thead><tr><th>التصنيف</th><th>العدد</th><th>النسبة</th></tr></thead><tbody>' + distributionRows + '</tbody></table>' +
+          '<div class="rep-h3">ثالثًا: الموقف على مستوى الهندسات</div>' +
+          '<table class="rep-table"><thead><tr><th>الهندسة</th><th>ترع</th><th>منشآت</th><th>بإحداثيات</th><th>جاهزية السجل</th></tr></thead><tbody>' + engineerRows + '</tbody></table>' +
+          (moduleRows ? '<div class="rep-h3">رابعًا: سجلات الوحدات التخصصية</div><table class="rep-table"><thead><tr><th>الوحدة</th><th>عدد السجلات</th></tr></thead><tbody>' + moduleRows + '</tbody></table>' : "") +
+          '<div class="rep-note"><b>ملاحظة فنية:</b> مؤشرات الجاهزية الواردة بهذا التقرير تعبّر عن اكتمال البيانات المسجلة فقط، ولا تعبّر عن الحالة الإنشائية للمنشآت. قرار الصيانة أو الإحلال يستلزم فحصًا ميدانيًا وبيانات عمر المنشأ والأحمال والنحر والاختبارات المعملية.<br><b>المصدر:</b> سجل الأصول والمنشآت المائية الرقمى — دون إضافة أى بيانات تقديرية.</div>' +
+          '<div class="rep-sign"><div></div><div class="rep-sign-box">' +
+            '<div class="rep-role">رئيس الإدارة المركزية للموارد المائية والرى<br>للقاهرة والجيزة</div>' +
+            '<div class="rep-sign-space"></div>' +
+            '<div class="rep-name">مهندس / محسن عبد الرشيد الشامى</div>' +
+          '</div></div>' +
+          '<div class="rep-foot-rule"></div>' +
+          '<div class="rep-foot">13 شارع مراد — الجيزة · ت: 35725700 / 35724700 · فاكس: 35724700 · centraldepartment.moi@gmail.com</div>';
+        return true;
       }
 
       function refreshAllViews() {
@@ -2856,6 +3063,16 @@
       }
 
       document.addEventListener("click",(event) => {
+        const moreTable = event.target.closest("[data-more-table]");
+        if (moreTable) {
+          growAssetTable(moreTable.dataset.moreTable,false);
+          return;
+        }
+        const allTable = event.target.closest("[data-all-table]");
+        if (allTable) {
+          growAssetTable(allTable.dataset.allTable,true);
+          return;
+        }
         const copyCode = event.target.closest("[data-copy-record-code]");
         if (copyCode) {
           copyRecordCode(copyCode.dataset.copyRecordCode,copyCode);
@@ -2911,11 +3128,18 @@
         }
       });
       byId("adminSearch").addEventListener("input",event => renderAdminGrid(event.target.value));
-      byId("assetSearch").addEventListener("input",filterAssets);
+      let assetSearchDebounce = 0;
+      byId("assetSearch").addEventListener("input",() => {
+        window.clearTimeout(assetSearchDebounce);
+        assetSearchDebounce = window.setTimeout(filterAssets,140);
+      });
       byId("assetType").addEventListener("change",filterAssets);
       byId("addAsset").addEventListener("click",() => openAssetDialog(""));
       byId("exportCsv").addEventListener("click",exportCsv);
-      byId("printAdmin").addEventListener("click",() => window.print());
+      byId("printAdmin").addEventListener("click",() => {
+        if (!buildPrintReport()) { window.alert("اختر إدارة أولًا لطباعة تقريرها."); return; }
+        window.setTimeout(() => window.print(),60);
+      });
       byId("syncSettingsButton").addEventListener("click",openSyncDialog);
       byId("syncStatus").addEventListener("click",openSyncDialog);
       byId("syncClose").addEventListener("click",() => byId("syncDialog").close());
@@ -2970,7 +3194,7 @@
       },60000);
 
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("./sw.js?v=1.1",{updateViaCache:"none"}).catch(() => undefined);
+        navigator.serviceWorker.register("./sw.js?v=1.2",{updateViaCache:"none"}).catch(() => undefined);
       }
 
       initializeSync();
