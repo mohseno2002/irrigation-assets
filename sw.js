@@ -3,7 +3,7 @@
    ولا يعطّل الفتح دون اتصال. البيانات والأيقونات: الكاش أولًا مع تحديث صامت.
    أى تعديل فى index.html يستوجب رفع VERSION. */
 
-const VERSION = "1.8";
+const VERSION = "2.0";
 const CACHE = "irrigation-assets-" + VERSION;
 const ROOT = new URL("./", self.registration.scope);
 const SHELL = new URL("./index.html", ROOT).href;
