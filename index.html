@@ -987,8 +987,9 @@
       <div class="hero-visual" aria-hidden="true">
         <div class="visual-seal">
           <small>الموقف الرقمي للسجل</small>
-          <strong id="heroGeocoded">—</strong>
-          <span>منشأة مرتبطة مكانيًا</span>
+          <strong id="heroTotal">—</strong>
+          <span>منشأة فى السجل · منها <b id="heroGeocoded">—</b> بإحداثيات</span>
+          <span id="heroState" style="display:flex;gap:6px;justify-content:flex-start;margin-top:8px"></span>
         </div>
       </div>
     </section>
@@ -1271,7 +1272,7 @@
 
   <section id="printReport" aria-hidden="true"></section>
 
-  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 2.1 · حالة المنشآت من قاعدة وحدة المنشآت المائية · سجل الأسطول الحكومى · دليل عاملين الجيزة · إظهار مفتاح المزامنة · الصلاحيات · التقرير القطاعى</small></footer>
+  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 2.2 · حالة المنشآت من قاعدة وحدة المنشآت المائية · سجل الأسطول الحكومى · دليل عاملين الجيزة · إظهار مفتاح المزامنة · الصلاحيات · التقرير القطاعى</small></footer>
 
   <script>
 /* ===== وحدة المزامنة — IrrigationSync ===== */
@@ -2537,6 +2538,9 @@
         byId("metricCanals").textContent = number.format(canals);
         byId("metricAssets").textContent = number.format(assets.length);
         byId("heroGeocoded").textContent = number.format(geocoded);
+        byId("heroTotal").textContent = number.format(assets.length);
+        const vbad = assets.filter(x => x.state === 5).length, bad = assets.filter(x => x.state === 4).length;
+        byId("heroState").innerHTML = (vbad || bad) ? '<span class="tag st-vbad">سيئة جداً ' + number.format(vbad) + '</span> <span class="tag st-bad">سيئة ' + number.format(bad) + '</span>' : "";
         const baseCanals = state.baseModuleRecords.canal_profile || [];
         byId("digitizedAssets").textContent = number.format(state.baseAssets.length);
         byId("digitizedCanals").textContent = number.format(baseCanals.length);
@@ -4072,7 +4076,7 @@
           swReloading = true;
           window.location.reload();
         });
-        navigator.serviceWorker.register("./sw.js?v=2.1",{updateViaCache:"none"})
+        navigator.serviceWorker.register("./sw.js?v=2.2",{updateViaCache:"none"})
           .then((registration) => { registration.update(); })
           .catch(() => undefined);
       }
