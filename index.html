@@ -306,6 +306,8 @@
     td { padding:9px; border-top:1px solid #edf2f4; vertical-align:top; }
     td b,td small { display:block; }
     td small { margin-top:2px; color:var(--muted); }
+    .st-ok { color:#1f7a45 !important; background:#e3f3e8 !important; } .st-mid { color:#8a6510 !important; background:#fbf1d6 !important; } .st-bad { color:#a8521a !important; background:#fde8d8 !important; } .st-vbad { color:#fff !important; background:#c8372d !important; } .st-na { color:#7a7466 !important; background:#efece5 !important; }
+    .st-note { display:block; color:#a8521a; } .admin-state { display:flex; gap:6px; margin-top:8px; }
     .tag { display:inline-block; padding:3px 7px; border-radius:999px; color:var(--blue); background:#e7f5f7; font-size:8px; font-weight:800; }
     .numeric { direction:ltr; text-align:left; white-space:nowrap; }
     .row-actions { display:flex; align-items:center; gap:5px; white-space:nowrap; }
@@ -1103,6 +1105,7 @@
               <div class="filters">
                 <input id="assetSearch" type="search" placeholder="اسم المنشأة أو الترعة…">
                 <select id="assetType"><option value="">كل التصنيفات</option></select>
+                <select id="assetState"><option value="">كل الحالات</option><option value="5">سيئة جداً</option><option value="4">سيئة</option><option value="3">مقبولة</option><option value="2">جيدة</option><option value="1">ممتازة</option><option value="0">غير محددة</option></select>
               </div>
             </div>
             <div id="assetsTable"></div>
@@ -1268,7 +1271,7 @@
 
   <section id="printReport" aria-hidden="true"></section>
 
-  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 2.0 · سجل الأسطول الحكومى · دليل عاملين الجيزة · إظهار مفتاح المزامنة · الصلاحيات · التقرير القطاعى</small></footer>
+  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 2.1 · حالة المنشآت من قاعدة وحدة المنشآت المائية · سجل الأسطول الحكومى · دليل عاملين الجيزة · إظهار مفتاح المزامنة · الصلاحيات · التقرير القطاعى</small></footer>
 
   <script>
 /* ===== وحدة المزامنة — IrrigationSync ===== */
@@ -2278,7 +2281,7 @@
         compareSort:{key:"assets",dir:"desc"}
       };
 
-      const DATA_URL = "./sector.json.gz?v=2";
+      const DATA_URL = "./sector.json.gz?v=3";
       const byId = (id) => document.getElementById(id);
       const escapeHtml = (value) => String(value ?? "")
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
@@ -2332,6 +2335,19 @@
           };
           asset.recordSource = "السجل الأساسي الرقمي";
           asset.recordId = window.IrrigationSync.stableRecordId(asset);
+          asset.state = null; asset.code = ""; asset.notes = ""; asset.stype = "";
+          if (row.length > 13) {
+            asset.state = row[13] >= 0 ? row[13] : null;
+            asset.code = row[14] >= 0 ? payload.K[row[14]] : "";
+            asset.notes = row[15] >= 0 ? payload.O[row[15]] : "";
+            asset.stype = row[16] >= 0 ? payload.S[row[16]] : "";
+            if (row[17] >= 0) { asset.nameApp = asset.name; asset.name = payload.N[row[17]]; }
+            if (row[18] !== -1 && row[18] != null) { asset.kmApp = asset.km; asset.km = row[18]; }
+            if (row[19]) {
+              asset.recordId = window.IrrigationSync.stableEntityRecordId("asset",["mwri-st",row[19]]);
+              asset.recordSource = "قاعدة وحدة المنشآت المائية";
+            }
+          }
           return asset;
         });
       }
@@ -2425,7 +2441,15 @@
         return Math.round(complete / (items.length * 4) * 100);
       }
 
+      const STATE_LBL = ["غير محددة","ممتازة","جيدة","مقبولة","سيئة","سيئة جداً"];
+      const STATE_CLS = ["st-na","st-ok","st-ok","st-mid","st-bad","st-vbad"];
+      function stateTag(item) {
+        const v = item.state == null ? 0 : item.state;
+        return '<span class="tag ' + STATE_CLS[v] + '">' + STATE_LBL[v] + '</span>';
+      }
+      const STYPE_CLASS = {"كوبرى":"كوبري","حجز":"منشأ حجز","سحارة":"سحارة/بدالة","بدالة":"سحارة/بدالة","بربخ":"عبّارة/مواسير","هدار":"هدار","تغطية":"تغطية","فم/مأخذ":"فم/مأخذ","بوابة":"بوابة","مصب/نهاية":"مصب/نهاية","محطة خلط":"محطة خلط","محطة/مأخذ":"محطة/مأخذ","صاولة":"صاولة"};
       function classify(item) {
+        if (item.stype && STYPE_CLASS[item.stype]) return STYPE_CLASS[item.stype];
         const text = item.name + " " + item.type;
         if (/تغطي|مغط/.test(text)) return "تغطية";
         if (/سحار|بدال/.test(text)) return "سحارة/بدالة";
@@ -2451,6 +2475,8 @@
           geocoded:assets.filter(x => x.lat !== null && x.lon !== null).length,
           typed:assets.filter(x => x.type !== "غير مسجل").length,
           sized:assets.filter(x => x.length !== null && x.width !== null).length,
+          bad:assets.filter(x => x.state === 4).length,
+          vbad:assets.filter(x => x.state === 5).length,
           readiness:readiness(assets)
         })).sort((a,b) => b.assets.length - a.assets.length);
       }
@@ -2545,6 +2571,7 @@
             '<div class="admin-card-head"><span class="admin-index">' + String(index+1).padStart(2,"0") + '</span><div><small>' + escapeHtml(item.governorates.join(" · ")) + '</small><h3>' + escapeHtml(item.name) + '</h3></div><span class="admin-arrow">↙</span></div>' +
             '<div class="admin-stats"><span><b>' + number.format(item.engineers) + '</b>هندسة</span><span><b>' + number.format(item.canals) + '</b>ترعة</span><span><b>' + number.format(item.assets.length) + '</b>منشأة</span></div>' +
             '<div class="readiness"><div><i style="width:' + item.readiness + '%"></i></div><span>جاهزية البيانات ' + number.format(item.readiness) + '٪</span></div>' +
+            (item.vbad || item.bad ? '<div class="admin-state"><span class="tag st-vbad">سيئة جداً ' + number.format(item.vbad || 0) + '</span><span class="tag st-bad">سيئة ' + number.format(item.bad || 0) + '</span></div>' : '') +
           '</a>'
         ).join("") : '<div class="empty">لا توجد إدارة مطابقة لعبارة البحث.</div>';
       }
@@ -2594,13 +2621,14 @@
       function tableHtml(items,limit=250,containerId="") {
         const shown = items.slice(0,limit);
         if (!shown.length) return '<div class="empty">لا توجد سجلات مطابقة.</div>';
-        return '<div class="asset-table"><table><thead><tr><th>كود السجل</th><th>المنشأة</th><th>التصنيف</th><th>الترعة</th><th>النوع</th><th>الكيلومتر</th><th>الأبعاد م</th><th>الموقع</th><th>التحديث</th></tr></thead><tbody>' +
+        return '<div class="asset-table"><table><thead><tr><th>كود السجل</th><th>المنشأة</th><th>التصنيف</th><th>الحالة</th><th>الترعة</th><th>النوع</th><th>الكيلومتر</th><th>الأبعاد م</th><th>الموقع</th><th>التحديث</th></tr></thead><tbody>' +
           shown.map(item => {
             const recordCode = window.IrrigationSync.displayRecordCode(item.recordId,"asset");
             return '<tr>' +
             '<td><button class="record-code-button" type="button" data-copy-record-code="' + escapeHtml(recordCode) + '" title="نسخ كود السجل">' + escapeHtml(recordCode) + '<span>نسخ</span></button></td>' +
-            '<td><b>' + escapeHtml(item.name) + '</b><small>' + escapeHtml(item.eng) + (item.locallyPending ? ' · بانتظار المزامنة' : '') + '</small></td>' +
+            '<td><b>' + escapeHtml(item.name) + '</b><small>' + escapeHtml(item.eng) + (item.code ? ' · ' + escapeHtml(item.code) : '') + (item.locallyPending ? ' · بانتظار المزامنة' : '') + '</small>' + (item.notes ? '<small class="st-note">' + escapeHtml(item.notes) + '</small>' : '') + '</td>' +
             '<td><span class="tag">' + escapeHtml(classify(item)) + '</span></td>' +
+            '<td>' + stateTag(item) + '</td>' +
             '<td>' + escapeHtml(item.canal) + '</td>' +
             '<td>' + escapeHtml(item.type) + '</td>' +
             '<td class="numeric">' + (item.km ?? "—") + '</td>' +
@@ -2646,10 +2674,12 @@
         if (!state.selected) return;
         const term = byId("assetSearch").value.trim();
         const type = byId("assetType").value;
+        const stv = byId("assetState") ? byId("assetState").value : "";
         const items = state.selected.assets.filter(item => {
           if (type && classify(item) !== type) return false;
+          if (stv !== "" && String(item.state == null ? 0 : item.state) !== stv) return false;
           const recordCode = window.IrrigationSync.displayRecordCode(item.recordId,"asset");
-          return !term || [recordCode,item.name,item.canal,item.eng,item.type].join(" ").toLowerCase().includes(term.toLowerCase());
+          return !term || [recordCode,item.name,item.canal,item.eng,item.type,item.code,item.notes].join(" ").toLowerCase().includes(term.toLowerCase());
         });
         renderAssetTable("assetsTable",items);
       }
@@ -2682,6 +2712,7 @@
           state.selectedEngineer = "";
           state.selectedCanal = "";
           byId("assetSearch").value = "";
+          byId("assetState").value = "";
         } else {
           if (!summary.assets.some(item => item.eng === state.selectedEngineer)) state.selectedEngineer = "";
           if (state.selectedCanal && !summary.assets.some(item => (!state.selectedEngineer || item.eng === state.selectedEngineer) && item.canal === state.selectedCanal)) state.selectedCanal = "";
@@ -3970,6 +4001,7 @@
         assetSearchDebounce = window.setTimeout(filterAssets,140);
       });
       byId("assetType").addEventListener("change",filterAssets);
+      byId("assetState").addEventListener("change",filterAssets);
       byId("addAsset").addEventListener("click",() => openAssetDialog(""));
       byId("exportCsv").addEventListener("click",exportCsv);
       byId("printAdmin").addEventListener("click",() => {
@@ -4040,7 +4072,7 @@
           swReloading = true;
           window.location.reload();
         });
-        navigator.serviceWorker.register("./sw.js?v=2.0",{updateViaCache:"none"})
+        navigator.serviceWorker.register("./sw.js?v=2.1",{updateViaCache:"none"})
           .then((registration) => { registration.update(); })
           .catch(() => undefined);
       }
