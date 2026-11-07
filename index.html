@@ -1272,7 +1272,7 @@
 
   <section id="printReport" aria-hidden="true"></section>
 
-  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 2.3 · كود المنشأ = كود قاعدة الوحدة · حالة المنشآت من قاعدة وحدة المنشآت المائية · سجل الأسطول الحكومى · دليل عاملين الجيزة · إظهار مفتاح المزامنة · الصلاحيات · التقرير القطاعى</small></footer>
+  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 2.4 · البيانات من سيرفر الوزارة (تحديث أسبوعى آلى) · كود المنشأ = كود قاعدة الوحدة · حالة المنشآت من قاعدة وحدة المنشآت المائية · سجل الأسطول الحكومى · دليل عاملين الجيزة · إظهار مفتاح المزامنة · الصلاحيات · التقرير القطاعى</small></footer>
 
   <script>
 /* ===== وحدة المزامنة — IrrigationSync ===== */
@@ -2283,6 +2283,7 @@
       };
 
       const DATA_URL = "./sector.json.gz?v=3";
+      const SRV_URL = "https://chat.46-101-178-117.sslip.io/structures-data/sector.json.gz";
       const byId = (id) => document.getElementById(id);
       const escapeHtml = (value) => String(value ?? "")
         .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
@@ -3839,8 +3840,16 @@
       async function loadData() {
         try {
           if (!("DecompressionStream" in window)) throw new Error("المتصفح يحتاج إلى تحديث لدعم فك ضغط البيانات");
-          const response = await fetch(DATA_URL);
-          if (!response.ok) throw new Error("HTTP " + response.status + " من الخادم");
+          let response = null;
+          try {
+            const c = new AbortController(); const tm = setTimeout(() => c.abort(), 6000);
+            const sr = await fetch(SRV_URL, { signal: c.signal }); clearTimeout(tm);
+            if (sr.ok) response = sr;
+          } catch (e) { response = null; }
+          if (!response) {
+            response = await fetch(DATA_URL);
+            if (!response.ok) throw new Error("HTTP " + response.status + " من الخادم");
+          }
           const payload = JSON.parse(await new Response(response.body.pipeThrough(new DecompressionStream("gzip"))).text());
           state.data = payload;
           state.baseAssets = decode(payload);
@@ -4093,7 +4102,7 @@
           swReloading = true;
           window.location.reload();
         });
-        navigator.serviceWorker.register("./sw.js?v=2.3",{updateViaCache:"none"})
+        navigator.serviceWorker.register("./sw.js?v=2.4",{updateViaCache:"none"})
           .then((registration) => { registration.update(); })
           .catch(() => undefined);
       }
