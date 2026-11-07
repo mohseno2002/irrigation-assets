@@ -1213,7 +1213,7 @@
       <p>يُحفظ التعديل في الجهاز فورًا، ثم يُرسل إلى Google Sheets ويظهر على كل الأجهزة المتصلة.</p>
       <input id="assetRecordId" type="hidden">
       <div class="form-grid">
-        <label class="field full"><span>كود السجل</span><div class="record-code-field"><input id="assetRecordCode" type="text" readonly><button class="record-code-button" id="copyAssetRecordCode" type="button">نسخ الكود</button></div></label>
+        <label class="field full"><span>كود المنشأ</span><div class="record-code-field"><input id="assetRecordCode" type="text" readonly><button class="record-code-button" id="copyAssetRecordCode" type="button">نسخ الكود</button></div></label>
         <label class="field"><span>الإدارة *</span><input id="editAdm" type="text" maxlength="240" required></label>
         <label class="field"><span>الهندسة *</span><input id="editEng" type="text" maxlength="240" required></label>
         <label class="field"><span>الترعة أو المجرى *</span><input id="editCanal" type="text" maxlength="240" required></label>
@@ -1272,7 +1272,7 @@
 
   <section id="printReport" aria-hidden="true"></section>
 
-  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 2.2 · حالة المنشآت من قاعدة وحدة المنشآت المائية · سجل الأسطول الحكومى · دليل عاملين الجيزة · إظهار مفتاح المزامنة · الصلاحيات · التقرير القطاعى</small></footer>
+  <footer><b>إدارات قطاع الري</b><span>منصة قطاعية شاملة مع مزامنة Google Sheets والعمل دون اتصال.</span><small>الإصدار 2.3 · كود المنشأ = كود قاعدة الوحدة · حالة المنشآت من قاعدة وحدة المنشآت المائية · سجل الأسطول الحكومى · دليل عاملين الجيزة · إظهار مفتاح المزامنة · الصلاحيات · التقرير القطاعى</small></footer>
 
   <script>
 /* ===== وحدة المزامنة — IrrigationSync ===== */
@@ -2448,6 +2448,22 @@
         const v = item.state == null ? 0 : item.state;
         return '<span class="tag ' + STATE_CLS[v] + '">' + STATE_LBL[v] + '</span>';
       }
+      let DUP_CODES = null;
+      function dupCodes() {
+        if (DUP_CODES) return DUP_CODES;
+        const seen = new Map();
+        (state.baseAssets || []).forEach(x => { if (x.code) seen.set(x.code,(seen.get(x.code) || 0) + 1); });
+        DUP_CODES = new Set([...seen.entries()].filter(e => e[1] > 1).map(e => e[0]));
+        return DUP_CODES;
+      }
+      function assetCode(item) {
+        return item && item.code ? item.code : window.IrrigationSync.displayRecordCode(item.recordId,"asset");
+      }
+      function assetCodeNote(item) {
+        if (!item.code) return '<small class="st-note">بلا كود رسمى فى قاعدة الوحدة</small>';
+        if (dupCodes().has(item.code)) return '<small class="st-note">الكود مكرر فى قاعدة الوحدة لمنشأ آخر</small>';
+        return "";
+      }
       const STYPE_CLASS = {"كوبرى":"كوبري","حجز":"منشأ حجز","سحارة":"سحارة/بدالة","بدالة":"سحارة/بدالة","بربخ":"عبّارة/مواسير","هدار":"هدار","تغطية":"تغطية","فم/مأخذ":"فم/مأخذ","بوابة":"بوابة","مصب/نهاية":"مصب/نهاية","محطة خلط":"محطة خلط","محطة/مأخذ":"محطة/مأخذ","صاولة":"صاولة"};
       function classify(item) {
         if (item.stype && STYPE_CLASS[item.stype]) return STYPE_CLASS[item.stype];
@@ -2625,12 +2641,12 @@
       function tableHtml(items,limit=250,containerId="") {
         const shown = items.slice(0,limit);
         if (!shown.length) return '<div class="empty">لا توجد سجلات مطابقة.</div>';
-        return '<div class="asset-table"><table><thead><tr><th>كود السجل</th><th>المنشأة</th><th>التصنيف</th><th>الحالة</th><th>الترعة</th><th>النوع</th><th>الكيلومتر</th><th>الأبعاد م</th><th>الموقع</th><th>التحديث</th></tr></thead><tbody>' +
+        return '<div class="asset-table"><table><thead><tr><th>كود المنشأ</th><th>المنشأة</th><th>التصنيف</th><th>الحالة</th><th>الترعة</th><th>النوع</th><th>الكيلومتر</th><th>الأبعاد م</th><th>الموقع</th><th>التحديث</th></tr></thead><tbody>' +
           shown.map(item => {
-            const recordCode = window.IrrigationSync.displayRecordCode(item.recordId,"asset");
+            const recordCode = assetCode(item);
             return '<tr>' +
-            '<td><button class="record-code-button" type="button" data-copy-record-code="' + escapeHtml(recordCode) + '" title="نسخ كود السجل">' + escapeHtml(recordCode) + '<span>نسخ</span></button></td>' +
-            '<td><b>' + escapeHtml(item.name) + '</b><small>' + escapeHtml(item.eng) + (item.code ? ' · ' + escapeHtml(item.code) : '') + (item.locallyPending ? ' · بانتظار المزامنة' : '') + '</small>' + (item.notes ? '<small class="st-note">' + escapeHtml(item.notes) + '</small>' : '') + '</td>' +
+            '<td><button class="record-code-button" type="button" data-copy-record-code="' + escapeHtml(recordCode) + '" title="نسخ كود المنشأ">' + escapeHtml(recordCode) + '<span>نسخ</span></button>' + assetCodeNote(item) + '</td>' +
+            '<td><b>' + escapeHtml(item.name) + '</b><small>' + escapeHtml(item.eng) + (item.locallyPending ? ' · بانتظار المزامنة' : '') + '</small>' + (item.notes ? '<small class="st-note">' + escapeHtml(item.notes) + '</small>' : '') + '</td>' +
             '<td><span class="tag">' + escapeHtml(classify(item)) + '</span></td>' +
             '<td>' + stateTag(item) + '</td>' +
             '<td>' + escapeHtml(item.canal) + '</td>' +
@@ -2763,7 +2779,7 @@
           record:item.recordId,
           label:item.name,
           meta:item.adm + " ← " + item.eng + " ← " + item.canal + (item.km === null ? "" : " · ك " + item.km),
-          hay:normalizeText(item.name + " " + item.canal + " " + item.eng + " " + item.type + " " + item.adm)
+          hay:normalizeText(item.name + " " + item.canal + " " + item.eng + " " + item.type + " " + item.adm + " " + (item.code || ""))
         }));
         const canalMap = new Map();
         const engineerMap = new Map();
@@ -3599,6 +3615,7 @@
         state.summaries = withFleetOnlyAdministrations(makeSummaries(state.assets));
         state.searchIndex = null;
         state.assetCodes = null;
+        DUP_CODES = null;
         renderMetrics();
         renderOverview();
         renderCompare();
@@ -3621,8 +3638,8 @@
 
       function exportCsv() {
         if (!state.selected) return;
-        const header = ["كود السجل","الإدارة","الهندسة","الترعة","اسم المنشأة","التصنيف","النوع","الاستخدام","المادة","الكيلومتر","الطول م","العرض م","خط الطول","دائرة العرض","المحافظة","المعرف الداخلي"];
-        const rows = state.selected.assets.map(x => [window.IrrigationSync.displayRecordCode(x.recordId,"asset"),x.adm,x.eng,x.canal,x.name,classify(x),x.type,x.use,x.material,x.km,x.length,x.width,x.lon,x.lat,x.gov,x.recordId]);
+        const header = ["كود المنشأ","المعرف الداخلى","الإدارة","الهندسة","الترعة","اسم المنشأة","التصنيف","النوع","الاستخدام","المادة","الكيلومتر","الطول م","العرض م","خط الطول","دائرة العرض","المحافظة","المعرف الداخلي"];
+        const rows = state.selected.assets.map(x => [assetCode(x),window.IrrigationSync.displayRecordCode(x.recordId,"asset"),x.adm,x.eng,x.canal,x.name,classify(x),x.type,x.use,x.material,x.km,x.length,x.width,x.lon,x.lat,x.gov,x.recordId]);
         const csv = "\ufeff" + [header,...rows].map(row => row.map(csvCell).join(",")).join("\n");
         const blob = new Blob([csv],{type:"text/csv;charset=utf-8"});
         const url = URL.createObjectURL(blob);
@@ -3666,7 +3683,7 @@
         };
         byId("assetDialogTitle").textContent = existing ? "تعديل بيانات المنشأة" : "إضافة منشأة جديدة";
         setFormValue("assetRecordId",asset.recordId);
-        setFormValue("assetRecordCode",window.IrrigationSync.displayRecordCode(asset.recordId,"asset"));
+        setFormValue("assetRecordCode",assetCode(asset));
         setFormValue("editAdm",asset.adm);
         setFormValue("editEng",asset.eng);
         setFormValue("editCanal",asset.canal);
@@ -4076,7 +4093,7 @@
           swReloading = true;
           window.location.reload();
         });
-        navigator.serviceWorker.register("./sw.js?v=2.2",{updateViaCache:"none"})
+        navigator.serviceWorker.register("./sw.js?v=2.3",{updateViaCache:"none"})
           .then((registration) => { registration.update(); })
           .catch(() => undefined);
       }
